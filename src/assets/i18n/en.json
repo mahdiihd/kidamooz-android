@@ -1,0 +1,89 @@
+{
+  "appName": "Kidamooz",
+  "language": {
+    "fa": "FA",
+    "en": "EN",
+    "switchAria": "Change language"
+  },
+  "tabs": {
+    "home": "Home",
+    "stories": "Stories",
+    "parents": "Parents",
+    "more": "More"
+  },
+  "home": {
+    "greeting": "Hello little one!",
+    "subtitle": "Which story world will you pick tonight?",
+    "categoriesTitle": "Story Worlds",
+    "featuredTitle": "Featured Stories"
+  },
+  "categories": {
+    "tapHint": "Tap to hear a story"
+  },
+  "stories": {
+    "title": "All Stories",
+    "allCategories": "All",
+    "empty": "No stories here yet",
+    "minutes": "min"
+  },
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "remaining": "Remaining",
+    "back": "Back",
+    "backHint": "Come back to continue",
+    "progressAria": "Playback progress"
+  },
+  "states": {
+    "loading": "Loading...",
+    "error": "Oops! Something went wrong",
+    "retry": "Try again",
+    "comingSoon": "Coming soon",
+    "comingSoonDesc": "This section is on its way"
+  },
+  "parentGate": {
+    "title": "Grown-ups only",
+    "question": "What is the sum?",
+    "wrong": "Try again"
+  },
+  "exit": {
+    "title": "Leave Kidamooz?",
+    "message": "Do you want to close the app?",
+    "confirm": "Exit",
+    "cancel": "Stay"
+  },
+  "content": {
+    "categories": {
+      "forest": { "title": "Magic Forest" },
+      "space": { "title": "Space Journey" },
+      "ocean": { "title": "Deep Ocean" },
+      "animals": { "title": "Animal Friends" }
+    },
+    "stories": {
+      "1": {
+        "title": "Sleepy Little Rabbit",
+        "description": "A little rabbit counts the stars before bed."
+      },
+      "2": {
+        "title": "Moon and Penguin",
+        "description": "A little penguin befriends the moon."
+      },
+      "3": {
+        "title": "Dream Rocket",
+        "description": "A nighttime trip to a colorful galaxy."
+      },
+      "4": {
+        "title": "Kind Lion",
+        "description": "A little lion learns to be gentle."
+      },
+      "5": {
+        "title": "Wise Owl",
+        "description": "A little owl tells stories at night."
+      },
+      "6": {
+        "title": "Lost Star",
+        "description": "A child finds a missing star."
+      }
+    }
+  }
+}

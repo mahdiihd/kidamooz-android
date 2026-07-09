@@ -1,0 +1,120 @@
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { IonIcon } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { play } from 'ionicons/icons';
+
+import { Story } from '../../../core/models/story.model';
+import { DurationPipe } from '../../pipes/duration.pipe';
+import { StoryTitlePipe } from '../../pipes/story-title.pipe';
+
+addIcons({ play });
+
+@Component({
+  selector: 'app-story-card',
+  standalone: true,
+  imports: [DurationPipe, IonIcon, StoryTitlePipe],
+  template: `
+    <button
+      type="button"
+      class="story-card"
+      [class.featured]="featured()"
+      (click)="selected.emit(story())"
+    >
+      <div class="cover-wrap">
+        <img
+          [src]="story().coverUrl"
+          [alt]="story().id | storyTitle"
+          loading="lazy"
+          decoding="async"
+          referrerpolicy="no-referrer"
+        />
+        <span class="play-badge" aria-hidden="true">
+          <ion-icon name="play"></ion-icon>
+        </span>
+      </div>
+      <div class="info">
+        <h3>{{ story().id | storyTitle }}</h3>
+        <span>{{ story().durationSeconds | duration }}</span>
+      </div>
+    </button>
+  `,
+  styles: `
+    .story-card {
+      width: 100%;
+      border: 0;
+      padding: 0;
+      border-radius: var(--km-radius-lg);
+      overflow: hidden;
+      background: var(--km-bg-card);
+      text-align: start;
+      color: var(--km-text-primary);
+      cursor: pointer;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+      -webkit-tap-highlight-color: transparent;
+
+      &:active {
+        transform: scale(0.98);
+      }
+    }
+
+    .cover-wrap {
+      position: relative;
+      width: 100%;
+    }
+
+    img {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      display: block;
+    }
+
+    .featured img {
+      aspect-ratio: 4 / 5;
+    }
+
+    .play-badge {
+      position: absolute;
+      bottom: 12px;
+      inset-inline-start: 12px;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--km-accent-play);
+      color: var(--km-bg-night);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    .info {
+      padding: 14px 16px 16px;
+    }
+
+    h3 {
+      margin: 0 0 6px;
+      font-family: var(--km-font-title);
+      font-size: 1.1rem;
+      font-weight: 400;
+      line-height: 1.35;
+    }
+
+    .featured h3 {
+      font-size: 1.2rem;
+    }
+
+    span {
+      color: var(--km-accent-moon-soft);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class StoryCardComponent {
+  readonly story = input.required<Story>();
+  readonly featured = input(false);
+  readonly selected = output<Story>();
+}

@@ -1,0 +1,27 @@
+<div class="km-tab-bar-stars">
+  <app-stars-background variant="footer"></app-stars-background>
+</div>
+
+<ion-tabs>
+  <ion-tab-bar slot="bottom" class="km-tab-bar">
+    <ion-tab-button tab="home" href="/tabs/home">
+      <ion-icon name="home-outline"></ion-icon>
+      <ion-label>{{ 'tabs.home' | translate }}</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="stories" href="/tabs/stories">
+      <ion-icon name="book-outline"></ion-icon>
+      <ion-label>{{ 'tabs.stories' | translate }}</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="parents" href="/tabs/parents">
+      <ion-icon name="people-outline"></ion-icon>
+      <ion-label>{{ 'tabs.parents' | translate }}</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="more" href="/tabs/more">
+      <ion-icon name="ellipsis-horizontal-outline"></ion-icon>
+      <ion-label>{{ 'tabs.more' | translate }}</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-tabs>

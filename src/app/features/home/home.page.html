@@ -1,0 +1,48 @@
+<app-stars-background></app-stars-background>
+
+<app-page-header [title]="'appName' | translate"></app-page-header>
+
+<ion-content [fullscreen]="true">
+  <div class="km-page home-page">
+    <section class="hero">
+      <app-moon-mascot state="idle"></app-moon-mascot>
+      <h1 class="km-title">{{ 'home.greeting' | translate }}</h1>
+      <p class="hero-sub">{{ 'home.subtitle' | translate }}</p>
+    </section>
+
+    @if (pageState() === 'loading') {
+      <app-loading-moon></app-loading-moon>
+    }
+
+    @if (pageState() === 'error') {
+      <app-error-state (retry)="loadContent()"></app-error-state>
+    }
+
+    @if (pageState() === 'ready') {
+      <section class="categories">
+        <h2 class="km-section-title">{{ 'home.categoriesTitle' | translate }}</h2>
+        <div class="km-vertical-list">
+          @for (category of categories(); track category.id) {
+            <app-category-island
+              [category]="category"
+              (selected)="onCategorySelected($event)"
+            ></app-category-island>
+          }
+        </div>
+      </section>
+
+      <section class="featured">
+        <h2 class="km-section-title">{{ 'home.featuredTitle' | translate }}</h2>
+        <div class="km-horizontal-scroll">
+          @for (story of featuredStories(); track story.id) {
+            <app-story-card
+              [story]="story"
+              [featured]="true"
+              (selected)="onStorySelected($event)"
+            ></app-story-card>
+          }
+        </div>
+      </section>
+    }
+  </div>
+</ion-content>

@@ -1,0 +1,52 @@
+@keyframes km-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 8px 32px rgba(123, 201, 80, 0.45);
+  }
+
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 8px 40px rgba(123, 201, 80, 0.65);
+  }
+}
+
+@keyframes km-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes km-twinkle {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes km-spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.km-animate-pulse {
+  animation: km-pulse 2s ease-in-out infinite;
+}
+
+.km-animate-float {
+  animation: km-float 3s ease-in-out infinite;
+}

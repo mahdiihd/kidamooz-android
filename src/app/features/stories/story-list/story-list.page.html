@@ -1,0 +1,52 @@
+<app-stars-background></app-stars-background>
+
+<app-page-header [title]="'stories.title' | translate"></app-page-header>
+
+<ion-content [fullscreen]="true">
+  <div class="km-page story-list-page">
+    <div class="km-chip-row">
+      <button
+        type="button"
+        class="km-chip"
+        [class.active]="selectedCategoryId() === null"
+        (click)="selectCategory(null)"
+      >
+        {{ 'stories.allCategories' | translate }}
+      </button>
+
+      @for (category of categories(); track category.id) {
+        <button
+          type="button"
+          class="km-chip"
+          [class.active]="selectedCategoryId() === category.id"
+          (click)="selectCategory(category.id)"
+        >
+          {{ category.id | categoryTitle }}
+        </button>
+      }
+    </div>
+
+    @if (pageState() === 'loading') {
+      <app-loading-moon></app-loading-moon>
+    }
+
+    @if (pageState() === 'error') {
+      <app-error-state (retry)="loadStories()"></app-error-state>
+    }
+
+    @if (pageState() === 'ready' && stories().length === 0) {
+      <app-empty-state></app-empty-state>
+    }
+
+    @if (pageState() === 'ready' && stories().length > 0) {
+      <div class="km-vertical-list">
+        @for (story of stories(); track story.id) {
+          <app-story-card
+            [story]="story"
+            (selected)="onStorySelected($event)"
+          ></app-story-card>
+        }
+      </div>
+    }
+  </div>
+</ion-content>

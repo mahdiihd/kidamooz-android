@@ -1,37 +1,270 @@
-/*
- * App Global CSS
- * ----------------------------------------------------------------------------
- * Put style rules here that you want to apply globally. These styles are for
- * the entire app and not just one component. Additionally, this file can be
- * used as an entry point to import other CSS/Sass files to be included in the
- * output CSS.
- * For more information on global stylesheets, visit the documentation:
- * https://ionicframework.com/docs/layout/global-stylesheets
- */
+@use "./theme/typography";
+@use "./theme/animations";
 
-/* Core CSS required for Ionic components to work properly */
 @import "@ionic/angular/css/core.css";
-
-/* Basic CSS for apps built with Ionic */
 @import "@ionic/angular/css/normalize.css";
 @import "@ionic/angular/css/structure.css";
 @import "@ionic/angular/css/typography.css";
 @import "@ionic/angular/css/display.css";
-
-/* Optional CSS utils that can be commented out */
 @import "@ionic/angular/css/padding.css";
 @import "@ionic/angular/css/float-elements.css";
 @import "@ionic/angular/css/text-alignment.css";
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
 
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
+*,
+*::before,
+*::after {
+  -webkit-tap-highlight-color: transparent;
+}
 
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import '@ionic/angular/css/palettes/dark.system.css';
+html,
+body,
+ion-app {
+  background: linear-gradient(
+    175deg,
+    var(--km-bg-night) 0%,
+    var(--km-bg-night-mid) 55%,
+    var(--km-bg-night-light) 100%
+  );
+  color: var(--km-text-primary);
+  min-height: 100%;
+  overscroll-behavior: none;
+}
+
+ion-page {
+  background: transparent;
+}
+
+.stars-host {
+  z-index: 0;
+}
+
+app-home,
+app-story-list,
+app-coming-soon,
+app-story-player {
+  display: block;
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+.km-page-header {
+  position: relative;
+  overflow: hidden;
+  --background: rgba(26, 15, 46, 0.5);
+  background: rgba(26, 15, 46, 0.5);
+}
+
+.km-page-header__stars {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+ion-page ion-header,
+ion-page ion-content {
+  position: relative;
+  z-index: 1;
+}
+
+ion-content {
+  --background: transparent;
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+ion-header {
+  padding-top: 0;
+  --background: transparent;
+}
+
+ion-toolbar {
+  --background: transparent;
+  --border-width: 0;
+  --color: var(--km-text-primary);
+  --min-height: 56px;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+.km-page-toolbar {
+  position: relative;
+  z-index: 1;
+  --background: rgba(26, 15, 46, 0.5);
+  --padding-start: 0;
+  --padding-end: 0;
+  --min-height: 56px;
+}
+
+.km-page-toolbar__back,
+.km-page-toolbar__actions {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  margin: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+}
+
+.km-page-toolbar__back {
+  left: 16px;
+  right: auto;
+}
+
+.km-page-toolbar__actions {
+  right: 16px;
+  left: auto;
+}
+
+[dir='rtl'] .km-page-toolbar__back {
+  left: 16px;
+  right: auto;
+}
+
+[dir='rtl'] .km-page-toolbar__actions {
+  right: 16px;
+  left: auto;
+}
+
+html[dir='rtl'] .km-page-toolbar__back ion-back-button::part(icon) {
+  transform: scaleX(-1);
+}
+
+.km-page-toolbar__title {
+  padding-inline: 60px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+ion-title {
+  font-family: var(--km-font-title);
+  font-size: 1.35rem;
+  font-weight: 400;
+}
+
+ion-tab-bar {
+  --border: 0;
+  height: var(--km-tab-bar-height);
+  padding-bottom: var(--km-safe-bottom);
+  border-top: 1px solid rgba(255, 209, 102, 0.12);
+  --background: rgba(26, 15, 46, 0.35);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+ion-tab-button {
+  --color: var(--ion-tab-bar-color);
+  --color-selected: var(--km-accent-moon);
+  --padding-top: 6px;
+  --padding-bottom: 6px;
+  font-family: var(--km-font-body);
+  font-size: 0.7rem;
+  font-weight: 500;
+
+  ion-icon {
+    font-size: 1.5rem;
+    margin-bottom: 2px;
+  }
+}
+
+ion-back-button {
+  --color: var(--km-accent-moon);
+}
+
+ion-button {
+  --border-radius: var(--km-radius-md);
+  font-family: var(--km-font-body);
+}
+
+.km-exit-modal {
+  --backdrop-opacity: 0.62;
+  --border-radius: 28px 28px 0 0;
+  --box-shadow: 0 -12px 48px rgba(0, 0, 0, 0.45);
+}
+
+.km-exit-modal::part(backdrop) {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.km-page {
+  padding: 0 20px 24px;
+  padding-bottom: calc(24px + var(--km-safe-bottom));
+}
+
+.km-section-title {
+  font-family: var(--km-font-title);
+  font-size: 1.4rem;
+  margin: 0 0 14px;
+  color: var(--km-accent-moon);
+}
+
+.km-chip-row {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 4px 0 16px;
+  margin: 0 -4px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.km-chip {
+  flex-shrink: 0;
+  min-height: 44px;
+  padding: 10px 18px;
+  border: 2px solid rgba(255, 209, 102, 0.25);
+  border-radius: 999px;
+  background: var(--km-bg-card);
+  color: var(--km-text-secondary);
+  font-family: var(--km-font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+
+  &.active {
+    background: rgba(255, 209, 102, 0.18);
+    border-color: var(--km-accent-moon);
+    color: var(--km-accent-moon);
+  }
+}
+
+.km-horizontal-scroll {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  padding: 4px 0 8px;
+  margin: 0 -20px;
+  padding-inline: 20px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  > * {
+    flex: 0 0 78vw;
+    max-width: 300px;
+    scroll-snap-align: start;
+  }
+}
+
+.km-vertical-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}

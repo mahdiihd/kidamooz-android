@@ -1,0 +1,32 @@
+.home-page {
+  padding-top: 8px;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 28px;
+  padding-top: 4px;
+}
+
+.hero h1 {
+  margin: 12px 0 8px;
+  font-size: 2rem;
+  color: var(--km-accent-moon);
+  line-height: 1.2;
+}
+
+.hero-sub {
+  margin: 0 auto;
+  max-width: 280px;
+  color: var(--km-text-secondary);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.categories {
+  margin-bottom: 32px;
+}
+
+.featured {
+  margin-bottom: 16px;
+}

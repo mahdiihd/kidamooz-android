@@ -1,0 +1,57 @@
+<app-stars-background></app-stars-background>
+
+<app-page-header
+  [title]="headerTitle()"
+  [showBack]="true"
+></app-page-header>
+
+<ion-content class="player-content" [fullscreen]="true">
+  @if (pageState() === 'loading') {
+    <app-loading-moon></app-loading-moon>
+  }
+
+  @if (pageState() === 'error') {
+    <app-error-state (retry)="loadStory(storyId())"></app-error-state>
+  }
+
+  @if (pageState() === 'ready' && story(); as currentStory) {
+    <div class="player">
+      <div class="cover-frame">
+        <img
+          [src]="currentStory.coverUrl"
+          [alt]="currentStory.id | storyTitle"
+          class="cover"
+          loading="eager"
+          decoding="async"
+          referrerpolicy="no-referrer"
+        />
+      </div>
+
+      <h1 class="km-title">{{ currentStory.id | storyTitle }}</h1>
+      <p class="description">{{ currentStory.id | storyDescription }}</p>
+
+      <app-big-play-button
+        [isPlaying]="playerState() === 'playing'"
+        (clicked)="onPlayToggle()"
+      ></app-big-play-button>
+
+      <app-moon-mascot [state]="mascotState()"></app-moon-mascot>
+
+      <div class="progress">
+        <span class="time">{{ currentTime() | duration }}</span>
+        <ion-range
+          [min]="0"
+          [max]="duration() || 1"
+          [value]="currentTime()"
+          [attr.aria-label]="'player.progressAria' | translate"
+          (ionChange)="onSeek($event)"
+        ></ion-range>
+        <span class="time">{{ duration() | duration }}</span>
+      </div>
+
+      <p class="remaining">
+        {{ 'player.remaining' | translate }}: {{ (duration() - currentTime()) | duration }}
+      </p>
+    </div>
+  }
+</ion-content>

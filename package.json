@@ -9,7 +9,10 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "ionic:build": "ng build",
+    "cap:sync": "npx cap sync",
+    "cap:android": "npx cap open android"
   },
   "private": true,
   "dependencies": {
@@ -21,10 +24,12 @@
     "@angular/platform-browser": "20.3.25",
     "@angular/platform-browser-dynamic": "20.3.25",
     "@angular/router": "20.3.25",
+    "@capacitor/android": "8.4.1",
     "@capacitor/app": "8.1.0",
     "@capacitor/core": "8.4.1",
     "@capacitor/haptics": "8.0.2",
     "@capacitor/keyboard": "8.0.5",
+    "@capacitor/preferences": "^8.0.1",
     "@capacitor/status-bar": "8.0.2",
     "@ionic/angular": "^8.0.0",
     "ionicons": "^7.0.0",

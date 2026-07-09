@@ -1,2 +1,60 @@
-// For information on how to create your own theme, please refer to:
-// https://ionicframework.com/docs/theming/
+:root {
+  --km-bg-night: #1a0f2e;
+  --km-bg-night-mid: #2a1545;
+  --km-bg-night-light: #3d2060;
+  --km-bg-card: rgba(255, 255, 255, 0.07);
+  --km-bg-card-hover: rgba(255, 255, 255, 0.12);
+  --km-accent-moon: #ffd166;
+  --km-accent-moon-soft: #ffe8a3;
+  --km-accent-play: #7bc950;
+  --km-accent-coral: #ff8a65;
+  --km-accent-heart: #ef476f;
+  --km-accent-lavender: #d4a5f9;
+  --km-accent-peach: #f4a261;
+  --km-text-primary: #fff8f0;
+  --km-text-secondary: rgba(255, 248, 240, 0.7);
+  --km-radius-xl: 28px;
+  --km-radius-lg: 20px;
+  --km-radius-md: 14px;
+  --km-touch-min: 72px;
+  --km-font-title: 'Lalezar', sans-serif;
+  --km-font-body: 'Vazirmatn', sans-serif;
+  --km-safe-bottom: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
+  --km-safe-top: var(--safe-area-inset-top, env(safe-area-inset-top, 0px));
+  --km-tab-bar-height: 72px;
+
+  --ion-background-color: var(--km-bg-night);
+  --ion-text-color: var(--km-text-primary);
+  --ion-toolbar-background: transparent;
+  --ion-tab-bar-background: rgba(26, 15, 46, 0.35);
+  --ion-tab-bar-color: rgba(255, 248, 240, 0.45);
+  --ion-tab-bar-color-selected: var(--km-accent-moon);
+
+  --ion-color-primary: #ffd166;
+  --ion-color-primary-rgb: 255, 209, 102;
+  --ion-color-primary-contrast: #1a0f2e;
+  --ion-color-primary-contrast-rgb: 26, 15, 46;
+  --ion-color-primary-shade: #e0b85a;
+  --ion-color-primary-tint: #ffd675;
+
+  --ion-color-secondary: #ff8a65;
+  --ion-color-secondary-rgb: 255, 138, 101;
+  --ion-color-secondary-contrast: #1a0f2e;
+  --ion-color-secondary-contrast-rgb: 26, 15, 46;
+  --ion-color-secondary-shade: #e07959;
+  --ion-color-secondary-tint: #ff9674;
+
+  --ion-color-tertiary: #d4a5f9;
+  --ion-color-tertiary-rgb: 212, 165, 249;
+  --ion-color-tertiary-contrast: #1a0f2e;
+  --ion-color-tertiary-contrast-rgb: 26, 15, 46;
+  --ion-color-tertiary-shade: #bb91db;
+  --ion-color-tertiary-tint: #d8aefa;
+
+  --ion-color-success: #7bc950;
+  --ion-color-warning: #ffd166;
+  --ion-color-danger: #ef476f;
+  --ion-color-medium: #6b5b7a;
+  --ion-color-light: #3d2060;
+  --ion-color-dark: #1a0f2e;
+}
