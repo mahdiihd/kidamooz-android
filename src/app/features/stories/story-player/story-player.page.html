@@ -19,7 +19,7 @@
       <div class="cover-frame">
         <img
           [src]="currentStory.coverUrl"
-          [alt]="currentStory.id | storyTitle"
+          [alt]="currentStory | storyTitle"
           class="cover"
           loading="eager"
           decoding="async"
@@ -27,8 +27,8 @@
         />
       </div>
 
-      <h1 class="km-title">{{ currentStory.id | storyTitle }}</h1>
-      <p class="description">{{ currentStory.id | storyDescription }}</p>
+      <h1 class="km-title">{{ currentStory | storyTitle }}</h1>
+      <p class="description">{{ currentStory | storyDescription }}</p>
 
       <app-big-play-button
         [isPlaying]="playerState() === 'playing'"

@@ -1,5 +1,6 @@
 import { Pipe, PipeTransform, inject } from '@angular/core';
 
+import { Story } from '../../core/models/story.model';
 import { TranslationService } from '../../core/services/translation.service';
 
 @Pipe({
@@ -10,8 +11,18 @@ import { TranslationService } from '../../core/services/translation.service';
 export class StoryTitlePipe implements PipeTransform {
   private readonly translation = inject(TranslationService);
 
-  transform(storyId: string): string {
+  transform(story: Story | string | null | undefined): string {
     this.translation.language();
-    return this.translation.translate(`content.stories.${storyId}.title`);
+    if (!story) {
+      return '';
+    }
+
+    if (typeof story === 'string') {
+      return this.translation.translate(`content.stories.${story}.title`);
+    }
+
+    return this.translation.language() === 'en'
+      ? story.titleEn || story.titleFa || story.title
+      : story.titleFa || story.title;
   }
 }

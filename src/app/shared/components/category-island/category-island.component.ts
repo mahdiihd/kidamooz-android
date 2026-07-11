@@ -21,14 +21,14 @@ addIcons({ chevronForwardOutline });@Component({
       <div class="icon-wrap">
         <img
           [src]="category().iconUrl"
-          [alt]="category().id | categoryTitle"
+          [alt]="category() | categoryTitle"
           loading="lazy"
           decoding="async"
           referrerpolicy="no-referrer"
         />
       </div>
       <div class="text-wrap">
-        <span class="title">{{ category().id | categoryTitle }}</span>
+        <span class="title">{{ category() | categoryTitle }}</span>
         <span class="hint">{{ 'categories.tapHint' | translate }}</span>
       </div>
       <ion-icon

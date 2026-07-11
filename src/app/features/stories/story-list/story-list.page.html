@@ -21,7 +21,7 @@
           [class.active]="selectedCategoryId() === category.id"
           (click)="selectCategory(category.id)"
         >
-          {{ category.id | categoryTitle }}
+          {{ category | categoryTitle }}
         </button>
       }
     </div>

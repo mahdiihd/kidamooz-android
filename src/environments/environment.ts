@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
-  apiBaseUrl: 'https://api.kidamooz.com',
-  useMock: true,
+  apiBaseUrl: 'http://localhost:5042',
+  useMock: false,
   features: {
     parents: false,
     psychology: false,

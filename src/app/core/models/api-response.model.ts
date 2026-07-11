@@ -5,6 +5,7 @@ export interface PaginatedResponse<T> {
 
 export interface StoriesQuery {
   categoryId?: string;
+  featured?: boolean;
   page?: number;
   limit?: number;
 }

@@ -23,7 +23,7 @@ addIcons({ play });
       <div class="cover-wrap">
         <img
           [src]="story().coverUrl"
-          [alt]="story().id | storyTitle"
+          [alt]="story() | storyTitle"
           loading="lazy"
           decoding="async"
           referrerpolicy="no-referrer"
@@ -33,7 +33,7 @@ addIcons({ play });
         </span>
       </div>
       <div class="info">
-        <h3>{{ story().id | storyTitle }}</h3>
+        <h3>{{ story() | storyTitle }}</h3>
         <span>{{ story().durationSeconds | duration }}</span>
       </div>
     </button>

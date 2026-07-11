@@ -77,7 +77,9 @@ export class StoryCatalogStore {
   }
 
   getFeaturedStories(limit: number): StoryDetail[] {
-    return this.stories().slice(0, limit);
+    const featured = this.stories().filter((story) => story.featured);
+    const source = featured.length > 0 ? featured : this.stories();
+    return source.slice(0, limit);
   }
 
   upsertStory(story: StoryDetail): void {
@@ -142,7 +144,7 @@ export class StoryCatalogStore {
         forkJoin([
           this.storyApi.getCatalogVersion(),
           this.storyApi.getCategories(),
-          this.storyApi.getStories(),
+          this.storyApi.getStories({ limit: 200 }),
         ])
       );
 
