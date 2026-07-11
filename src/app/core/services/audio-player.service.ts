@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
-import { PlayerSnapshot, PlayerState } from '../models/player-state.model';
+import { PlayerSnapshot } from '../models/player-state.model';
 
 const INITIAL_SNAPSHOT: PlayerSnapshot = {
   storyId: null,
@@ -13,6 +13,7 @@ const INITIAL_SNAPSHOT: PlayerSnapshot = {
 @Injectable({ providedIn: 'root' })
 export class AudioPlayerService {
   private audio: HTMLAudioElement | null = null;
+  private loadToken = 0;
   private readonly snapshotSubject = new BehaviorSubject<PlayerSnapshot>(
     INITIAL_SNAPSHOT
   );
@@ -25,6 +26,8 @@ export class AudioPlayerService {
 
   async load(storyId: string, audioUrl: string): Promise<void> {
     this.destroyAudio();
+    const token = ++this.loadToken;
+
     this.updateSnapshot({
       storyId,
       currentTime: 0,
@@ -32,17 +35,13 @@ export class AudioPlayerService {
       state: 'loading',
     });
 
-    this.audio = new Audio(audioUrl);
-    this.bindAudioEvents();
+    const audio = new Audio();
+    audio.preload = 'metadata';
+    audio.src = audioUrl;
+    this.audio = audio;
+    this.bindAudioEvents(audio, token);
 
-    try {
-      await this.audio.play();
-      this.audio.pause();
-      this.audio.currentTime = 0;
-      this.updateSnapshot({ state: 'idle', duration: this.audio.duration || 0 });
-    } catch {
-      this.updateSnapshot({ state: 'error' });
-    }
+    await this.waitForMetadata(audio, token);
   }
 
   async play(): Promise<void> {
@@ -102,13 +101,57 @@ export class AudioPlayerService {
     this.snapshotSubject.next(INITIAL_SNAPSHOT);
   }
 
-  private bindAudioEvents(): void {
-    if (!this.audio) {
-      return;
+  private waitForMetadata(audio: HTMLAudioElement, token: number): Promise<void> {
+    if (Number.isFinite(audio.duration) && audio.duration > 0) {
+      if (token === this.loadToken) {
+        this.updateSnapshot({ state: 'idle', duration: audio.duration });
+      }
+      return Promise.resolve();
     }
 
-    this.audio.addEventListener('timeupdate', () => {
-      if (!this.audio) {
+    return new Promise((resolve) => {
+      const finish = (state: 'idle' | 'error', duration = 0) => {
+        audio.removeEventListener('loadedmetadata', onMeta);
+        audio.removeEventListener('canplay', onReady);
+        audio.removeEventListener('error', onError);
+        window.clearTimeout(timeoutId);
+
+        if (token !== this.loadToken) {
+          resolve();
+          return;
+        }
+
+        this.updateSnapshot({ state, duration });
+        resolve();
+      };
+
+      const onMeta = () => {
+        finish('idle', audio.duration || 0);
+      };
+
+      const onReady = () => {
+        finish('idle', audio.duration || 0);
+      };
+
+      const onError = () => {
+        finish('error');
+      };
+
+      audio.addEventListener('loadedmetadata', onMeta);
+      audio.addEventListener('canplay', onReady);
+      audio.addEventListener('error', onError);
+
+      const timeoutId = window.setTimeout(() => {
+        finish('idle', audio.duration || 0);
+      }, 2500);
+
+      audio.load();
+    });
+  }
+
+  private bindAudioEvents(audio: HTMLAudioElement, token: number): void {
+    audio.addEventListener('timeupdate', () => {
+      if (token !== this.loadToken || !this.audio) {
         return;
       }
 
@@ -118,11 +161,19 @@ export class AudioPlayerService {
       });
     });
 
-    this.audio.addEventListener('ended', () => {
+    audio.addEventListener('ended', () => {
+      if (token !== this.loadToken) {
+        return;
+      }
+
       this.updateSnapshot({ state: 'idle', currentTime: 0 });
     });
 
-    this.audio.addEventListener('error', () => {
+    audio.addEventListener('error', () => {
+      if (token !== this.loadToken) {
+        return;
+      }
+
       this.updateSnapshot({ state: 'error' });
     });
   }
@@ -130,7 +181,8 @@ export class AudioPlayerService {
   private destroyAudio(): void {
     if (this.audio) {
       this.audio.pause();
-      this.audio.src = '';
+      this.audio.removeAttribute('src');
+      this.audio.load();
       this.audio = null;
     }
   }

@@ -10,6 +10,7 @@ import { Subscription } from 'rxjs';
 
 import { PlayerState } from '../../../core/models/player-state.model';
 import { StoryDetail } from '../../../core/models/story.model';
+import { AudioCacheService } from '../../../core/services/audio-cache.service';
 import { AudioPlayerService } from '../../../core/services/audio-player.service';
 import { StoryApiService } from '../../../core/services/story-api.service';
 import { StoryCatalogStore } from '../../../core/services/story-catalog.store';
@@ -52,6 +53,7 @@ export class StoryPlayerPage implements OnInit, OnDestroy {
   private readonly catalogStore = inject(StoryCatalogStore);
   private readonly translation = inject(TranslationService);
   private readonly audioPlayer = inject(AudioPlayerService);
+  private readonly audioCache = inject(AudioCacheService);
   private readonly activatedRoute = inject(ActivatedRoute);
   private playerSubscription?: Subscription;
 
@@ -65,10 +67,13 @@ export class StoryPlayerPage implements OnInit, OnDestroy {
   readonly headerTitle = computed(() => {
     this.translation.language();
     const story = this.story();
-    if (story) {
-      return this.translation.translate(`content.stories.${story.id}.title`);
+    if (!story) {
+      return this.translation.translate('appName');
     }
-    return this.translation.translate('appName');
+
+    return this.translation.language() === 'en'
+      ? story.titleEn || story.titleFa || story.title
+      : story.titleFa || story.title;
   });
 
   ngOnInit(): void {
@@ -100,7 +105,14 @@ export class StoryPlayerPage implements OnInit, OnDestroy {
 
   async onPlayToggle(): Promise<void> {
     await this.triggerHaptic();
+    const story = this.story();
+    const startingPlayback = this.playerState() !== 'playing';
     await this.audioPlayer.togglePlay();
+
+    if (startingPlayback && story?.audioUrl) {
+      void this.audioCache.ensureCached(story.id, story.audioUrl);
+      void this.audioCache.touch(story.id);
+    }
   }
 
   onSeek(event: CustomEvent): void {
@@ -153,7 +165,8 @@ export class StoryPlayerPage implements OnInit, OnDestroy {
 
   private async loadAudio(story: StoryDetail): Promise<void> {
     try {
-      await this.audioPlayer.load(story.id, story.audioUrl);
+      const playUrl = await this.audioCache.resolvePlayUrl(story.id, story.audioUrl);
+      await this.audioPlayer.load(story.id, playUrl);
     } catch {
       this.pageState.set('error');
     }

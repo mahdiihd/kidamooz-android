@@ -9,4 +9,6 @@ export const MEDIA_CACHE_POLICY = {
   autoDownloadAudio: false,
   autoDownloadImages: false,
   offlineQuotaBytes: CACHE_POLICY.offlineAudioQuotaBytes,
+  audioIndexKey: 'kidamooz.audio-cache.v1',
+  audioDirectory: 'audio',
 } as const;
