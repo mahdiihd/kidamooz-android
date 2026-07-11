@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiBaseUrl: 'http://localhost:5042',
+  apiBaseUrl: 'https://kidamooz-back.liara.run',
   useMock: false,
   features: {
     parents: false,
