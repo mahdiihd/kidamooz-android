@@ -5,6 +5,9 @@ const config: CapacitorConfig = {
   appName: 'kidamooz',
   webDir: 'www',
   plugins: {
+    CapacitorHttp: {
+      enabled: true,
+    },
     StatusBar: {
       overlaysWebView: false,
       style: 'DARK',
