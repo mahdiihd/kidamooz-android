@@ -166,7 +166,16 @@ export class StoryPlayerPage implements OnInit, OnDestroy {
   private async loadAudio(story: StoryDetail): Promise<void> {
     try {
       const playUrl = await this.audioCache.resolvePlayUrl(story.id, story.audioUrl);
-      await this.audioPlayer.load(story.id, playUrl);
+      const title =
+        this.translation.language() === 'en'
+          ? story.titleEn || story.titleFa || story.title
+          : story.titleFa || story.title;
+
+      await this.audioPlayer.load(story.id, playUrl, {
+        title,
+        artist: 'کیدآموز',
+        artworkUrl: story.coverUrl,
+      });
     } catch {
       this.pageState.set('error');
     }

@@ -3,6 +3,12 @@ import { BehaviorSubject } from 'rxjs';
 
 import { PlayerSnapshot } from '../models/player-state.model';
 
+export interface AudioLoadOptions {
+  title?: string;
+  artist?: string;
+  artworkUrl?: string;
+}
+
 const INITIAL_SNAPSHOT: PlayerSnapshot = {
   storyId: null,
   currentTime: 0,
@@ -14,6 +20,9 @@ const INITIAL_SNAPSHOT: PlayerSnapshot = {
 export class AudioPlayerService {
   private audio: HTMLAudioElement | null = null;
   private loadToken = 0;
+  private mediaTitle = '';
+  private mediaArtist = '';
+  private mediaArtworkUrl = '';
   private readonly snapshotSubject = new BehaviorSubject<PlayerSnapshot>(
     INITIAL_SNAPSHOT
   );
@@ -24,9 +33,16 @@ export class AudioPlayerService {
     return this.snapshotSubject.value;
   }
 
-  async load(storyId: string, audioUrl: string): Promise<void> {
+  async load(
+    storyId: string,
+    audioUrl: string,
+    options: AudioLoadOptions = {},
+  ): Promise<void> {
     this.destroyAudio();
     const token = ++this.loadToken;
+    this.mediaTitle = options.title || '';
+    this.mediaArtist = options.artist || 'کیدآموز';
+    this.mediaArtworkUrl = options.artworkUrl || '';
 
     this.updateSnapshot({
       storyId,
@@ -37,9 +53,12 @@ export class AudioPlayerService {
 
     const audio = new Audio();
     audio.preload = 'metadata';
+    audio.setAttribute('playsinline', 'true');
+    audio.setAttribute('webkit-playsinline', 'true');
     audio.src = audioUrl;
     this.audio = audio;
     this.bindAudioEvents(audio, token);
+    this.setupMediaSession();
 
     await this.waitForMetadata(audio, token);
   }
@@ -52,8 +71,10 @@ export class AudioPlayerService {
     try {
       await this.audio.play();
       this.updateSnapshot({ state: 'playing' });
+      this.setMediaSessionPlaybackState('playing');
     } catch {
       this.updateSnapshot({ state: 'error' });
+      this.setMediaSessionPlaybackState('none');
     }
   }
 
@@ -64,6 +85,7 @@ export class AudioPlayerService {
 
     this.audio.pause();
     this.updateSnapshot({ state: 'paused' });
+    this.setMediaSessionPlaybackState('paused');
   }
 
   togglePlay(): Promise<void> {
@@ -82,6 +104,7 @@ export class AudioPlayerService {
 
     this.audio.currentTime = seconds;
     this.updateSnapshot({ currentTime: seconds });
+    this.updateMediaSessionPosition();
   }
 
   stop(): void {
@@ -94,10 +117,12 @@ export class AudioPlayerService {
       currentTime: 0,
       state: 'idle',
     });
+    this.setMediaSessionPlaybackState('none');
   }
 
   destroy(): void {
     this.destroyAudio();
+    this.clearMediaSession();
     this.snapshotSubject.next(INITIAL_SNAPSHOT);
   }
 
@@ -159,6 +184,7 @@ export class AudioPlayerService {
         currentTime: this.audio.currentTime,
         duration: this.audio.duration || this.snapshot.duration,
       });
+      this.updateMediaSessionPosition();
     });
 
     audio.addEventListener('ended', () => {
@@ -167,6 +193,7 @@ export class AudioPlayerService {
       }
 
       this.updateSnapshot({ state: 'idle', currentTime: 0 });
+      this.setMediaSessionPlaybackState('none');
     });
 
     audio.addEventListener('error', () => {
@@ -175,7 +202,104 @@ export class AudioPlayerService {
       }
 
       this.updateSnapshot({ state: 'error' });
+      this.setMediaSessionPlaybackState('none');
     });
+
+    audio.addEventListener('pause', () => {
+      if (token !== this.loadToken || !this.audio || !this.audio.paused) {
+        return;
+      }
+
+      if (this.snapshot.state === 'playing') {
+        this.updateSnapshot({ state: 'paused' });
+        this.setMediaSessionPlaybackState('paused');
+      }
+    });
+
+    audio.addEventListener('play', () => {
+      if (token !== this.loadToken) {
+        return;
+      }
+
+      this.updateSnapshot({ state: 'playing' });
+      this.setMediaSessionPlaybackState('playing');
+    });
+  }
+
+  private setupMediaSession(): void {
+    if (!('mediaSession' in navigator)) {
+      return;
+    }
+
+    const artwork = this.mediaArtworkUrl
+      ? [{ src: this.mediaArtworkUrl, sizes: '512x512', type: 'image/jpeg' }]
+      : [];
+
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: this.mediaTitle || 'قصه',
+      artist: this.mediaArtist,
+      album: 'کیدآموز',
+      artwork,
+    });
+
+    navigator.mediaSession.setActionHandler('play', () => {
+      void this.play();
+    });
+    navigator.mediaSession.setActionHandler('pause', () => {
+      this.pause();
+    });
+    navigator.mediaSession.setActionHandler('stop', () => {
+      this.stop();
+    });
+    navigator.mediaSession.setActionHandler('seekto', (details) => {
+      if (typeof details.seekTime === 'number') {
+        this.seekTo(details.seekTime);
+      }
+    });
+  }
+
+  private updateMediaSessionPosition(): void {
+    if (!('mediaSession' in navigator) || !this.audio) {
+      return;
+    }
+
+    const duration = this.audio.duration;
+    if (!Number.isFinite(duration) || duration <= 0) {
+      return;
+    }
+
+    try {
+      navigator.mediaSession.setPositionState({
+        duration,
+        playbackRate: this.audio.playbackRate || 1,
+        position: Math.min(this.audio.currentTime, duration),
+      });
+    } catch {
+      return;
+    }
+  }
+
+  private setMediaSessionPlaybackState(
+    state: MediaSessionPlaybackState,
+  ): void {
+    if (!('mediaSession' in navigator)) {
+      return;
+    }
+
+    navigator.mediaSession.playbackState = state;
+  }
+
+  private clearMediaSession(): void {
+    if (!('mediaSession' in navigator)) {
+      return;
+    }
+
+    navigator.mediaSession.metadata = null;
+    navigator.mediaSession.playbackState = 'none';
+    navigator.mediaSession.setActionHandler('play', null);
+    navigator.mediaSession.setActionHandler('pause', null);
+    navigator.mediaSession.setActionHandler('stop', null);
+    navigator.mediaSession.setActionHandler('seekto', null);
   }
 
   private destroyAudio(): void {
