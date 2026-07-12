@@ -87,20 +87,33 @@ import { PlayerState } from '../../../core/models/player-state.model';
       border-radius: 0 0 12px 12px;
     }
 
-    .playing .eye,
-    .paused .eye {
+    .playing .eye {
       height: 3px;
       border-radius: 2px;
       top: 42px;
     }
 
-    .playing .mouth,
-    .paused .mouth {
+    .playing .mouth {
       width: 16px;
       height: 8px;
       border: 0;
       background: var(--km-bg-night-mid);
       border-radius: 0 0 8px 8px;
+    }
+
+    .paused .eye {
+      height: 10px;
+      border-radius: 50%;
+      top: 38px;
+    }
+
+    .paused .mouth {
+      width: 24px;
+      height: 12px;
+      border: 0;
+      border-bottom: 3px solid var(--km-bg-night-mid);
+      background: transparent;
+      border-radius: 0 0 12px 12px;
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

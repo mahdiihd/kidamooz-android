@@ -27,7 +27,6 @@
         />
       </div>
 
-      <h1 class="km-title">{{ currentStory | storyTitle }}</h1>
       <p class="description">{{ currentStory | storyDescription }}</p>
 
       <app-big-play-button
@@ -37,8 +36,7 @@
 
       <app-moon-mascot [state]="mascotState()"></app-moon-mascot>
 
-      <div class="progress">
-        <span class="time">{{ currentTime() | duration }}</span>
+      <div class="progress-shell">
         <ion-range
           [min]="0"
           [max]="duration() || 1"
@@ -46,12 +44,16 @@
           [attr.aria-label]="'player.progressAria' | translate"
           (ionChange)="onSeek($event)"
         ></ion-range>
-        <span class="time">{{ duration() | duration }}</span>
-      </div>
 
-      <p class="remaining">
-        {{ 'player.remaining' | translate }}: {{ (duration() - currentTime()) | duration }}
-      </p>
+        <div class="progress-meta">
+          <span class="time">{{ currentTime() | duration }}</span>
+          <span class="remaining">
+            {{ 'player.remaining' | translate }}
+            {{ (duration() - currentTime()) | duration }}
+          </span>
+          <span class="time">{{ duration() | duration }}</span>
+        </div>
+      </div>
     </div>
   }
 </ion-content>

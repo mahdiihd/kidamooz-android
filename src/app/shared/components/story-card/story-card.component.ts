@@ -34,7 +34,7 @@ addIcons({ play });
       </div>
       <div class="info">
         <h3>{{ story() | storyTitle }}</h3>
-        <span>{{ story().durationSeconds | duration }}</span>
+        <span class="duration">{{ story().durationSeconds | duration }}</span>
       </div>
     </button>
   `,
@@ -91,10 +91,16 @@ addIcons({ play });
 
     .info {
       padding: 14px 16px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
     }
 
     h3 {
-      margin: 0 0 6px;
+      margin: 0;
+      flex: 1;
+      min-width: 0;
       font-family: var(--km-font-title);
       font-size: 1.1rem;
       font-weight: 400;
@@ -105,7 +111,8 @@ addIcons({ play });
       font-size: 1.2rem;
     }
 
-    span {
+    .duration {
+      flex-shrink: 0;
       color: var(--km-accent-moon-soft);
       font-size: 0.9rem;
       font-weight: 500;
