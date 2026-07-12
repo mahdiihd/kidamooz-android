@@ -93,6 +93,22 @@ npm run cap:android
 - آیکون و splash screen اپ را سفارشی کنید
 - `environment.prod.ts` را برای API واقعی تنظیم کنید
 
+## پوش نوتیفیکیشن (FCM)
+
+بدون `google-services.json` اپ بعد از دادن دسترسی نوتیف کرش می‌کند (Firebase initialize نمی‌شود).
+
+1. در [Firebase Console](https://console.firebase.google.com/) یک پروژه بسازید و اپ Android با package `com.kidamooz.app` اضافه کنید
+2. فایل `google-services.json` را دانلود کنید
+3. آن را اینجا بگذارید: `android/app/google-services.json`
+4. دوباره بیلد و sync کنید:
+
+```bash
+npm run ionic:build
+npm run cap:sync
+```
+
+نمونه ساختار فایل: `android/app/google-services.json.example`
+
 ## تنظیمات محیط (Environment)
 
 | فایل | کاربرد |

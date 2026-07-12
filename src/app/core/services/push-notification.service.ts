@@ -26,21 +26,26 @@ export class PushNotificationService {
   readonly banner = signal<InAppPushBanner | null>(null);
 
   private bannerHideTimer: ReturnType<typeof setTimeout> | null = null;
+  private listenersBound = false;
 
   async initialize(): Promise<void> {
     if (!Capacitor.isNativePlatform() || Capacitor.getPlatform() !== 'android') {
       return;
     }
 
-    await this.ensureChannel();
+    try {
+      await this.ensureChannel();
+      this.bindListeners();
 
-    const permission = await PushNotifications.requestPermissions();
-    if (permission.receive !== 'granted') {
+      const permission = await PushNotifications.requestPermissions();
+      if (permission.receive !== 'granted') {
+        return;
+      }
+
+      await PushNotifications.register();
+    } catch {
       return;
     }
-
-    await PushNotifications.register();
-    this.bindListeners();
   }
 
   dismissBanner(): void {
@@ -57,6 +62,11 @@ export class PushNotificationService {
   }
 
   private bindListeners(): void {
+    if (this.listenersBound) {
+      return;
+    }
+    this.listenersBound = true;
+
     void PushNotifications.addListener('registration', (token: Token) => {
       void this.registerToken(token.value);
     });
