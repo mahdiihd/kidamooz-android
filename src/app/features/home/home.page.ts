@@ -113,9 +113,9 @@ export class HomePage implements OnInit {
 
 
   onStorySelected(story: Story): void {
-
-    void this.router.navigate(['/story', story.id]);
-
+    void this.router.navigate(['/tabs/stories'], {
+      queryParams: { storyId: story.id },
+    });
   }
 
 

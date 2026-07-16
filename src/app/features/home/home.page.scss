@@ -10,7 +10,7 @@
 
 .hero h1 {
   margin: 12px 0 8px;
-  font-size: 2rem;
+  font-size: 1.55rem;
   color: var(--km-accent-moon);
   line-height: 1.2;
 }
@@ -19,14 +19,33 @@
   margin: 0 auto;
   max-width: 280px;
   color: var(--km-text-secondary);
-  font-size: 1rem;
-  line-height: 1.6;
+  font-size: 0.78rem;
+  line-height: 1.5;
 }
 
 .categories {
   margin-bottom: 32px;
+
+  .km-section-title {
+    font-size: 1.15rem;
+    margin-bottom: 12px;
+  }
+
+  .km-vertical-list {
+    gap: 10px;
+  }
 }
 
 .featured {
   margin-bottom: 16px;
+
+  .km-section-title {
+    font-size: 1.15rem;
+    margin-bottom: 12px;
+  }
+
+  .km-horizontal-scroll > * {
+    flex: 0 0 64vw;
+    max-width: 220px;
+  }
 }

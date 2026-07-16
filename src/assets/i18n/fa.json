@@ -24,22 +24,33 @@
     "title": "همه قصه‌ها",
     "allCategories": "همه",
     "empty": "هنوز قصه‌ای اینجا نیست",
-    "minutes": "دقیقه"
+    "minutes": "دقیقه",
+    "favorites": "علاقه‌مندی",
+    "countLabel": "قصه",
+    "download": "دانلود",
+    "playlistTitle": "لیست قصه‌ها"
   },
   "player": {
     "play": "پخش",
     "pause": "توقف",
+    "paused": "متوقف شده",
     "remaining": "باقی‌مانده",
     "back": "برگشت",
     "backHint": "برای ادامه برگرد",
-    "progressAria": "پیشرفت پخش"
+    "progressAria": "پیشرفت پخش",
+    "nowPlaying": "در حال پخش",
+    "continueStories": "ادامه قصه‌ها",
+    "viewAll": "مشاهده همه",
+    "skipBack": "ده ثانیه عقب",
+    "skipForward": "ده ثانیه جلو"
   },
   "states": {
     "loading": "در حال بارگذاری...",
     "error": "اوه! مشکلی پیش اومد",
     "retry": "دوباره امتحان کن",
     "comingSoon": "به زودی",
-    "comingSoonDesc": "این بخش داره آماده می‌شه"
+    "comingSoonDesc": "این بخش داره آماده می‌شه",
+    "cancel": "انصراف"
   },
   "parentGate": {
     "title": "فقط برای بزرگسال‌ها",

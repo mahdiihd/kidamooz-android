@@ -64,6 +64,15 @@ export class AudioCacheService {
     await this.saveIndex(index);
   }
 
+  async isCached(storyId: string, remoteUrl: string): Promise<boolean> {
+    if (!Capacitor.isNativePlatform()) {
+      return false;
+    }
+
+    const entry = await this.findValidEntry(storyId, remoteUrl);
+    return entry != null;
+  }
+
   private async downloadAndStore(storyId: string, remoteUrl: string): Promise<void> {
     const valid = await this.findValidEntry(storyId, remoteUrl);
     if (valid) {

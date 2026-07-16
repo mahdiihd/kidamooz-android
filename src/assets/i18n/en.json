@@ -24,22 +24,33 @@
     "title": "All Stories",
     "allCategories": "All",
     "empty": "No stories here yet",
-    "minutes": "min"
+    "minutes": "min",
+    "favorites": "Favorite",
+    "countLabel": "stories",
+    "download": "Download",
+    "playlistTitle": "Story list"
   },
   "player": {
     "play": "Play",
     "pause": "Pause",
+    "paused": "Paused",
     "remaining": "Remaining",
     "back": "Back",
     "backHint": "Come back to continue",
-    "progressAria": "Playback progress"
+    "progressAria": "Playback progress",
+    "nowPlaying": "Now playing",
+    "continueStories": "Continue stories",
+    "viewAll": "View all",
+    "skipBack": "Skip back 10 seconds",
+    "skipForward": "Skip forward 10 seconds"
   },
   "states": {
     "loading": "Loading...",
     "error": "Oops! Something went wrong",
     "retry": "Try again",
     "comingSoon": "Coming soon",
-    "comingSoonDesc": "This section is on its way"
+    "comingSoonDesc": "This section is on its way",
+    "cancel": "Cancel"
   },
   "parentGate": {
     "title": "Grown-ups only",
