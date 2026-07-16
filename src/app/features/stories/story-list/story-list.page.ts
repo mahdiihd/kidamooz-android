@@ -181,6 +181,7 @@ export class StoryListPage implements OnInit, OnDestroy, ViewWillEnter, ViewWill
   ionViewWillLeave(): void {
     this.lastOpenedStoryId = null;
     this.skipCategorySync = false;
+    this.lastSyncedCategoryKey = null;
     this.audioPlayer.stop();
   }
 

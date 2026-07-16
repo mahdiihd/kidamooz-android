@@ -24,8 +24,8 @@
           [currentTime]="currentTime()"
           [duration]="duration() || current.durationSeconds"
           (playToggle)="onPlayToggle()"
-          (skipBack)="onSkip(10)"
-          (skipForward)="onSkip(-10)"
+          (skipBack)="onSkip(-10)"
+          (skipForward)="onSkip(10)"
           (seek)="onSeek($event)"
         />
       </div>

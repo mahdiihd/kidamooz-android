@@ -9,7 +9,7 @@
       <ion-label>{{ 'tabs.home' | translate }}</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="stories" href="/tabs/stories">
+    <ion-tab-button tab="stories" href="/tabs/stories" (click)="openStoriesTab($event)">
       <ion-icon name="book-outline"></ion-icon>
       <ion-label>{{ 'tabs.stories' | translate }}</ion-label>
     </ion-tab-button>

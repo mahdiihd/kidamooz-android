@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 
 import { PlayerState } from '../../../../core/models/player-state.model';
+import { resolveProgressIconAsset } from '../../../../core/models/progress-icon.model';
 import { Story } from '../../../../core/models/story.model';
 import { StoryControlsComponent } from '../story-controls/story-controls.component';
 import { StoryInfoComponent } from '../story-info/story-info.component';
@@ -45,7 +46,8 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
       <app-story-progress-bar
         [current]="currentTime()"
         [duration]="duration()"
-        [thumbUrl]="story().coverUrl"
+        [iconKey]="story().progressIcon || ''"
+        [thumbUrl]="progressThumbUrl()"
         [ariaLabel]="'player.progressAria' | translate"
         (seek)="seek.emit($event)"
       />
@@ -71,7 +73,7 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
         var(--hero-surface) 100%
       );
       backdrop-filter: blur(16px);
-      overflow: hidden;
+      overflow: visible;
     }
 
     .hero-card__top {
@@ -170,4 +172,8 @@ export class StoryPlayerCardComponent {
   readonly skipBack = output<void>();
   readonly skipForward = output<void>();
   readonly seek = output<number>();
+
+  readonly progressThumbUrl = computed(() =>
+    resolveProgressIconAsset(this.story().progressIcon),
+  );
 }

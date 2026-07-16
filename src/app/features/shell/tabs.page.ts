@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import {
   IonIcon,
   IonLabel,
@@ -31,4 +32,11 @@ addIcons({
   templateUrl: './tabs.page.html',
   styleUrl: './tabs.page.scss',
 })
-export class TabsPage {}
+export class TabsPage {
+  private readonly router = inject(Router);
+
+  openStoriesTab(event: Event): void {
+    event.preventDefault();
+    void this.router.navigateByUrl('/tabs/stories');
+  }
+}
