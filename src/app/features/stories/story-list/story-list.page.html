@@ -1,52 +1,72 @@
 <app-stars-background></app-stars-background>
 
-<app-page-header [title]="'stories.title' | translate"></app-page-header>
+<div class="story-list-shell">
+  <app-page-header
+    [title]="'stories.playlistTitle' | translate"
+    [showBack]="true"
+    backHref="/tabs/home"
+  ></app-page-header>
 
-<ion-content [fullscreen]="true">
-  <div class="km-page story-list-page">
-    <div class="km-chip-row">
-      <button
-        type="button"
-        class="km-chip"
-        [class.active]="selectedCategoryId() === null"
-        (click)="selectCategory(null)"
-      >
-        {{ 'stories.allCategories' | translate }}
-      </button>
+  @if (pageState() === 'loading') {
+    <app-loading-moon></app-loading-moon>
+  }
 
-      @for (category of categories(); track category.id) {
+  @if (pageState() === 'error') {
+    <app-error-state (retry)="loadStories()"></app-error-state>
+  }
+
+  @if (pageState() === 'ready') {
+    @if (activeStory(); as current) {
+      <div class="story-list-shell__player">
+        <app-story-player-panel
+          [story]="current"
+          [playerState]="playerState()"
+          [currentTime]="currentTime()"
+          [duration]="duration() || current.durationSeconds"
+          (playToggle)="onPlayToggle()"
+          (skipBack)="onSkip(10)"
+          (skipForward)="onSkip(-10)"
+          (seek)="onSeek($event)"
+        />
+      </div>
+    }
+
+    <div class="story-list-shell__scroll">
+      <div class="km-chip-row playlist-chips">
         <button
           type="button"
           class="km-chip"
-          [class.active]="selectedCategoryId() === category.id"
-          (click)="selectCategory(category.id)"
+          [class.active]="selectedCategoryId() === null"
+          (click)="selectCategory(null)"
         >
-          {{ category | categoryTitle }}
+          {{ 'stories.allCategories' | translate }}
         </button>
-      }
-    </div>
-
-    @if (pageState() === 'loading') {
-      <app-loading-moon></app-loading-moon>
-    }
-
-    @if (pageState() === 'error') {
-      <app-error-state (retry)="loadStories()"></app-error-state>
-    }
-
-    @if (pageState() === 'ready' && stories().length === 0) {
-      <app-empty-state></app-empty-state>
-    }
-
-    @if (pageState() === 'ready' && stories().length > 0) {
-      <div class="km-vertical-list">
-        @for (story of stories(); track story.id) {
-          <app-story-card
-            [story]="story"
-            (selected)="onStorySelected($event)"
-          ></app-story-card>
+        @for (category of categories(); track category.id) {
+          <button
+            type="button"
+            class="km-chip"
+            [class.active]="selectedCategoryId() === category.id"
+            (click)="selectCategory(category.id)"
+          >
+            {{ category | categoryTitle }}
+          </button>
         }
       </div>
-    }
-  </div>
-</ion-content>
+
+      @if (stories().length === 0) {
+        <app-empty-state></app-empty-state>
+      } @else {
+        <div class="playlist-list">
+          @for (story of stories(); track story.id) {
+            <app-story-list-item
+              [story]="story"
+              [active]="isCurrentStory(story.id)"
+              [playing]="isPlayingStory(story.id)"
+              (selected)="onStorySelected($event)"
+            />
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

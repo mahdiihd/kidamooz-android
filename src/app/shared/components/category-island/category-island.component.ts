@@ -43,14 +43,14 @@ addIcons({ chevronForwardOutline });@Component({
   styles: `
     .island {
       width: 100%;
-      min-height: 96px;
+      min-height: 80px;
       border: 0;
       border-radius: var(--km-radius-lg);
-      padding: 14px 16px;
+      padding: 10px 12px;
       display: flex;
       flex-direction: row;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
       background: linear-gradient(
         135deg,
         color-mix(in srgb, var(--island-color) 22%, transparent),
@@ -72,8 +72,8 @@ addIcons({ chevronForwardOutline });@Component({
 
     .icon-wrap {
       flex-shrink: 0;
-      width: 68px;
-      height: 68px;
+      width: 56px;
+      height: 56px;
       border-radius: 50%;
       padding: 3px;
       background: linear-gradient(145deg, var(--island-color), color-mix(in srgb, var(--island-color) 60%, #1a0f2e));
@@ -97,18 +97,18 @@ addIcons({ chevronForwardOutline });@Component({
 
     .title {
       font-family: var(--km-font-title);
-      font-size: 1.2rem;
+      font-size: 1rem;
       line-height: 1.3;
     }
 
     .hint {
-      font-size: 0.8rem;
+      font-size: 0.72rem;
       color: var(--km-text-secondary);
     }
 
     .arrow {
       flex-shrink: 0;
-      font-size: 1.5rem;
+      font-size: 1.25rem;
       color: var(--island-color);
       opacity: 0.9;
     }

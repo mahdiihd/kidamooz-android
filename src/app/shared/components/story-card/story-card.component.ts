@@ -70,7 +70,19 @@ addIcons({ play });
     }
 
     .featured img {
-      aspect-ratio: 4 / 5;
+      aspect-ratio: 3 / 2;
+    }
+
+    .featured .play-badge {
+      width: 40px;
+      height: 40px;
+      bottom: 8px;
+      inset-inline-start: 8px;
+      font-size: 1rem;
+    }
+
+    .featured .info {
+      padding: 10px 12px 12px;
     }
 
     .play-badge {
@@ -102,20 +114,24 @@ addIcons({ play });
       flex: 1;
       min-width: 0;
       font-family: var(--km-font-title);
-      font-size: 1.1rem;
+      font-size: 0.95rem;
       font-weight: 400;
       line-height: 1.35;
     }
 
     .featured h3 {
-      font-size: 1.2rem;
+      font-size: 0.88rem;
     }
 
     .duration {
       flex-shrink: 0;
       color: var(--km-accent-moon-soft);
-      font-size: 0.9rem;
+      font-size: 0.75rem;
       font-weight: 500;
+    }
+
+    .featured .duration {
+      font-size: 0.72rem;
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

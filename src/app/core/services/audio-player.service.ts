@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 import { PlayerSnapshot } from '../models/player-state.model';
 
@@ -26,8 +26,10 @@ export class AudioPlayerService {
   private readonly snapshotSubject = new BehaviorSubject<PlayerSnapshot>(
     INITIAL_SNAPSHOT
   );
+  private readonly endedSubject = new Subject<string>();
 
   readonly snapshot$ = this.snapshotSubject.asObservable();
+  readonly ended$ = this.endedSubject.asObservable();
 
   get snapshot(): PlayerSnapshot {
     return this.snapshotSubject.value;
@@ -102,9 +104,16 @@ export class AudioPlayerService {
       return;
     }
 
-    this.audio.currentTime = seconds;
-    this.updateSnapshot({ currentTime: seconds });
+    const duration = Number.isFinite(this.audio.duration) ? this.audio.duration : 0;
+    const next = Math.min(Math.max(0, seconds), duration > 0 ? duration : seconds);
+    this.audio.currentTime = next;
+    this.updateSnapshot({ currentTime: next });
     this.updateMediaSessionPosition();
+  }
+
+  seekBy(deltaSeconds: number): void {
+    const base = this.audio?.currentTime ?? this.snapshot.currentTime;
+    this.seekTo(base + deltaSeconds);
   }
 
   stop(): void {
@@ -114,7 +123,9 @@ export class AudioPlayerService {
     }
 
     this.updateSnapshot({
+      storyId: null,
       currentTime: 0,
+      duration: 0,
       state: 'idle',
     });
     this.setMediaSessionPlaybackState('none');
@@ -192,8 +203,12 @@ export class AudioPlayerService {
         return;
       }
 
+      const finishedId = this.snapshot.storyId;
       this.updateSnapshot({ state: 'idle', currentTime: 0 });
       this.setMediaSessionPlaybackState('none');
+      if (finishedId) {
+        this.endedSubject.next(finishedId);
+      }
     });
 
     audio.addEventListener('error', () => {
