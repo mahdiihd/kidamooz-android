@@ -30,6 +30,7 @@ interface StoryApiDto {
   ageMin: number;
   ageMax: number;
   categoryId: string;
+  progressIcon?: string;
   featured?: boolean;
   sortOrder?: number;
   chapters?: ChapterApiDto[];
@@ -94,6 +95,7 @@ export function mapStory(dto: StoryApiDto): Story {
     ageMin: dto.ageMin,
     ageMax: dto.ageMax,
     categoryId: dto.categoryId,
+    progressIcon: dto.progressIcon,
     featured: dto.featured,
     sortOrder: dto.sortOrder,
   };

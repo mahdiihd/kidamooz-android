@@ -85,7 +85,7 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
       padding: 8px 6px 4px 8px;
       box-sizing: border-box;
       direction: ltr;
-      border-radius: 0 0 24px 24px;
+      border-radius: 28px 28px 24px 24px;
       overflow: hidden;
       background: linear-gradient(
         90deg,
