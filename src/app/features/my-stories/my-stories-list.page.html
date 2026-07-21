@@ -1,0 +1,161 @@
+<app-stars-background></app-stars-background>
+
+<app-page-header [title]="'myStories.title' | translate"></app-page-header>
+
+<ion-content [fullscreen]="true" class="my-stories">
+  <div class="km-page my-stories__body">
+    @if (!loggedIn()) {
+      <section class="intro">
+        <h2 class="intro__title">{{ 'myStories.introTitle' | translate }}</h2>
+        <p class="intro__text">{{ 'myStories.intro' | translate }}</p>
+        <h3 class="intro__steps-title">{{ 'myStories.stepsTitle' | translate }}</h3>
+        <ol class="intro__steps">
+          <li>{{ 'myStories.step1' | translate }}</li>
+          <li>{{ 'myStories.step2' | translate }}</li>
+          <li>{{ 'myStories.step3' | translate }}</li>
+          <li>{{ 'myStories.step4' | translate }}</li>
+        </ol>
+      </section>
+
+      <button type="button" class="hero-cta hero-cta--login" (click)="goLogin()">
+        <span class="hero-cta__icon">
+          <ion-icon name="person-outline"></ion-icon>
+        </span>
+        <span class="hero-cta__copy">
+          <strong>{{ 'myStories.loginCta' | translate }}</strong>
+          <small>{{ 'myStories.loginNeeded' | translate }}</small>
+        </span>
+        <span class="hero-cta__chevron" aria-hidden="true">
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        </span>
+      </button>
+    } @else {
+      <section class="name-card">
+        <div class="name-card__head">
+          <span class="name-card__badge" aria-hidden="true">
+            <ion-icon name="person-outline"></ion-icon>
+          </span>
+          <div class="name-card__titles">
+            <h2>{{ 'myStories.displayName' | translate }}</h2>
+            <p>{{ 'myStories.displayNameHint' | translate }}</p>
+          </div>
+        </div>
+
+        <label class="name-card__field">
+          <input
+            type="text"
+            [(ngModel)]="displayName"
+            [attr.aria-label]="'myStories.displayName' | translate"
+            maxlength="200"
+            autocomplete="nickname"
+          />
+        </label>
+
+        @if (nameError()) {
+          <p class="name-card__feedback name-card__feedback--error">
+            {{ ('myStories.' + nameError()) | translate }}
+          </p>
+        } @else if (nameSaved()) {
+          <p class="name-card__feedback name-card__feedback--ok">
+            {{ 'myStories.nameSaved' | translate }}
+          </p>
+        }
+
+        <button
+          type="button"
+          class="name-card__save"
+          [disabled]="savingName()"
+          (click)="saveName()"
+        >
+          <span class="name-card__save-icon">
+            @if (savingName()) {
+              <ion-spinner name="crescent"></ion-spinner>
+            } @else {
+              <ion-icon name="checkmark-outline"></ion-icon>
+            }
+          </span>
+          <span>
+            {{
+              savingName()
+                ? ('myStories.savingName' | translate)
+                : ('myStories.saveName' | translate)
+            }}
+          </span>
+        </button>
+      </section>
+
+      <button
+        type="button"
+        class="hero-cta hero-cta--start"
+        [class.hero-cta--disabled]="!canCreateToday()"
+        [disabled]="!canCreateToday()"
+        (click)="create()"
+      >
+        <span class="hero-cta__icon">
+          <ion-icon name="brush-outline"></ion-icon>
+        </span>
+        <span class="hero-cta__copy">
+          <strong>
+            {{
+              canCreateToday()
+                ? ('myStories.createCta' | translate)
+                : ('myStories.dailyLimitCta' | translate)
+            }}
+          </strong>
+          <small>
+            {{
+              canCreateToday()
+                ? ('myStories.createCtaDesc' | translate)
+                : ('myStories.dailyLimitCtaDesc' | translate)
+            }}
+          </small>
+        </span>
+        @if (canCreateToday()) {
+          <span class="hero-cta__chevron" aria-hidden="true">
+            <ion-icon name="chevron-forward-outline"></ion-icon>
+          </span>
+        }
+      </button>
+
+      @if (dailyLimitNotice()) {
+        <p class="quota-notice">{{ 'myStories.dailyLimit' | translate }}</p>
+      }
+
+      @if (loading()) {
+        <div class="state">
+          <ion-spinner name="crescent"></ion-spinner>
+        </div>
+      } @else if (error()) {
+        <p class="state state--error">{{ 'myStories.loadFailed' | translate }}</p>
+      } @else if (items().length === 0) {
+        <p class="state">{{ 'myStories.empty' | translate }}</p>
+      } @else {
+        <ul class="draft-list">
+          @for (item of items(); track item.id) {
+            <li class="draft-card" (click)="openDraft(item)">
+              @if (item.coverUrl) {
+                <img [src]="item.coverUrl" [alt]="item.titleFa" />
+              }
+              <div class="draft-card__meta">
+                <strong>{{ item.titleFa || ('myStories.untitled' | translate) }}</strong>
+                <span>{{ ('myStories.status.' + statusLabel(item.status)) | translate }}</span>
+              </div>
+            </li>
+          }
+        </ul>
+      }
+
+      <section class="account-footer">
+        <button type="button" class="logout-cta" (click)="logout()">
+          <span class="logout-cta__icon">
+            <ion-icon name="log-out-outline"></ion-icon>
+          </span>
+          <span class="logout-cta__copy">
+            <strong>{{ 'myStories.logout' | translate }}</strong>
+            <small>{{ 'myStories.logoutDesc' | translate }}</small>
+          </span>
+        </button>
+      </section>
+    }
+  </div>
+</ion-content>

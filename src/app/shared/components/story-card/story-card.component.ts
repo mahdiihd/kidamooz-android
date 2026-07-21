@@ -6,13 +6,14 @@ import { play } from 'ionicons/icons';
 import { Story } from '../../../core/models/story.model';
 import { DurationPipe } from '../../pipes/duration.pipe';
 import { StoryTitlePipe } from '../../pipes/story-title.pipe';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 addIcons({ play });
 
 @Component({
   selector: 'app-story-card',
   standalone: true,
-  imports: [DurationPipe, IonIcon, StoryTitlePipe],
+  imports: [DurationPipe, IonIcon, StoryTitlePipe, TranslatePipe],
   template: `
     <button
       type="button"
@@ -33,7 +34,14 @@ addIcons({ play });
         </span>
       </div>
       <div class="info">
-        <h3>{{ story() | storyTitle }}</h3>
+        <div class="info__text">
+          <h3>{{ story() | storyTitle }}</h3>
+          @if (story().authorName) {
+            <span class="author">
+              {{ 'stories.byAuthor' | translate }} {{ story().authorName }}
+            </span>
+          }
+        </div>
         <span class="duration">{{ story().durationSeconds | duration }}</span>
       </div>
     </button>
@@ -109,18 +117,40 @@ addIcons({ play });
       gap: 12px;
     }
 
-    h3 {
-      margin: 0;
+    .info__text {
       flex: 1;
       min-width: 0;
+      display: grid;
+      gap: 0.2rem;
+    }
+
+    h3 {
+      margin: 0;
       font-family: var(--km-font-title);
       font-size: 0.95rem;
       font-weight: 400;
       line-height: 1.35;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .featured h3 {
       font-size: 0.88rem;
+    }
+
+    .author {
+      color: var(--km-accent-moon-soft);
+      font-size: 0.72rem;
+      font-weight: 600;
+      line-height: 1.3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .featured .author {
+      font-size: 0.68rem;
     }
 
     .duration {

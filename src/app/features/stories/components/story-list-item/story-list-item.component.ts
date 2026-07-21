@@ -3,11 +3,12 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 import { Story } from '../../../../core/models/story.model';
 import { DurationPipe } from '../../../../shared/pipes/duration.pipe';
 import { StoryTitlePipe } from '../../../../shared/pipes/story-title.pipe';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-story-list-item',
   standalone: true,
-  imports: [StoryTitlePipe, DurationPipe],
+  imports: [StoryTitlePipe, DurationPipe, TranslatePipe],
   template: `
     <button
       type="button"
@@ -28,6 +29,12 @@ import { StoryTitlePipe } from '../../../../shared/pipes/story-title.pipe';
           {{ story() | storyTitle }}
         </p>
         <p class="item__meta">
+          @if (story().authorName) {
+            <span class="item__author">
+              {{ 'stories.byAuthor' | translate }} {{ story().authorName }}
+            </span>
+            <span class="item__dot" aria-hidden="true">·</span>
+          }
           <span>{{ story().durationSeconds | duration }}</span>
         </p>
       </div>
@@ -145,6 +152,20 @@ import { StoryTitlePipe } from '../../../../shared/pipes/story-title.pipe';
       font-size: 0.76rem;
       color: var(--km-text-secondary);
       font-weight: 600;
+      min-width: 0;
+    }
+
+    .item__author {
+      color: var(--km-accent-moon-soft);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 55%;
+    }
+
+    .item__dot {
+      opacity: 0.55;
+      flex-shrink: 0;
     }
 
     @keyframes eq {

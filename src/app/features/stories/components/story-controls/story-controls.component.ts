@@ -53,7 +53,7 @@ addIcons({ pause, play, playBack, playForward });
       align-items: center;
       justify-content: center;
       gap: 22px;
-      padding: 6px 0 4px;
+      padding: 12px 0 0;
       direction: ltr;
     }
 
@@ -136,6 +136,7 @@ addIcons({ pause, play, playBack, playForward });
 
       ion-icon {
         margin-inline-start: 1px;
+        margin-top: 2px;
       }
 
       &::after {

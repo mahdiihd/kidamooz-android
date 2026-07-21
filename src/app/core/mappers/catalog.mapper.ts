@@ -1,5 +1,6 @@
 import { Category } from '../models/category.model';
 import { Story, StoryChapter, StoryDetail } from '../models/story.model';
+import { sanitizeMediaUrl, sanitizePlainText } from '../utils/sanitize.util';
 
 interface LocalizedTextDto {
   fa?: string;
@@ -33,6 +34,7 @@ interface StoryApiDto {
   progressIcon?: string;
   featured?: boolean;
   sortOrder?: number;
+  authorName?: string | null;
   chapters?: ChapterApiDto[];
 }
 
@@ -51,14 +53,14 @@ function resolveLocalized(
 ): { fa: string; en: string } {
   if (typeof value === 'string') {
     return {
-      fa: value || fallbackFa || '',
-      en: fallbackEn || value || fallbackFa || '',
+      fa: sanitizePlainText(value || fallbackFa || '', 300),
+      en: sanitizePlainText(fallbackEn || value || fallbackFa || '', 300),
     };
   }
 
   return {
-    fa: value?.fa || fallbackFa || value?.en || '',
-    en: value?.en || fallbackEn || value?.fa || '',
+    fa: sanitizePlainText(value?.fa || fallbackFa || value?.en || '', 300),
+    en: sanitizePlainText(value?.en || fallbackEn || value?.fa || '', 300),
   };
 }
 
@@ -70,16 +72,19 @@ export function mapCategory(dto: CategoryApiDto): Category {
     titleFa: title.fa,
     titleEn: title.en,
     slug: dto.slug,
-    iconUrl: dto.iconUrl,
+    iconUrl: sanitizeMediaUrl(dto.iconUrl) ?? '',
     color: dto.color,
   };
 }
 
 export function mapStory(dto: StoryApiDto): Story {
-  const titleFa = dto.titleFa || dto.title || '';
-  const titleEn = dto.titleEn || dto.title || titleFa;
-  const descriptionFa = dto.descriptionFa || dto.description || '';
-  const descriptionEn = dto.descriptionEn || dto.description || descriptionFa;
+  const titleFa = sanitizePlainText(dto.titleFa || dto.title || '', 300);
+  const titleEn = sanitizePlainText(dto.titleEn || dto.title || titleFa, 300);
+  const descriptionFa = sanitizePlainText(dto.descriptionFa || dto.description || '', 2000);
+  const descriptionEn = sanitizePlainText(
+    dto.descriptionEn || dto.description || descriptionFa,
+    2000,
+  );
 
   return {
     id: dto.id,
@@ -89,8 +94,8 @@ export function mapStory(dto: StoryApiDto): Story {
     description: descriptionFa,
     descriptionFa,
     descriptionEn,
-    coverUrl: dto.coverUrl,
-    audioUrl: dto.audioUrl,
+    coverUrl: sanitizeMediaUrl(dto.coverUrl) ?? '',
+    audioUrl: sanitizeMediaUrl(dto.audioUrl) ?? '',
     durationSeconds: dto.durationSeconds,
     ageMin: dto.ageMin,
     ageMax: dto.ageMax,
@@ -98,6 +103,9 @@ export function mapStory(dto: StoryApiDto): Story {
     progressIcon: dto.progressIcon,
     featured: dto.featured,
     sortOrder: dto.sortOrder,
+    authorName: dto.authorName
+      ? sanitizePlainText(dto.authorName, 200)
+      : null,
   };
 }
 
@@ -108,7 +116,7 @@ export function mapChapter(dto: ChapterApiDto): StoryChapter {
     titleFa: title.fa,
     titleEn: title.en,
     startSeconds: dto.startSeconds,
-    imageUrl: dto.imageUrl,
+    imageUrl: sanitizeMediaUrl(dto.imageUrl) ?? '',
   };
 }
 

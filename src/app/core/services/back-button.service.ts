@@ -61,6 +61,11 @@ export class BackButtonService {
       return;
     }
 
+    if (path.startsWith('/my-stories/')) {
+      await this.navCtrl.navigateBack('/tabs/more');
+      return;
+    }
+
     await this.navCtrl.navigateBack('/tabs/home');
   }
 

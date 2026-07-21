@@ -63,7 +63,7 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
     .hero-card {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 2px;
       padding: 0 0 12px;
       border-radius: 28px;
       background: linear-gradient(
@@ -80,9 +80,9 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
       position: relative;
       display: grid;
       grid-template-columns: 168px 1fr;
-      align-items: center;
+      align-items: stretch;
       gap: 12px;
-      padding: 8px 6px 4px 8px;
+      padding: 0 6px 0 0;
       box-sizing: border-box;
       direction: ltr;
       border-radius: 28px 28px 24px 24px;
@@ -113,18 +113,21 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
     .hero-card__cover-wrap {
       position: relative;
       width: 168px;
-      height: 140px;
-      border-radius: 16px;
+      min-height: 148px;
+      align-self: stretch;
+      border-radius: 28px 16px 16px 24px;
       overflow: hidden;
       flex-shrink: 0;
       z-index: 1;
     }
 
     .hero-card__cover {
+      position: absolute;
+      inset: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
-      object-position: center;
+      object-position: center center;
       display: block;
     }
 
@@ -151,14 +154,21 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
       position: relative;
       z-index: 3;
       min-width: 0;
+      align-self: center;
+      padding-block: 10px;
+      padding-inline-end: 4px;
     }
 
     app-story-controls,
     app-story-progress-bar {
       position: relative;
       z-index: 1;
-      padding-inline: 8px;
+      padding-inline: 12px;
       box-sizing: border-box;
+    }
+
+    app-story-controls {
+      margin-top: 4px;
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

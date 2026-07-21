@@ -10,8 +10,8 @@ import {
 import { addIcons } from 'ionicons';
 import {
   bookOutline,
-  ellipsisHorizontalOutline,
   homeOutline,
+  micOutline,
   peopleOutline,
 } from 'ionicons/icons';
 
@@ -22,7 +22,7 @@ addIcons({
   homeOutline,
   bookOutline,
   peopleOutline,
-  ellipsisHorizontalOutline,
+  micOutline,
 });
 
 @Component({

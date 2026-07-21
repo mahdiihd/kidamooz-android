@@ -28,7 +28,7 @@ import { StoryPlayerCardComponent } from '../story-player-card/story-player-card
     }
 
     .player-stage {
-      padding: 0 12px 8px;
+      padding: 0 20px 8px;
       flex-shrink: 0;
     }
   `,

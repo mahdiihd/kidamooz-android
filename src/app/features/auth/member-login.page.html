@@ -1,0 +1,80 @@
+<app-stars-background></app-stars-background>
+
+<app-page-header
+  [title]="'auth.title' | translate"
+  [showBack]="true"
+  backHref="/tabs/more"
+></app-page-header>
+
+<ion-content [fullscreen]="true" class="login-page">
+  <div class="km-page login-page__body">
+    <section class="login-hero" aria-hidden="true">
+      <div class="login-hero__glow"></div>
+      <div class="login-hero__badge">
+        <ion-icon name="person-outline"></ion-icon>
+      </div>
+    </section>
+
+    <h2 class="login-title">{{ 'auth.heading' | translate }}</h2>
+    <p class="hint">{{ 'myStories.loginHint' | translate }}</p>
+
+    <ion-list lines="none" class="form">
+      <ion-item>
+        <ion-input
+          [label]="'auth.mobile' | translate"
+          labelPlacement="stacked"
+          type="tel"
+          inputmode="tel"
+          maxlength="11"
+          [(ngModel)]="mobile"
+          [placeholder]="'auth.mobilePlaceholder' | translate"
+        />
+      </ion-item>
+      <ion-item>
+        <ion-input
+          [label]="'auth.password' | translate"
+          labelPlacement="stacked"
+          type="password"
+          [(ngModel)]="password"
+          [placeholder]="'auth.passwordPlaceholder' | translate"
+        />
+      </ion-item>
+      <ion-item>
+        <ion-input
+          [label]="'auth.displayName' | translate"
+          labelPlacement="stacked"
+          [(ngModel)]="displayName"
+          [placeholder]="'auth.displayNamePlaceholder' | translate"
+        />
+      </ion-item>
+    </ion-list>
+
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+
+    <button
+      type="button"
+      class="hero-cta hero-cta--auth"
+      [disabled]="loading()"
+      (click)="submit()"
+    >
+      <span class="hero-cta__icon">
+        @if (loading()) {
+          <ion-spinner name="crescent"></ion-spinner>
+        } @else {
+          <ion-icon name="log-in-outline"></ion-icon>
+        }
+      </span>
+      <span class="hero-cta__copy">
+        <strong>
+          {{
+            loading()
+              ? ('myStories.submitAuthBusy' | translate)
+              : ('myStories.submitAuth' | translate)
+          }}
+        </strong>
+      </span>
+    </button>
+  </div>
+</ion-content>

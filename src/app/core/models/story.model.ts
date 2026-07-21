@@ -15,6 +15,7 @@ export interface Story {
   progressIcon?: string;
   featured?: boolean;
   sortOrder?: number;
+  authorName?: string | null;
 }
 
 export interface StoryChapter {

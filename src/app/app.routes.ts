@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 
+import { memberAuthGuard, storyCreateGuard } from './core/guards/story-create.guard';
 import { parentGateGuard } from './core/guards/parent-gate.guard';
 
 export const routes: Routes = [
@@ -31,8 +32,8 @@ export const routes: Routes = [
       {
         path: 'more',
         loadComponent: () =>
-          import('./features/placeholders/coming-soon/coming-soon.page').then(
-            (m) => m.ComingSoonPage
+          import('./features/my-stories/my-stories-list.page').then(
+            (m) => m.MyStoriesListPage
           ),
       },
       {
@@ -47,6 +48,19 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/stories/story-player/story-player.page').then(
         (m) => m.StoryPlayerPage
+      ),
+  },
+  {
+    path: 'auth/login',
+    loadComponent: () =>
+      import('./features/auth/member-login.page').then((m) => m.MemberLoginPage),
+  },
+  {
+    path: 'my-stories/create',
+    canActivate: [memberAuthGuard, storyCreateGuard],
+    loadComponent: () =>
+      import('./features/my-stories/create-story-wizard.page').then(
+        (m) => m.CreateStoryWizardPage
       ),
   },
   {

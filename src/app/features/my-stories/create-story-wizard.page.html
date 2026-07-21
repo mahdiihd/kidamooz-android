@@ -1,0 +1,175 @@
+<app-stars-background></app-stars-background>
+
+<app-page-header
+  [title]="'myStories.createTitle' | translate"
+  [showBack]="true"
+  backHref="/tabs/more"
+></app-page-header>
+
+<ion-content [fullscreen]="true" class="create-wizard">
+  <div class="km-page create-wizard__body">
+    @if (error()) {
+      <p class="error">{{ ('myStories.' + error()) | translate }}</p>
+    }
+
+    @switch (step()) {
+      @case ('pick') {
+        <section class="pick" [class.pick--busy]="picking()">
+          <div class="pick__stage" aria-hidden="true">
+            <div class="pick__glow"></div>
+            <div class="pick__frame">
+              <ion-icon name="color-palette-outline" class="pick__art"></ion-icon>
+              <span class="pick__spark pick__spark--a"></span>
+              <span class="pick__spark pick__spark--b"></span>
+              <span class="pick__spark pick__spark--c"></span>
+            </div>
+          </div>
+
+          <h2 class="pick__title">{{ 'myStories.pickTitle' | translate }}</h2>
+          <p class="pick__hint">{{ 'myStories.pickHint' | translate }}</p>
+
+          <div class="pick__sources" role="group" [attr.aria-label]="'myStories.pickTitle' | translate">
+            <button
+              type="button"
+              class="source-tile source-tile--gallery"
+              [disabled]="picking() || error() === 'dailyLimit'"
+              (click)="pickFromGallery()"
+            >
+              <span class="source-tile__icon">
+                <ion-icon name="images-outline"></ion-icon>
+              </span>
+              <span class="source-tile__copy">
+                <strong>{{ 'myStories.gallery' | translate }}</strong>
+                <small>{{ 'myStories.galleryDesc' | translate }}</small>
+              </span>
+            </button>
+
+            <button
+              type="button"
+              class="source-tile source-tile--camera"
+              [disabled]="picking() || error() === 'dailyLimit'"
+              (click)="pickFromCamera()"
+            >
+              <span class="source-tile__icon">
+                <ion-icon name="camera-outline"></ion-icon>
+              </span>
+              <span class="source-tile__copy">
+                <strong>{{ 'myStories.camera' | translate }}</strong>
+                <small>{{ 'myStories.cameraDesc' | translate }}</small>
+              </span>
+            </button>
+          </div>
+
+          @if (picking()) {
+            <p class="pick__status">{{ 'myStories.picking' | translate }}</p>
+          }
+        </section>
+      }
+      @case ('generating') {
+        <div class="state">
+          <ion-spinner name="crescent"></ion-spinner>
+          <p>{{ 'myStories.generating' | translate }}</p>
+        </div>
+      }
+      @case ('review') {
+        @if (draft()?.coverUrl) {
+          <img class="cover" [src]="draft()!.coverUrl!" [alt]="titleFa" />
+        }
+        @if (draft()?.usedFallbackCover) {
+          <p class="hint">{{ 'myStories.fallbackCover' | translate }}</p>
+        }
+        <label class="field">
+          <span>{{ 'myStories.titleLabel' | translate }}</span>
+          <input [(ngModel)]="titleFa" />
+        </label>
+        <label class="field field--description">
+          <span>{{ 'myStories.descriptionLabel' | translate }}</span>
+          <ion-textarea
+            [(ngModel)]="descriptionFa"
+            autoGrow="true"
+            rows="3"
+            [maxlength]="2000"
+          ></ion-textarea>
+        </label>
+        <label class="field field--script">
+          <span>{{ 'myStories.scriptLabel' | translate }}</span>
+          <ion-textarea [(ngModel)]="storyScript" autoGrow="true" rows="10"></ion-textarea>
+        </label>
+        <button type="button" class="hero-cta hero-cta--continue" (click)="saveScriptAndContinue()">
+          <span class="hero-cta__icon">
+            <ion-icon name="book-outline"></ion-icon>
+          </span>
+          <span class="hero-cta__copy">
+            <strong>{{ 'myStories.readyToRead' | translate }}</strong>
+            <small>{{ 'myStories.readyToReadDesc' | translate }}</small>
+          </span>
+          <span class="hero-cta__chevron" aria-hidden="true">
+            <ion-icon name="chevron-forward-outline"></ion-icon>
+          </span>
+        </button>
+      }
+      @case ('record') {
+        <div class="script-box">{{ storyScript }}</div>
+        <p class="hint">{{ 'myStories.recordHint' | translate }}</p>
+        @if (!recording()) {
+          <button type="button" class="hero-cta hero-cta--record" (click)="startRecording()">
+            <span class="hero-cta__icon">
+              <ion-icon name="mic-outline"></ion-icon>
+            </span>
+            <span class="hero-cta__copy">
+              <strong>{{ 'myStories.startRecord' | translate }}</strong>
+              <small>{{ 'myStories.startRecordDesc' | translate }}</small>
+            </span>
+            <span class="hero-cta__chevron" aria-hidden="true">
+              <ion-icon name="chevron-forward-outline"></ion-icon>
+            </span>
+          </button>
+        } @else {
+          <div class="record-live" aria-live="polite">
+            <span class="record-live__pulse"></span>
+            <p>{{ 'myStories.recording' | translate }}</p>
+          </div>
+          <button type="button" class="hero-cta hero-cta--stop" (click)="stopRecordingAndUpload()">
+            <span class="hero-cta__icon">
+              <ion-icon name="stop-circle-outline"></ion-icon>
+            </span>
+            <span class="hero-cta__copy">
+              <strong>{{ 'myStories.stopRecord' | translate }}</strong>
+              <small>{{ 'myStories.stopRecordDesc' | translate }}</small>
+            </span>
+          </button>
+        }
+      }
+      @case ('saving') {
+        <div class="state">
+          <ion-spinner name="crescent"></ion-spinner>
+          <p>{{ 'myStories.saving' | translate }}</p>
+        </div>
+      }
+      @case ('done') {
+        @if (draft()?.coverUrl) {
+          <img class="cover" [src]="draft()!.coverUrl!" [alt]="titleFa" />
+        }
+        <h2 class="done-title">{{ titleFa }}</h2>
+        <p class="hint">{{ 'myStories.done' | translate }}</p>
+        @if (previewUrl()) {
+          <audio controls [src]="previewUrl()"></audio>
+        } @else if (draft()?.audioUrl) {
+          <audio controls [src]="draft()!.audioUrl!"></audio>
+        }
+        <button type="button" class="hero-cta hero-cta--back" (click)="back()">
+          <span class="hero-cta__icon">
+            <ion-icon name="arrow-back-outline"></ion-icon>
+          </span>
+          <span class="hero-cta__copy">
+            <strong>{{ 'myStories.backToList' | translate }}</strong>
+            <small>{{ 'myStories.backToListDesc' | translate }}</small>
+          </span>
+          <span class="hero-cta__chevron" aria-hidden="true">
+            <ion-icon name="chevron-forward-outline"></ion-icon>
+          </span>
+        </button>
+      }
+    }
+  </div>
+</ion-content>

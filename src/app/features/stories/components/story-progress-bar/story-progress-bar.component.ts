@@ -87,7 +87,7 @@ const DISC_SIZE = 16;
     }
 
     .progress {
-      padding: 20px 6px 0;
+      padding: 22px 6px 0;
       direction: ltr;
       overflow: visible;
     }

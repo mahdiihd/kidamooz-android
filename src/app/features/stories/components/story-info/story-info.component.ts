@@ -28,6 +28,12 @@ addIcons({ timeOutline, volumeHighOutline });
 
       <h2 class="info__title">{{ story() | storyTitle }}</h2>
 
+      @if (story().authorName) {
+        <span class="info__author">
+          {{ 'stories.byAuthor' | translate }} {{ story().authorName }}
+        </span>
+      }
+
       <span class="info__duration">
         <ion-icon name="time-outline" aria-hidden="true"></ion-icon>
         {{ story().durationSeconds | duration }}
@@ -44,8 +50,8 @@ addIcons({ timeOutline, volumeHighOutline });
       gap: 10px;
       min-width: 0;
       width: 100%;
-      height: 140px;
-      max-height: 140px;
+      height: 160px;
+      max-height: 160px;
       padding: 4px 4px 4px 0;
       direction: rtl;
       text-align: start;
@@ -88,6 +94,18 @@ addIcons({ timeOutline, volumeHighOutline });
       overflow: hidden;
       text-overflow: ellipsis;
       max-width: 100%;
+    }
+
+    .info__author {
+      margin: 0;
+      max-width: 100%;
+      color: var(--km-accent-moon-soft);
+      font-size: 0.72rem;
+      font-weight: 700;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .info__duration {
