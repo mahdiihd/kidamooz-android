@@ -44,6 +44,16 @@
     margin-bottom: 12px;
   }
 
+  .km-horizontal-scroll {
+    padding-inline: 20px;
+    scroll-padding-inline: 20px;
+
+    &::after {
+      content: '';
+      flex: 0 0 20px;
+    }
+  }
+
   .km-horizontal-scroll > * {
     flex: 0 0 64vw;
     max-width: 220px;

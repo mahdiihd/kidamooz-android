@@ -78,7 +78,9 @@ addIcons({ play });
     }
 
     .featured img {
-      aspect-ratio: 3 / 2;
+      aspect-ratio: unset;
+      height: calc(min(64vw, 220px) * 2 / 3 + 30px);
+      object-fit: cover;
     }
 
     .featured .play-badge {

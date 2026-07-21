@@ -444,9 +444,13 @@ html[dir='rtl'] .hero-cta__chevron ion-icon {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.35;
 }
 
 .draft-card__meta span {
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   opacity: 0.7;
+  line-height: 1.35;
 }

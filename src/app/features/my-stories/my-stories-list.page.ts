@@ -55,6 +55,7 @@ export class MyStoriesListPage implements OnInit, ViewWillEnter {
   private listSub?: Subscription;
   private quotaSub?: Subscription;
   private loadGeneration = 0;
+  private wasLoggedIn: boolean | null = null;
 
   readonly items = signal<StoryDraft[]>([]);
   readonly loading = signal(true);
@@ -69,7 +70,27 @@ export class MyStoriesListPage implements OnInit, ViewWillEnter {
 
   constructor() {
     effect(() => {
+      const isLoggedIn = this.auth.loggedIn();
       this.displayName = this.auth.profile()?.displayName ?? '';
+
+      if (this.wasLoggedIn === null) {
+        this.wasLoggedIn = isLoggedIn;
+        return;
+      }
+
+      if (isLoggedIn && !this.wasLoggedIn) {
+        this.wasLoggedIn = true;
+        this.reload();
+        return;
+      }
+
+      if (!isLoggedIn && this.wasLoggedIn) {
+        this.wasLoggedIn = false;
+        this.resetGuestState();
+        return;
+      }
+
+      this.wasLoggedIn = isLoggedIn;
     });
 
     this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
