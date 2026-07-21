@@ -70,6 +70,7 @@
     "backToList": "Back to Storytime",
     "backToListDesc": "Go to your stories list",
     "micDenied": "Microphone permission denied",
+    "recordFailed": "Could not start recording. Try again",
     "pickFailed": "Could not pick image",
     "generateFailed": "Story generation failed",
     "saveFailed": "Could not save text",

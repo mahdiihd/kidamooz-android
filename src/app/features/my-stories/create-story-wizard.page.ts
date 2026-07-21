@@ -126,8 +126,9 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
     try {
       await this.recorder.start();
       this.recording.set(true);
-    } catch {
-      this.error.set('micDenied');
+    } catch (err) {
+      const message = err instanceof Error ? err.message : '';
+      this.error.set(message === 'MIC_DENIED' ? 'micDenied' : 'recordFailed');
     }
   }
 
