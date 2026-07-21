@@ -439,6 +439,33 @@ html[dir='rtl'] .hero-cta--back .hero-cta__icon ion-icon {
   box-shadow: 0 16px 34px rgba(239, 71, 111, 0.18);
 }
 
+.hero-cta--send {
+  border-color: rgba(255, 209, 102, 0.35);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 209, 102, 0.22),
+    rgba(255, 255, 255, 0.06)
+  );
+  box-shadow: 0 14px 32px rgba(255, 209, 102, 0.18);
+}
+
+.hero-cta--send .hero-cta__icon {
+  color: #2a1545;
+  background: linear-gradient(145deg, #ffe8a3, #ffd166);
+  box-shadow: 0 8px 20px rgba(255, 209, 102, 0.3);
+  animation: km-pulse 2.4s ease-in-out infinite;
+}
+
+.hero-cta--send:hover,
+.hero-cta--send:focus-visible {
+  border-color: rgba(255, 209, 102, 0.6);
+  box-shadow: 0 18px 36px rgba(255, 209, 102, 0.28);
+}
+
+html[dir='rtl'] .hero-cta--send .hero-cta__icon ion-icon {
+  transform: translateX(-1px) rotate(-20deg);
+}
+
 .hero-cta--back .hero-cta__icon {
   color: #2a1545;
   background: linear-gradient(145deg, #e8d0ff, #d4a5f9);
@@ -448,6 +475,83 @@ html[dir='rtl'] .hero-cta--back .hero-cta__icon ion-icon {
 .hero-cta--back:focus-visible {
   border-color: rgba(212, 165, 249, 0.55);
   box-shadow: 0 16px 34px rgba(212, 165, 249, 0.18);
+}
+
+.audio-preview {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 0.25rem;
+}
+
+.audio-preview__title {
+  margin: 0;
+  font-family: var(--km-font-title);
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: var(--km-accent-moon);
+}
+
+.audio-preview__hint {
+  margin: 0 0 0.75rem;
+}
+
+.audio-preview__player {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.85rem 0.95rem;
+  border-radius: var(--km-radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.12),
+    rgba(255, 255, 255, 0.04)
+  );
+  margin-bottom: 0.85rem;
+}
+
+.audio-preview__player audio {
+  margin: 0;
+}
+
+.audio-preview__duration {
+  color: var(--km-text-secondary);
+  font-size: 0.78rem;
+}
+
+.ghost-cta {
+  appearance: none;
+  width: 100%;
+  min-height: 3rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--km-radius-md);
+  background: transparent;
+  color: var(--km-text-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  cursor: pointer;
+  font: inherit;
+  margin: 0 0 1rem;
+  transition:
+    color 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease;
+}
+
+.ghost-cta ion-icon {
+  font-size: 1.1rem;
+}
+
+.ghost-cta:active {
+  transform: scale(0.985);
+}
+
+.ghost-cta:hover,
+.ghost-cta:focus-visible {
+  color: var(--km-text-primary);
+  border-color: rgba(255, 248, 240, 0.28);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .record-live {
