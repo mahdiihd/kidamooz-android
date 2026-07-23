@@ -132,7 +132,11 @@
       } @else {
         <ul class="draft-list">
           @for (item of items(); track item.id) {
-            <li class="draft-card" (click)="openDraft(item)">
+            <li
+              class="draft-card"
+              [class.draft-card--deleted]="item.status === 'deleted'"
+              (click)="openDraft(item)"
+            >
               @if (item.coverUrl) {
                 <img [src]="item.coverUrl" [alt]="item.titleFa" />
               }
@@ -140,6 +144,16 @@
                 <strong>{{ item.titleFa || ('myStories.untitled' | translate) }}</strong>
                 <span>{{ ('myStories.status.' + statusLabel(item.status)) | translate }}</span>
               </div>
+              @if (item.canRemoveFromProfile) {
+                <button
+                  type="button"
+                  class="draft-card__remove"
+                  (click)="removeFromProfile(item, $event)"
+                  [attr.aria-label]="'myStories.removeFromProfile' | translate"
+                >
+                  <ion-icon name="trash-outline"></ion-icon>
+                </button>
+              }
             </li>
           }
         </ul>

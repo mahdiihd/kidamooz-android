@@ -62,5 +62,8 @@ export function sanitizeStoryDraft(raw: StoryDraft | Record<string, unknown>): S
       null,
     createdAt: String(draft.createdAt ?? draft['CreatedAt'] ?? ''),
     updatedAt: String(draft.updatedAt ?? draft['UpdatedAt'] ?? ''),
+    canRemoveFromProfile: Boolean(
+      draft.canRemoveFromProfile ?? draft['CanRemoveFromProfile'] ?? false
+    ),
   };
 }

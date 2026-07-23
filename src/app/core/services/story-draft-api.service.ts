@@ -101,4 +101,8 @@ export class StoryDraftApiService {
       .post<StoryDraft>(`${this.base}/${id}/submit`, {})
       .pipe(map(sanitizeStoryDraft));
   }
+
+  removeFromProfile(id: string): Observable<void> {
+    return this.api.delete<void>(`${this.base}/${id}`);
+  }
 }

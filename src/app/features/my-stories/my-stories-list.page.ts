@@ -11,6 +11,7 @@ import {
   chevronForwardOutline,
   logOutOutline,
   personOutline,
+  trashOutline,
 } from 'ionicons/icons';
 import { Subscription } from 'rxjs';
 
@@ -27,6 +28,7 @@ addIcons({
   chevronForwardOutline,
   logOutOutline,
   personOutline,
+  trashOutline,
 });
 
 @Component({
@@ -217,8 +219,26 @@ export class MyStoriesListPage implements OnInit, ViewWillEnter {
   }
 
   openDraft(draft: StoryDraft): void {
+    if (draft.status === 'deleted' || draft.status === 'published') {
+      return;
+    }
     void this.router.navigate(['/my-stories/create'], {
       queryParams: { draftId: draft.id },
+    });
+  }
+
+  removeFromProfile(draft: StoryDraft, event: Event): void {
+    event.stopPropagation();
+    if (!draft.canRemoveFromProfile) {
+      return;
+    }
+    this.api.removeFromProfile(draft.id).subscribe({
+      next: () => {
+        this.items.update((items) => items.filter((item) => item.id !== draft.id));
+      },
+      error: () => {
+        this.error.set('removeFailed');
+      },
     });
   }
 
@@ -234,6 +254,8 @@ export class MyStoriesListPage implements OnInit, ViewWillEnter {
         return 'rejected';
       case 'ready':
         return 'ready';
+      case 'deleted':
+        return 'deleted';
       default:
         return status;
     }

@@ -95,8 +95,11 @@
       "published": "منتشر شده",
       "rejected": "رد شده",
       "generating": "در حال ساخت",
-      "failed": "ناموفق"
-    }
+      "failed": "ناموفق",
+      "deleted": "حذف‌شده از کاتالوگ"
+    },
+    "removeFromProfile": "حذف از پروفایل من",
+    "removeFailed": "حذف از پروفایل ناموفق بود"
   },
   "auth": {
     "title": "ورود",

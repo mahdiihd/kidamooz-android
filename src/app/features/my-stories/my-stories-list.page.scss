@@ -409,7 +409,7 @@ html[dir='rtl'] .hero-cta__chevron ion-icon {
 
 .draft-card {
   display: grid;
-  grid-template-columns: 72px 1fr;
+  grid-template-columns: 72px 1fr auto;
   gap: 0.75rem;
   align-items: center;
   padding: 0.65rem;
@@ -419,6 +419,27 @@ html[dir='rtl'] .hero-cta__chevron ion-icon {
   transition:
     transform 160ms ease,
     border-color 160ms ease;
+}
+
+.draft-card--deleted {
+  opacity: 0.78;
+  border-color: rgba(255, 138, 128, 0.28);
+}
+
+.draft-card__remove {
+  width: 2.35rem;
+  height: 2.35rem;
+  border: 0;
+  border-radius: 0.85rem;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 138, 128, 0.12);
+  color: #ff8a80;
+  cursor: pointer;
+}
+
+.draft-card__remove ion-icon {
+  font-size: 1.05rem;
 }
 
 .draft-card:active {

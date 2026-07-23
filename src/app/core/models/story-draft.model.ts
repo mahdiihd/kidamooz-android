@@ -29,6 +29,7 @@ export interface StoryDraft {
   submittedAt: string | null;
   createdAt: string;
   updatedAt: string;
+  canRemoveFromProfile: boolean;
 }
 
 export interface StoryDraftQuota {
