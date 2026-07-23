@@ -72,6 +72,14 @@ export class StoryCatalogStore {
     return all.filter((story) => story.categoryId === categoryId);
   }
 
+  getStoriesForAge(age: number | null, categoryId: string | null = null): StoryDetail[] {
+    const base = this.getStoriesByCategory(categoryId);
+    if (age == null) {
+      return base;
+    }
+    return base.filter((story) => story.ageMin <= age && story.ageMax >= age);
+  }
+
   getStoryById(id: string): StoryDetail | undefined {
     return this.stories().find((story) => story.id === id);
   }

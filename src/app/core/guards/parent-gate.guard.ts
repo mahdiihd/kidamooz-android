@@ -1,30 +1,19 @@
 import { Injectable, inject } from '@angular/core';
 import { CanActivateFn } from '@angular/router';
 
-import { environment } from '../../../environments/environment';
+import { ParentSettingsService } from '../services/parent-settings.service';
 
 @Injectable({ providedIn: 'root' })
 export class ParentGateService {
-  private passed = false;
+  private readonly settings = inject(ParentSettingsService);
 
   isPassed(): boolean {
-    return this.passed;
-  }
-
-  verify(answer: number, expected: number): boolean {
-    this.passed = answer === expected;
-    return this.passed;
+    return this.settings.isUnlocked();
   }
 
   reset(): void {
-    this.passed = false;
+    this.settings.lock();
   }
 }
 
-export const parentGateGuard: CanActivateFn = () => {
-  if (!environment.features.parents) {
-    return true;
-  }
-
-  return inject(ParentGateService).isPassed();
-};
+export const parentGateGuard: CanActivateFn = () => true;

@@ -8,6 +8,13 @@
       <app-moon-mascot state="idle"></app-moon-mascot>
       <h1 class="km-title">{{ greeting() }}</h1>
       <p class="hero-sub">{{ 'home.subtitle' | translate }}</p>
+      @if (engagement(); as eng) {
+        <p class="streak-line">
+          {{ 'home.listenStreak' | translate }}: {{ eng.listenStreak }}
+          ·
+          {{ 'home.createStreak' | translate }}: {{ eng.createStreak }}
+        </p>
+      }
     </section>
 
     @if (pageState() === 'loading') {
@@ -19,6 +26,41 @@
     }
 
     @if (pageState() === 'ready') {
+      @if (storyOfDay(); as daily) {
+        <section class="daily">
+          <h2 class="km-section-title">{{ 'home.storyOfDay' | translate }}</h2>
+          <button type="button" class="daily-card" (click)="openStoryOfDay()">
+            @if (daily.coverUrl) {
+              <img [src]="daily.coverUrl" [alt]="daily.titleFa" />
+            }
+            <div>
+              <strong>{{ daily.titleFa }}</strong>
+              <span>{{ 'home.tapToListen' | translate }}</span>
+            </div>
+          </button>
+        </section>
+      }
+
+      @if (continueStory(); as cont) {
+        <section class="continue">
+          <h2 class="km-section-title">{{ 'home.continueTitle' | translate }}</h2>
+          <button type="button" class="continue-card" (click)="openContinue()">
+            <img [src]="cont.coverUrl" [alt]="cont.titleFa" />
+            <span>{{ cont.titleFa }}</span>
+          </button>
+        </section>
+      }
+
+      @if (challenge(); as ch) {
+        <section class="challenge">
+          <h2 class="km-section-title">{{ 'home.challengeTitle' | translate }}</h2>
+          <button type="button" class="challenge-card" (click)="openChallenge()">
+            <strong>{{ ch.titleFa }}</strong>
+            <span>{{ ch.descriptionFa }}</span>
+          </button>
+        </section>
+      }
+
       <section class="categories">
         <h2 class="km-section-title">{{ 'home.categoriesTitle' | translate }}</h2>
         <div class="km-vertical-list">

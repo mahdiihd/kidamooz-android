@@ -27,6 +27,8 @@ export class StoryDraftApiService {
           (raw.nextAvailableAt as string | null | undefined) ??
           (raw['NextAvailableAt'] as string | null | undefined) ??
           null,
+        planTier: String(raw.planTier ?? raw['PlanTier'] ?? 'free'),
+        isPlus: Boolean(raw.isPlus ?? raw['IsPlus']),
       }))
     );
   }
@@ -45,7 +47,12 @@ export class StoryDraftApiService {
 
   update(
     id: string,
-    body: { titleFa?: string; descriptionFa?: string; storyScript?: string }
+    body: {
+      titleFa?: string;
+      descriptionFa?: string;
+      storyScript?: string;
+      challengeTag?: string | null;
+    }
   ): Observable<StoryDraft> {
     return this.api
       .patch<StoryDraft>(`${this.base}/${id}`, {
@@ -56,7 +63,20 @@ export class StoryDraftApiService {
             : sanitizePlainText(body.descriptionFa, 2000),
         storyScript:
           body.storyScript == null ? undefined : sanitizePlainText(body.storyScript, 8000),
+        challengeTag: body.challengeTag,
       })
+      .pipe(map(sanitizeStoryDraft));
+  }
+
+  rewrite(id: string, mode: 'polish' | 'shorter' = 'polish'): Observable<StoryDraft> {
+    return this.api
+      .post<StoryDraft>(`${this.base}/${id}/rewrite`, { mode })
+      .pipe(map(sanitizeStoryDraft));
+  }
+
+  regenerateCover(id: string): Observable<StoryDraft> {
+    return this.api
+      .post<StoryDraft>(`${this.base}/${id}/cover/regenerate`, {})
       .pipe(map(sanitizeStoryDraft));
   }
 

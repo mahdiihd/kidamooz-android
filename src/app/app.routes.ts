@@ -25,9 +25,7 @@ export const routes: Routes = [
         path: 'parents',
         canActivate: [parentGateGuard],
         loadComponent: () =>
-          import('./features/placeholders/coming-soon/coming-soon.page').then(
-            (m) => m.ComingSoonPage
-          ),
+          import('./features/parents/parents.page').then((m) => m.ParentsPage),
       },
       {
         path: 'more',

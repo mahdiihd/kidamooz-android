@@ -78,6 +78,20 @@
         @if (draft()?.usedFallbackCover) {
           <p class="hint">{{ 'myStories.fallbackCover' | translate }}</p>
         }
+        <div class="ai-actions">
+          <button type="button" class="ai-btn" [disabled]="aiBusy()" (click)="rewrite('polish')">
+            {{ 'myStories.rewrite' | translate }}
+          </button>
+          <button type="button" class="ai-btn" [disabled]="aiBusy()" (click)="rewrite('shorter')">
+            {{ 'myStories.shorten' | translate }}
+          </button>
+          <button type="button" class="ai-btn" [disabled]="aiBusy()" (click)="regenerateCover()">
+            {{ 'myStories.newCover' | translate }}
+          </button>
+        </div>
+        @if (aiBusy()) {
+          <p class="hint">{{ 'myStories.aiBusy' | translate }}</p>
+        }
         <label class="field">
           <span>{{ 'myStories.titleLabel' | translate }}</span>
           <input [(ngModel)]="titleFa" />

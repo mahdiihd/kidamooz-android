@@ -36,17 +36,25 @@
         <button
           type="button"
           class="km-chip"
-          [class.active]="selectedCategoryId() === null"
-          (click)="selectCategory(null)"
+          [class.active]="selectedCategoryId() === null && !favoritesOnly()"
+          (click)="favoritesOnly.set(false); selectCategory(null)"
         >
           {{ 'stories.allCategories' | translate }}
+        </button>
+        <button
+          type="button"
+          class="km-chip"
+          [class.active]="favoritesOnly()"
+          (click)="toggleFavoritesFilter()"
+        >
+          {{ 'stories.favorites' | translate }}
         </button>
         @for (category of categories(); track category.id) {
           <button
             type="button"
             class="km-chip"
-            [class.active]="selectedCategoryId() === category.id"
-            (click)="selectCategory(category.id)"
+            [class.active]="!favoritesOnly() && selectedCategoryId() === category.id"
+            (click)="favoritesOnly.set(false); selectCategory(category.id)"
           >
             {{ category | categoryTitle }}
           </button>
@@ -58,12 +66,22 @@
       } @else {
         <div class="playlist-list">
           @for (story of stories(); track story.id) {
-            <app-story-list-item
-              [story]="story"
-              [active]="isCurrentStory(story.id)"
-              [playing]="isPlayingStory(story.id)"
-              (selected)="onStorySelected($event)"
-            />
+            <div class="playlist-row">
+              <app-story-list-item
+                [story]="story"
+                [active]="isCurrentStory(story.id)"
+                [playing]="isPlayingStory(story.id)"
+                (selected)="onStorySelected($event)"
+              />
+              <button
+                type="button"
+                class="fav-toggle"
+                [class.fav-toggle--on]="isFavorite(story.id)"
+                (click)="toggleFavorite(story, $event)"
+              >
+                ♥
+              </button>
+            </div>
           }
         </div>
       }

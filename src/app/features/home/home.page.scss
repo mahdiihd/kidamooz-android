@@ -23,6 +23,60 @@
   line-height: 1.5;
 }
 
+.streak-line {
+  margin: 10px 0 0;
+  color: var(--km-accent-moon-soft);
+  font-size: 0.75rem;
+}
+
+.daily,
+.continue,
+.challenge {
+  margin-bottom: 24px;
+}
+
+.daily-card,
+.continue-card,
+.challenge-card {
+  width: 100%;
+  border: 0;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.08);
+  color: inherit;
+  text-align: start;
+  padding: 12px;
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 12px;
+  align-items: center;
+  cursor: pointer;
+}
+
+.challenge-card {
+  grid-template-columns: 1fr;
+}
+
+.daily-card img,
+.continue-card img {
+  width: 72px;
+  height: 72px;
+  border-radius: 14px;
+  object-fit: cover;
+}
+
+.daily-card strong,
+.challenge-card strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.daily-card span,
+.challenge-card span {
+  color: var(--km-text-secondary);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
 .categories {
   margin-bottom: 32px;
 

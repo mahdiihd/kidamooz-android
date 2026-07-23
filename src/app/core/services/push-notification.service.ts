@@ -53,6 +53,16 @@ export class PushNotificationService {
     this.banner.set(null);
   }
 
+  showEngagementBanner(title: string, body: string, storyId?: string): void {
+    this.clearBannerTimer();
+    this.banner.set({
+      title: title.trim() || 'کیدآموز',
+      body: body.trim(),
+      storyId,
+    });
+    this.bannerHideTimer = setTimeout(() => this.dismissBanner(), 5200);
+  }
+
   openBannerStory(): void {
     const storyId = this.banner()?.storyId;
     this.dismissBanner();

@@ -18,6 +18,7 @@ export interface StoryDraft {
   titleFa: string;
   descriptionFa: string;
   storyScript: string;
+  challengeTag: string | null;
   audioUrl: string | null;
   durationSeconds: number | null;
   publishedStoryId: string | null;
@@ -35,4 +36,6 @@ export interface StoryDraftQuota {
   dailyLimit: number;
   usedToday: number;
   nextAvailableAt: string | null;
+  planTier: string;
+  isPlus: boolean;
 }

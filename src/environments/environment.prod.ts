@@ -3,7 +3,7 @@ export const environment = {
   apiBaseUrl: 'https://api.kidingo.ir',
   useMock: false,
   features: {
-    parents: false,
+    parents: true,
     psychology: false,
     more: false,
   },

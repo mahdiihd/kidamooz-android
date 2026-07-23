@@ -1,0 +1,540 @@
+.parents {
+  --background: transparent;
+}
+
+.parents__body {
+  padding-top: 12px;
+  padding-bottom: 40px;
+}
+
+.feedback {
+  margin: 0 0 1rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: var(--km-radius-md);
+  font-size: 0.86rem;
+  line-height: 1.55;
+  text-align: center;
+}
+
+.feedback--error {
+  border: 1px solid rgba(255, 138, 128, 0.28);
+  background: rgba(255, 138, 128, 0.12);
+  color: #ff8a80;
+}
+
+.intro {
+  margin: 0 0 1.25rem;
+  padding: 1rem 1.1rem;
+  border-radius: var(--km-radius-lg);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.lock-intro {
+  text-align: center;
+  display: grid;
+  justify-items: center;
+  gap: 0.35rem;
+}
+
+.intro__title {
+  margin: 0 0 0.55rem;
+  font-family: var(--km-font-title);
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: var(--km-accent-moon);
+}
+
+.intro__text {
+  margin: 0;
+  line-height: 1.85;
+  color: var(--km-text-secondary);
+}
+
+.panel {
+  margin: 0 0 1.1rem;
+  padding: 1rem 1.05rem 1.05rem;
+  border-radius: var(--km-radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.12),
+    rgba(255, 255, 255, 0.04)
+  );
+  box-shadow: 0 12px 28px rgba(8, 2, 20, 0.22);
+}
+
+.panel__head {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.85rem;
+  align-items: center;
+  margin-bottom: 0.95rem;
+}
+
+.panel__badge {
+  width: 2.85rem;
+  height: 2.85rem;
+  border-radius: 1rem;
+  display: grid;
+  place-items: center;
+  color: #2a1545;
+}
+
+.panel__badge ion-icon {
+  font-size: 1.3rem;
+}
+
+.panel__badge--lock,
+.panel__badge--child {
+  background: linear-gradient(145deg, #e8d0ff, #d4a5f9);
+}
+
+.panel__badge--heart {
+  background: linear-gradient(145deg, #ffc2d4, #ff7aa2);
+}
+
+.panel__badge--plus {
+  background: linear-gradient(145deg, #ffe8a3, #ffd166);
+}
+
+.panel__titles h2 {
+  margin: 0 0 0.2rem;
+  font-family: var(--km-font-title);
+  font-size: 1.1rem;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.panel__titles p {
+  margin: 0;
+  color: var(--km-text-secondary);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.panel__empty {
+  margin: 0 0 0.85rem;
+  color: var(--km-text-secondary);
+  font-size: 0.86rem;
+  line-height: 1.6;
+}
+
+.panel__field input {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--km-radius-md);
+  padding: 0.85rem 0.95rem;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--km-text-primary);
+  font: inherit;
+  outline: none;
+  transition: border-color 160ms ease;
+}
+
+.panel__field input:focus {
+  border-color: rgba(212, 165, 249, 0.55);
+}
+
+.panel__field input::placeholder {
+  color: rgba(255, 248, 240, 0.45);
+}
+
+.panel__save {
+  appearance: none;
+  width: 100%;
+  margin-top: 0.85rem;
+  min-height: 3.1rem;
+  border: 1px solid rgba(212, 165, 249, 0.35);
+  border-radius: var(--km-radius-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  cursor: pointer;
+  color: var(--km-text-primary);
+  font-family: var(--km-font-title);
+  font-size: 1.05rem;
+  background: linear-gradient(
+    135deg,
+    rgba(232, 208, 255, 0.22),
+    rgba(255, 255, 255, 0.06)
+  );
+  transition:
+    transform 160ms ease,
+    opacity 160ms ease;
+}
+
+.panel__save:active {
+  transform: scale(0.985);
+}
+
+.panel__save-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  display: grid;
+  place-items: center;
+}
+
+.panel__save-icon ion-icon {
+  width: 1.2rem;
+  height: 1.2rem;
+  font-size: 1.2rem;
+  color: var(--km-accent-lavender);
+}
+
+.add-row {
+  display: grid;
+  grid-template-columns: 1fr 5.25rem;
+  gap: 0.55rem;
+  margin-bottom: 0.85rem;
+}
+
+.panel__field--grow,
+.panel__field--age {
+  margin: 0;
+}
+
+.panel__field + .hero-cta--plus {
+  margin-top: 1.25rem;
+}
+
+.hero-cta {
+  appearance: none;
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: var(--km-radius-lg);
+  min-height: var(--km-touch-min);
+  padding: 1rem 1.05rem;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.95rem;
+  text-align: start;
+  cursor: pointer;
+  color: var(--km-text-primary);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.14),
+    rgba(255, 255, 255, 0.05)
+  );
+  box-shadow: 0 12px 30px rgba(8, 2, 20, 0.28);
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    opacity 160ms ease;
+}
+
+.hero-cta:active {
+  transform: scale(0.985);
+}
+
+.hero-cta:disabled {
+  opacity: 0.7;
+  cursor: default;
+  transform: none;
+}
+
+.hero-cta--login {
+  margin-bottom: 0.5rem;
+}
+
+.hero-cta--login:hover,
+.hero-cta--login:focus-visible {
+  border-color: rgba(212, 165, 249, 0.55);
+  box-shadow: 0 16px 34px rgba(212, 165, 249, 0.2);
+}
+
+.hero-cta--add {
+  margin-top: 0.15rem;
+}
+
+.hero-cta--add:hover,
+.hero-cta--add:focus-visible {
+  border-color: rgba(212, 165, 249, 0.55);
+  box-shadow: 0 16px 34px rgba(212, 165, 249, 0.2);
+}
+
+.hero-cta--plus:hover,
+.hero-cta--plus:focus-visible {
+  border-color: rgba(255, 209, 102, 0.55);
+  box-shadow: 0 16px 34px rgba(255, 209, 102, 0.22);
+}
+
+.hero-cta__icon {
+  width: 3.35rem;
+  height: 3.35rem;
+  border-radius: 1.1rem;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  color: #2a1545;
+}
+
+.hero-cta__icon ion-icon,
+.hero-cta__icon ion-spinner {
+  font-size: 1.55rem;
+  width: 1.55rem;
+  height: 1.55rem;
+}
+
+.hero-cta--login .hero-cta__icon,
+.hero-cta--add .hero-cta__icon {
+  background: linear-gradient(145deg, #e8d0ff, #d4a5f9);
+}
+
+.hero-cta--plus .hero-cta__icon {
+  background: linear-gradient(145deg, #ffe8a3, #ffd166);
+  box-shadow: 0 8px 20px rgba(255, 209, 102, 0.28);
+}
+
+.hero-cta__copy {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.hero-cta__copy strong {
+  font-family: var(--km-font-title);
+  font-size: 1.15rem;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.hero-cta__copy small {
+  color: var(--km-text-secondary);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.hero-cta__chevron {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  color: rgba(255, 248, 240, 0.75);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.hero-cta__chevron ion-icon {
+  font-size: 1rem;
+}
+
+html[dir='rtl'] .hero-cta__chevron ion-icon {
+  transform: scaleX(-1);
+}
+
+.streaks {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.65rem;
+  margin: 0 0 1.1rem;
+}
+
+.stat {
+  border-radius: var(--km-radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.85rem 0.5rem;
+  text-align: center;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.stat strong {
+  font-family: var(--km-font-title);
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: var(--km-accent-moon);
+}
+
+.stat span {
+  font-size: 0.7rem;
+  color: var(--km-text-secondary);
+  line-height: 1.3;
+}
+
+.stat--plus strong {
+  color: #ffd166;
+}
+
+.child-list,
+.fav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.9rem;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.child-card,
+.fav-card {
+  appearance: none;
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.65rem;
+  border-radius: var(--km-radius-lg);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: inherit;
+  text-align: start;
+  cursor: pointer;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease;
+}
+
+.child-card:active,
+.fav-card:active {
+  transform: scale(0.99);
+}
+
+.child-card--active {
+  border-color: rgba(212, 165, 249, 0.55);
+  box-shadow: 0 0 0 1px rgba(212, 165, 249, 0.25);
+}
+
+.child-card__avatar {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.85rem;
+  display: grid;
+  place-items: center;
+  color: #2a1545;
+  background: linear-gradient(145deg, #e8d0ff, #d4a5f9);
+}
+
+.child-card__avatar ion-icon {
+  font-size: 1.25rem;
+}
+
+.child-card__meta,
+.fav-card__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.child-card__meta strong,
+.fav-card__meta strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.child-card__meta span,
+.fav-card__meta span {
+  font-size: 0.72rem;
+  opacity: 0.7;
+  line-height: 1.35;
+}
+
+.child-card__delete,
+.fav-card__download {
+  width: 2.35rem;
+  height: 2.35rem;
+  border: 0;
+  border-radius: 0.85rem;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ff8a80;
+  cursor: pointer;
+}
+
+.fav-card__download {
+  color: var(--km-accent-moon-soft);
+}
+
+.child-card__delete ion-icon,
+.fav-card__download ion-icon,
+.fav-card__download ion-spinner {
+  font-size: 1.05rem;
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.fav-card img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 0.75rem;
+}
+
+.account-footer {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.logout-cta {
+  appearance: none;
+  width: 100%;
+  border: 1px solid rgba(255, 138, 128, 0.22);
+  border-radius: var(--km-radius-lg);
+  min-height: 4.25rem;
+  padding: 0.9rem 1rem;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.85rem;
+  text-align: start;
+  cursor: pointer;
+  color: var(--km-text-primary);
+  background: rgba(255, 138, 128, 0.08);
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease;
+}
+
+.logout-cta:active {
+  transform: scale(0.985);
+}
+
+.logout-cta:hover,
+.logout-cta:focus-visible {
+  border-color: rgba(255, 138, 128, 0.4);
+  background: rgba(255, 138, 128, 0.12);
+}
+
+.logout-cta__icon {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.95rem;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: linear-gradient(145deg, #ff9a8b, #ef476f);
+}
+
+.logout-cta__icon ion-icon {
+  font-size: 1.25rem;
+}
+
+.logout-cta__copy {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.logout-cta__copy strong {
+  font-family: var(--km-font-title);
+  font-size: 1.05rem;
+  font-weight: 400;
+}
+
+.logout-cta__copy small {
+  color: var(--km-text-secondary);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}

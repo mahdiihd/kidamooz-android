@@ -1,0 +1,305 @@
+<app-stars-background></app-stars-background>
+
+<app-page-header [title]="'tabs.parents' | translate"></app-page-header>
+
+<ion-content [fullscreen]="true" class="parents">
+  <div class="km-page parents__body">
+    @if (error()) {
+      <p class="feedback feedback--error">{{ error() | translate }}</p>
+    }
+
+    @if (!unlocked()) {
+      <section class="intro lock-intro">
+        <app-moon-mascot state="idle"></app-moon-mascot>
+        <h2 class="intro__title">{{ 'parents.lockTitle' | translate }}</h2>
+        <p class="intro__text">{{ 'parents.lockHint' | translate }}</p>
+      </section>
+
+      <section class="panel">
+        <div class="panel__head">
+          <span class="panel__badge panel__badge--lock" aria-hidden="true">
+            <ion-icon name="lock-closed-outline"></ion-icon>
+          </span>
+          <div class="panel__titles">
+            <h2>
+              {{
+                hasPin()
+                  ? ('parents.pinLabel' | translate)
+                  : ('parents.setPinLabel' | translate)
+              }}
+            </h2>
+            <p>{{ 'parents.lockHint' | translate }}</p>
+          </div>
+        </div>
+
+        @if (hasPin()) {
+          <label class="panel__field">
+            <input
+              type="password"
+              inputmode="numeric"
+              maxlength="4"
+              [(ngModel)]="pinInput"
+              [attr.aria-label]="'parents.pinLabel' | translate"
+              autocomplete="off"
+            />
+          </label>
+          <button type="button" class="panel__save" (click)="unlock()">
+            <span class="panel__save-icon">
+              <ion-icon name="checkmark-outline"></ion-icon>
+            </span>
+            <span>{{ 'parents.unlock' | translate }}</span>
+          </button>
+        } @else {
+          <label class="panel__field">
+            <input
+              type="password"
+              inputmode="numeric"
+              maxlength="4"
+              [(ngModel)]="newPin"
+              [attr.aria-label]="'parents.setPinLabel' | translate"
+              autocomplete="off"
+            />
+          </label>
+          <button type="button" class="panel__save" (click)="setupPin()">
+            <span class="panel__save-icon">
+              <ion-icon name="checkmark-outline"></ion-icon>
+            </span>
+            <span>{{ 'parents.setPin' | translate }}</span>
+          </button>
+        }
+      </section>
+    } @else if (!loggedIn()) {
+      <section class="intro">
+        <h2 class="intro__title">{{ 'parents.hubTitle' | translate }}</h2>
+        <p class="intro__text">{{ 'parents.loginHint' | translate }}</p>
+      </section>
+
+      <button type="button" class="hero-cta hero-cta--login" (click)="goLogin()">
+        <span class="hero-cta__icon">
+          <ion-icon name="person-outline"></ion-icon>
+        </span>
+        <span class="hero-cta__copy">
+          <strong>{{ 'parents.loginCta' | translate }}</strong>
+          <small>{{ 'parents.loginNeeded' | translate }}</small>
+        </span>
+        <span class="hero-cta__chevron" aria-hidden="true">
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        </span>
+      </button>
+
+      <section class="account-footer">
+        <button type="button" class="logout-cta" (click)="lockNow()">
+          <span class="logout-cta__icon">
+            <ion-icon name="lock-closed-outline"></ion-icon>
+          </span>
+          <span class="logout-cta__copy">
+            <strong>{{ 'parents.lockNow' | translate }}</strong>
+            <small>{{ 'parents.lockNowDesc' | translate }}</small>
+          </span>
+        </button>
+      </section>
+    } @else {
+      @if (engagement(); as eng) {
+        <div class="streaks">
+          <div class="stat">
+            <strong>{{ eng.listenStreak }}</strong>
+            <span>{{ 'parents.listenStreak' | translate }}</span>
+          </div>
+          <div class="stat">
+            <strong>{{ eng.createStreak }}</strong>
+            <span>{{ 'parents.createStreak' | translate }}</span>
+          </div>
+          <div class="stat" [class.stat--plus]="isPlus()">
+            <strong>{{ isPlus() ? 'Plus' : 'Free' }}</strong>
+            <span>{{ 'parents.plan' | translate }}</span>
+          </div>
+        </div>
+      }
+
+      <section class="panel">
+        <div class="panel__head">
+          <span class="panel__badge panel__badge--child" aria-hidden="true">
+            <ion-icon name="person-outline"></ion-icon>
+          </span>
+          <div class="panel__titles">
+            <h2>{{ 'parents.childrenTitle' | translate }}</h2>
+            <p>{{ 'parents.childrenHint' | translate }}</p>
+          </div>
+        </div>
+
+        @if (children().length === 0) {
+          <p class="panel__empty">{{ 'parents.childrenEmpty' | translate }}</p>
+        } @else {
+          <ul class="child-list">
+            @for (child of children(); track child.id) {
+              <li>
+                <button
+                  type="button"
+                  class="child-card"
+                  [class.child-card--active]="activeChildId() === child.id"
+                  (click)="selectChild(child.id)"
+                >
+                  <span class="child-card__avatar" aria-hidden="true">
+                    <ion-icon name="person-outline"></ion-icon>
+                  </span>
+                  <span class="child-card__meta">
+                    <strong>{{ child.name }}</strong>
+                    <span>{{ child.age }} {{ 'parents.years' | translate }}</span>
+                  </span>
+                  <button
+                    type="button"
+                    class="child-card__delete"
+                    (click)="$event.stopPropagation(); removeChild(child)"
+                    [attr.aria-label]="'parents.removeChild' | translate"
+                  >
+                    <ion-icon name="trash-outline"></ion-icon>
+                  </button>
+                </button>
+              </li>
+            }
+          </ul>
+        }
+
+        <div class="add-row">
+          <label class="panel__field panel__field--grow">
+            <input
+              type="text"
+              [(ngModel)]="childName"
+              [placeholder]="'parents.childNamePlaceholder' | translate"
+              maxlength="100"
+            />
+          </label>
+          <label class="panel__field panel__field--age">
+            <input
+              type="number"
+              min="1"
+              max="14"
+              [(ngModel)]="childAge"
+              [placeholder]="'parents.agePlaceholder' | translate"
+              [attr.aria-label]="'parents.agePlaceholder' | translate"
+            />
+          </label>
+        </div>
+
+        <button
+          type="button"
+          class="hero-cta hero-cta--add"
+          [disabled]="busy()"
+          (click)="addChild()"
+        >
+          <span class="hero-cta__icon">
+            @if (busy()) {
+              <ion-spinner name="crescent"></ion-spinner>
+            } @else {
+              <ion-icon name="add-outline"></ion-icon>
+            }
+          </span>
+          <span class="hero-cta__copy">
+            <strong>{{ 'parents.addChild' | translate }}</strong>
+            <small>{{ 'parents.addChildDesc' | translate }}</small>
+          </span>
+          <span class="hero-cta__chevron" aria-hidden="true">
+            <ion-icon name="chevron-forward-outline"></ion-icon>
+          </span>
+        </button>
+      </section>
+
+      <section class="panel">
+        <div class="panel__head">
+          <span class="panel__badge panel__badge--heart" aria-hidden="true">
+            <ion-icon name="heart-outline"></ion-icon>
+          </span>
+          <div class="panel__titles">
+            <h2>{{ 'stories.favorites' | translate }}</h2>
+            <p>{{ 'parents.favoritesHint' | translate }}</p>
+          </div>
+        </div>
+
+        @if (favoriteStories().length === 0) {
+          <p class="panel__empty">{{ 'parents.favoritesEmpty' | translate }}</p>
+        } @else {
+          <ul class="fav-list">
+            @for (story of favoriteStories(); track story.id) {
+              <li class="fav-card" (click)="openStory(story.id)">
+                <img [src]="story.coverUrl" [alt]="story.titleFa" />
+                <div class="fav-card__meta">
+                  <strong>{{ story.titleFa }}</strong>
+                  <span>{{ 'parents.openFavorite' | translate }}</span>
+                </div>
+                @if (isPlus()) {
+                  <button
+                    type="button"
+                    class="fav-card__download"
+                    (click)="$event.stopPropagation(); downloadFavorite(story.id, story.audioUrl)"
+                    [attr.aria-label]="'stories.download' | translate"
+                  >
+                    @if (downloadingId() === story.id) {
+                      <ion-spinner name="crescent"></ion-spinner>
+                    } @else {
+                      <ion-icon name="cloud-download-outline"></ion-icon>
+                    }
+                  </button>
+                }
+              </li>
+            }
+          </ul>
+        }
+      </section>
+
+      <section class="panel">
+        <div class="panel__head">
+          <span class="panel__badge panel__badge--plus" aria-hidden="true">
+            <ion-icon name="sparkles-outline"></ion-icon>
+          </span>
+          <div class="panel__titles">
+            <h2>{{ 'parents.plusTitle' | translate }}</h2>
+            <p>{{ 'parents.plusHint' | translate }}</p>
+          </div>
+        </div>
+
+        <label class="panel__field">
+          <input
+            type="text"
+            [(ngModel)]="plusCode"
+            [placeholder]="'parents.plusCodePlaceholder' | translate"
+            autocomplete="off"
+          />
+        </label>
+
+        <button
+          type="button"
+          class="hero-cta hero-cta--plus"
+          [disabled]="busy()"
+          (click)="redeemPlus()"
+        >
+          <span class="hero-cta__icon">
+            @if (busy()) {
+              <ion-spinner name="crescent"></ion-spinner>
+            } @else {
+              <ion-icon name="key-outline"></ion-icon>
+            }
+          </span>
+          <span class="hero-cta__copy">
+            <strong>{{ 'parents.redeemPlus' | translate }}</strong>
+            <small>{{ 'parents.redeemPlusDesc' | translate }}</small>
+          </span>
+          <span class="hero-cta__chevron" aria-hidden="true">
+            <ion-icon name="chevron-forward-outline"></ion-icon>
+          </span>
+        </button>
+      </section>
+
+      <section class="account-footer">
+        <button type="button" class="logout-cta" (click)="lockNow()">
+          <span class="logout-cta__icon">
+            <ion-icon name="lock-closed-outline"></ion-icon>
+          </span>
+          <span class="logout-cta__copy">
+            <strong>{{ 'parents.lockNow' | translate }}</strong>
+            <small>{{ 'parents.lockNowDesc' | translate }}</small>
+          </span>
+        </button>
+      </section>
+    }
+  </div>
+</ion-content>

@@ -87,6 +87,8 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
   readonly picking = signal(false);
   readonly previewUrl = signal('');
   readonly pendingAudio = signal<PendingAudio | null>(null);
+  readonly aiBusy = signal(false);
+  readonly challengeTag = signal<string | null>(null);
   titleFa = '';
   descriptionFa = '';
   storyScript = '';
@@ -99,6 +101,10 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
     }
 
     const draftId = this.route.snapshot.queryParamMap.get('draftId');
+    const challenge = this.route.snapshot.queryParamMap.get('challenge');
+    if (challenge) {
+      this.challengeTag.set(challenge);
+    }
     if (draftId) {
       this.loadDraft(draftId);
       return;
@@ -215,6 +221,7 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
         titleFa: this.titleFa,
         descriptionFa: this.descriptionFa,
         storyScript: this.storyScript,
+        challengeTag: this.challengeTag(),
       })
       .subscribe({
         next: (draft) => {
@@ -223,6 +230,50 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
         },
         error: () => this.error.set('saveFailed'),
       });
+  }
+
+  async rewrite(mode: 'polish' | 'shorter'): Promise<void> {
+    const current = this.draft();
+    if (!current || this.aiBusy()) {
+      return;
+    }
+    this.error.set('');
+    this.aiBusy.set(true);
+    await this.tapFeedback();
+    this.api.rewrite(current.id, mode).subscribe({
+      next: (draft) => {
+        this.applyDraft(draft);
+        this.aiBusy.set(false);
+      },
+      error: () => {
+        this.error.set('rewriteFailed');
+        this.aiBusy.set(false);
+      },
+    });
+  }
+
+  async regenerateCover(): Promise<void> {
+    const current = this.draft();
+    if (!current || this.aiBusy()) {
+      return;
+    }
+    this.error.set('');
+    this.aiBusy.set(true);
+    await this.tapFeedback();
+    this.api.regenerateCover(current.id).subscribe({
+      next: (draft) => {
+        this.applyDraft(draft);
+        this.aiBusy.set(false);
+      },
+      error: () => {
+        this.error.set('coverFailed');
+        this.aiBusy.set(false);
+      },
+    });
+  }
+
+  joinChallenge(tag: string): void {
+    this.challengeTag.set(tag);
   }
 
   private loadDraft(id: string): void {
@@ -358,6 +409,7 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
     this.titleFa = draft.titleFa;
     this.descriptionFa = draft.descriptionFa;
     this.storyScript = draft.storyScript;
+    this.challengeTag.set(draft.challengeTag);
   }
 
   private revokePreview(): void {

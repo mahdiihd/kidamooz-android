@@ -19,6 +19,10 @@ import { PlayerState } from '../../../core/models/player-state.model';
 import { Story, StoryDetail } from '../../../core/models/story.model';
 import { AudioCacheService } from '../../../core/services/audio-cache.service';
 import { AudioPlayerService } from '../../../core/services/audio-player.service';
+import { EngagementApiService } from '../../../core/services/engagement-api.service';
+import { FavoritesService } from '../../../core/services/favorites.service';
+import { MemberAuthService } from '../../../core/services/member-auth.service';
+import { ParentSettingsService } from '../../../core/services/parent-settings.service';
 import { StoryApiService } from '../../../core/services/story-api.service';
 import { StoryCatalogStore } from '../../../core/services/story-catalog.store';
 import { TranslationService } from '../../../core/services/translation.service';
@@ -59,6 +63,10 @@ export class StoryListPage implements OnInit, OnDestroy, ViewWillEnter, ViewWill
   private readonly translation = inject(TranslationService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private readonly parentSettings = inject(ParentSettingsService);
+  private readonly favorites = inject(FavoritesService);
+  private readonly engagementApi = inject(EngagementApiService);
+  private readonly auth = inject(MemberAuthService);
   private playerSubscription?: Subscription;
   private endedSubscription?: Subscription;
   private querySubscription?: Subscription;
@@ -72,6 +80,7 @@ export class StoryListPage implements OnInit, OnDestroy, ViewWillEnter, ViewWill
   readonly playerState = signal<PlayerState>('idle');
   readonly currentTime = signal(0);
   readonly duration = signal(0);
+  readonly favoritesOnly = signal(false);
 
   readonly selectedCategoryId = toSignal(
     this.route.queryParamMap.pipe(map((params) => params.get('categoryId'))),
@@ -80,12 +89,18 @@ export class StoryListPage implements OnInit, OnDestroy, ViewWillEnter, ViewWill
 
   readonly categories = this.catalogStore.categories;
 
-  readonly stories = computed(() =>
-    this.catalogStore
-      .getStoriesByCategory(this.selectedCategoryId())
+  readonly stories = computed(() => {
+    const age = this.parentSettings.activeAge();
+    const base = this.catalogStore
+      .getStoriesForAge(age, this.selectedCategoryId())
       .slice()
-      .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)),
-  );
+      .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+    if (!this.favoritesOnly()) {
+      return base;
+    }
+    const fav = this.favorites.ids();
+    return base.filter((story) => fav.has(story.id));
+  });
 
   readonly activeStory = computed(() => {
     const id = this.activeStoryId();
@@ -145,6 +160,8 @@ export class StoryListPage implements OnInit, OnDestroy, ViewWillEnter, ViewWill
 
   ngOnInit(): void {
     void this.catalogStore.ensureReady();
+    void this.parentSettings.ensureReady();
+    void this.favorites.ensureReady();
 
     this.playerSubscription = this.audioPlayer.snapshot$.subscribe((snapshot) => {
       this.playerState.set(snapshot.state);
@@ -239,6 +256,37 @@ export class StoryListPage implements OnInit, OnDestroy, ViewWillEnter, ViewWill
         storyId: null,
       },
       queryParamsHandling: 'merge',
+    });
+  }
+
+  toggleFavoritesFilter(): void {
+    this.favoritesOnly.update((v) => !v);
+    this.lastSyncedCategoryKey = null;
+  }
+
+  async toggleFavorite(story: Story, event: Event): Promise<void> {
+    event.stopPropagation();
+    await this.favorites.toggle(story.id);
+  }
+
+  isFavorite(storyId: string): boolean {
+    return this.favorites.isFavorite(storyId);
+  }
+
+  async downloadOffline(story: Story, event: Event): Promise<void> {
+    event.stopPropagation();
+    await this.auth.ensureHydrated();
+    if (!this.auth.isLoggedIn()) {
+      void this.router.navigateByUrl('/auth/login');
+      return;
+    }
+    this.engagementApi.me().subscribe({
+      next: async (eng) => {
+        if (!eng.canDownloadOffline) {
+          return;
+        }
+        await this.audioCache.ensureCached(story.id, story.audioUrl);
+      },
     });
   }
 
@@ -344,6 +392,12 @@ export class StoryListPage implements OnInit, OnDestroy, ViewWillEnter, ViewWill
       if (autoPlay) {
         await this.audioPlayer.play();
         void this.audioCache.ensureCached(story.id, story.audioUrl);
+        void this.auth.ensureHydrated().then(() => {
+          if (!this.auth.isLoggedIn()) {
+            return;
+          }
+          this.engagementApi.recordListen(story.id, 0).subscribe({ error: () => undefined });
+        });
       }
     } catch {
       /* keep selection visible */

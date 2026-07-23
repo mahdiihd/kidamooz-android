@@ -30,6 +30,18 @@ export class ApiService {
     );
   }
 
+  put<T>(path: string, body: unknown): Observable<T> {
+    return this.withHeaders((headers) =>
+      this.http.put<T>(`${environment.apiBaseUrl}${path}`, body, { headers })
+    );
+  }
+
+  delete<T>(path: string): Observable<T> {
+    return this.withHeaders((headers) =>
+      this.http.delete<T>(`${environment.apiBaseUrl}${path}`, { headers })
+    );
+  }
+
   postForm<T>(path: string, form: FormData): Observable<T> {
     return from(
       Promise.all([this.deviceIds.getDeviceId(), this.auth.getAccessToken()])
