@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 
 import { memberAuthGuard, storyCreateGuard } from './core/guards/story-create.guard';
-import { parentGateGuard } from './core/guards/parent-gate.guard';
 import { environment } from '../environments/environment';
 
 export const routes: Routes = [
@@ -25,9 +24,11 @@ export const routes: Routes = [
       environment.features.parents
         ? {
             path: 'parents',
-            canActivate: [parentGateGuard],
+            data: { titleKey: 'tabs.parents' },
             loadComponent: () =>
-              import('./features/parents/parents.page').then((m) => m.ParentsPage),
+              import('./features/placeholders/coming-soon/coming-soon.page').then(
+                (m) => m.ComingSoonPage
+              ),
           }
         : {
             path: 'parents',

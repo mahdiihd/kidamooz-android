@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { IonContent } from '@ionic/angular/standalone';
 
 import { MoonMascotComponent } from '../../../shared/components/moon-mascot/moon-mascot.component';
@@ -15,7 +16,13 @@ import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
     StarsBackgroundComponent,
     MoonMascotComponent,
     TranslatePipe,
-  ],  templateUrl: './coming-soon.page.html',
+  ],
+  templateUrl: './coming-soon.page.html',
   styleUrl: './coming-soon.page.scss',
 })
-export class ComingSoonPage {}
+export class ComingSoonPage {
+  private readonly route = inject(ActivatedRoute);
+
+  readonly titleKey =
+    (this.route.snapshot.data['titleKey'] as string | undefined) ?? 'states.comingSoon';
+}
