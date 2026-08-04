@@ -250,31 +250,60 @@
 
 .generating__glow {
   position: absolute;
-  inset: 8%;
+  inset: 6%;
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    rgba(255, 209, 102, 0.34) 0%,
-    rgba(123, 201, 80, 0.14) 42%,
+    rgba(255, 209, 102, 0.38) 0%,
+    rgba(255, 232, 163, 0.16) 40%,
     transparent 72%
   );
-  filter: blur(10px);
+  filter: blur(12px);
   animation: generating-glow 3.6s ease-in-out infinite;
 }
 
-.generating__orb {
-  position: relative;
-  width: 58%;
-  aspect-ratio: 1;
+.generating__ring {
+  position: absolute;
+  z-index: 0;
+  width: 148px;
+  height: 148px;
   border-radius: 50%;
-  display: grid;
-  place-items: center;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(255, 209, 102, 0.05) 40deg,
+    var(--km-accent-moon) 110deg,
+    rgba(255, 232, 163, 0.85) 150deg,
+    transparent 200deg,
+    transparent 360deg
+  );
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
+  animation: generating-spin 1.35s linear infinite;
+}
+
+.generating__moon {
+  position: relative;
+  z-index: 1;
+  width: 118px;
+  height: 118px;
+  border-radius: 50%;
   background:
-    linear-gradient(160deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04)),
-    rgba(255, 248, 240, 0.06);
-  border: 1px solid rgba(255, 209, 102, 0.28);
-  box-shadow: 0 16px 36px rgba(10, 4, 24, 0.34);
-  animation: km-float 3.2s ease-in-out infinite;
+    radial-gradient(circle at 28% 24%, rgba(255, 252, 240, 0.95) 0%, transparent 34%),
+    radial-gradient(circle at 72% 68%, rgba(196, 168, 110, 0.28) 0%, transparent 36%),
+    radial-gradient(circle at 58% 38%, rgba(180, 150, 95, 0.22) 0 9%, transparent 10%),
+    radial-gradient(circle at 34% 62%, rgba(180, 150, 95, 0.2) 0 7%, transparent 8%),
+    radial-gradient(circle at 64% 54%, rgba(180, 150, 95, 0.18) 0 5%, transparent 6%),
+    radial-gradient(circle at 44% 44%, rgba(180, 150, 95, 0.16) 0 4%, transparent 5%),
+    linear-gradient(145deg, #fffaf0 0%, var(--km-accent-moon-soft) 46%, #f0c86a 100%);
+  box-shadow:
+    inset -14px -10px 24px rgba(160, 120, 50, 0.22),
+    inset 10px 8px 18px rgba(255, 255, 250, 0.65),
+    0 0 28px rgba(255, 209, 102, 0.42),
+    0 16px 36px rgba(10, 4, 24, 0.28);
+  animation:
+    km-float 3.2s ease-in-out infinite,
+    generating-moon-pulse 2.2s ease-in-out infinite;
 }
 
 .generating__spark {
@@ -282,8 +311,8 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--km-accent-moon);
-  box-shadow: 0 0 12px rgba(255, 209, 102, 0.7);
+  background: var(--km-accent-moon-soft);
+  box-shadow: 0 0 12px rgba(255, 209, 102, 0.75);
 }
 
 .generating__spark--a {
@@ -319,6 +348,22 @@
   max-width: 18rem;
   line-height: 1.7;
   opacity: 0.82;
+}
+
+@keyframes generating-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes generating-moon-pulse {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.08);
+  }
 }
 
 @keyframes generating-glow {
