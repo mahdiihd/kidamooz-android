@@ -232,6 +232,119 @@
   text-align: center;
 }
 
+.generating {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: 0.85rem;
+  padding: 1.25rem 0 2rem;
+}
+
+.generating__stage {
+  position: relative;
+  width: min(100%, 220px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+}
+
+.generating__glow {
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 209, 102, 0.34) 0%,
+    rgba(123, 201, 80, 0.14) 42%,
+    transparent 72%
+  );
+  filter: blur(10px);
+  animation: generating-glow 3.6s ease-in-out infinite;
+}
+
+.generating__orb {
+  position: relative;
+  width: 58%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04)),
+    rgba(255, 248, 240, 0.06);
+  border: 1px solid rgba(255, 209, 102, 0.28);
+  box-shadow: 0 16px 36px rgba(10, 4, 24, 0.34);
+  animation: km-float 3.2s ease-in-out infinite;
+}
+
+.generating__spark {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--km-accent-moon);
+  box-shadow: 0 0 12px rgba(255, 209, 102, 0.7);
+}
+
+.generating__spark--a {
+  top: 18%;
+  inset-inline-end: 18%;
+  animation: generating-spark 2.4s ease-in-out infinite;
+}
+
+.generating__spark--b {
+  bottom: 22%;
+  inset-inline-start: 16%;
+  animation: generating-spark 2.8s ease-in-out infinite 0.4s;
+}
+
+.generating__spark--c {
+  top: 48%;
+  inset-inline-start: 8%;
+  width: 6px;
+  height: 6px;
+  animation: generating-spark 3.1s ease-in-out infinite 0.8s;
+}
+
+.generating__title {
+  margin: 0;
+  font-family: var(--km-font-title);
+  font-size: 1.35rem;
+  font-weight: 400;
+  color: var(--km-accent-moon);
+}
+
+.generating__sub {
+  margin: 0;
+  max-width: 18rem;
+  line-height: 1.7;
+  opacity: 0.82;
+}
+
+@keyframes generating-glow {
+  0%,
+  100% {
+    transform: scale(0.96);
+    opacity: 0.75;
+  }
+  50% {
+    transform: scale(1.06);
+    opacity: 1;
+  }
+}
+
+@keyframes generating-spark {
+  0%,
+  100% {
+    transform: translateY(0) scale(0.85);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translateY(-8px) scale(1.15);
+    opacity: 1;
+  }
+}
+
 .cover {
   width: 100%;
   max-height: 280px;

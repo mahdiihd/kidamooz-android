@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 
 import { memberAuthGuard, storyCreateGuard } from './core/guards/story-create.guard';
 import { parentGateGuard } from './core/guards/parent-gate.guard';
+import { environment } from '../environments/environment';
 
 export const routes: Routes = [
   {
@@ -21,12 +22,18 @@ export const routes: Routes = [
             (m) => m.StoryListPage
           ),
       },
-      {
-        path: 'parents',
-        canActivate: [parentGateGuard],
-        loadComponent: () =>
-          import('./features/parents/parents.page').then((m) => m.ParentsPage),
-      },
+      environment.features.parents
+        ? {
+            path: 'parents',
+            canActivate: [parentGateGuard],
+            loadComponent: () =>
+              import('./features/parents/parents.page').then((m) => m.ParentsPage),
+          }
+        : {
+            path: 'parents',
+            redirectTo: 'home',
+            pathMatch: 'full',
+          },
       {
         path: 'more',
         loadComponent: () =>

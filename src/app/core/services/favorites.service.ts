@@ -12,22 +12,45 @@ export class FavoritesService {
   private readonly auth = inject(MemberAuthService);
   private readonly favoriteIdsState = signal<Set<string>>(new Set());
   private ready = false;
+  private boundUserId: string | null | undefined = undefined;
+  private pullSeq = 0;
 
   readonly ids = this.favoriteIdsState.asReadonly();
 
+  async clearSession(): Promise<void> {
+    this.pullSeq += 1;
+    this.boundUserId = null;
+    this.favoriteIdsState.set(new Set());
+    this.ready = false;
+    await Preferences.remove({ key: FAVORITES_KEY });
+  }
+
   async ensureReady(): Promise<void> {
-    if (this.ready) {
-      return;
+    await this.auth.ensureHydrated();
+    const userId = this.auth.profile()?.id ?? null;
+
+    if (userId !== this.boundUserId) {
+      this.boundUserId = userId;
+      this.favoriteIdsState.set(new Set());
+      this.ready = false;
+
+      if (userId) {
+        const result = await Preferences.get({ key: this.storageKey(userId) });
+        if (result.value) {
+          try {
+            const parsed = JSON.parse(result.value) as string[];
+            this.favoriteIdsState.set(new Set(Array.isArray(parsed) ? parsed : []));
+          } catch {
+            this.favoriteIdsState.set(new Set());
+          }
+        }
+      } else {
+        await Preferences.remove({ key: FAVORITES_KEY });
+      }
     }
 
-    const result = await Preferences.get({ key: FAVORITES_KEY });
-    if (result.value) {
-      try {
-        const parsed = JSON.parse(result.value) as string[];
-        this.favoriteIdsState.set(new Set(Array.isArray(parsed) ? parsed : []));
-      } catch {
-        this.favoriteIdsState.set(new Set());
-      }
+    if (this.ready) {
+      return;
     }
 
     this.ready = true;
@@ -74,6 +97,12 @@ export class FavoritesService {
       return;
     }
 
+    const userId = this.auth.profile()?.id ?? null;
+    if (!userId) {
+      return;
+    }
+
+    const seq = ++this.pullSeq;
     try {
       const remote = await new Promise<string[]>((resolve, reject) => {
         this.api
@@ -87,28 +116,28 @@ export class FavoritesService {
           });
       });
 
-      const merged = new Set([...this.favoriteIdsState(), ...remote]);
-      this.favoriteIdsState.set(merged);
-      await this.persist(merged);
-      await this.pushToServer([...merged]);
+      if (seq !== this.pullSeq || this.auth.profile()?.id !== userId) {
+        return;
+      }
+
+      const next = new Set(remote);
+      this.favoriteIdsState.set(next);
+      await this.persist(next);
     } catch {
       /* offline */
     }
   }
 
-  private async pushToServer(storyIds: string[]): Promise<void> {
-    await new Promise<void>((resolve) => {
-      this.api.put('/api/v1/me/favorites', { storyIds }).subscribe({
-        next: () => resolve(),
-        error: () => resolve(),
-      });
-    });
+  private storageKey(userId: string): string {
+    return `${FAVORITES_KEY}.${userId}`;
   }
 
   private async persist(ids: Set<string>): Promise<void> {
-    await Preferences.set({
-      key: FAVORITES_KEY,
-      value: JSON.stringify([...ids]),
-    });
+    const userId = this.auth.profile()?.id;
+    const value = JSON.stringify([...ids]);
+    if (userId) {
+      await Preferences.set({ key: this.storageKey(userId), value });
+    }
+    await Preferences.set({ key: FAVORITES_KEY, value });
   }
 }

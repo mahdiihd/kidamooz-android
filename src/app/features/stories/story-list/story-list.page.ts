@@ -284,7 +284,12 @@ export class StoryListPage implements OnInit, OnDestroy, ViewWillEnter, ViewWill
         if (!eng.canDownloadOffline) {
           return;
         }
-        await this.audioCache.ensureCached(story.id, story.uploadedAudioUrl || story.audioUrl);
+        await this.audioCache.ensureCached(
+          story.id,
+          story.preferredNarration === 'user' && story.uploadedAudioUrl
+            ? story.uploadedAudioUrl
+            : story.audioUrl || story.uploadedAudioUrl || ''
+        );
       },
     });
   }
@@ -379,7 +384,13 @@ export class StoryListPage implements OnInit, OnDestroy, ViewWillEnter, ViewWill
         });
       }
 
-      const sourceUrl = story.uploadedAudioUrl || story.audioUrl;
+      const sourceUrl =
+        (story.preferredNarration === 'user' && story.uploadedAudioUrl
+          ? story.uploadedAudioUrl
+          : story.audioUrl || story.uploadedAudioUrl) || '';
+      if (!sourceUrl) {
+        return;
+      }
       const playUrl = await this.audioCache.resolvePlayUrl(story.id, sourceUrl);
       const title =
         this.translation.language() === 'en'

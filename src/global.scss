@@ -19,7 +19,19 @@
 }
 
 html,
-body,
+body {
+  background: linear-gradient(
+    175deg,
+    var(--km-bg-night) 0%,
+    var(--km-bg-night-mid) 55%,
+    var(--km-bg-night-light) 100%
+  );
+  color: var(--km-text-primary);
+  min-height: 100%;
+  height: 100%;
+  overscroll-behavior: none;
+}
+
 ion-app {
   background: linear-gradient(
     175deg,
@@ -29,7 +41,65 @@ ion-app {
   );
   color: var(--km-text-primary);
   min-height: 100%;
+  height: 100%;
+  width: 100%;
   overscroll-behavior: none;
+}
+
+@media (min-width: 629px) {
+  html {
+    background: #120a1f;
+  }
+
+  body {
+    width: var(--km-app-max-width) !important;
+    max-width: var(--km-app-max-width) !important;
+    left: 50% !important;
+    right: auto !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    transform: translateX(-50%) translateZ(0) !important;
+    box-shadow: 0 0 0 1px rgba(255, 209, 102, 0.08), 0 18px 48px rgba(0, 0, 0, 0.45);
+  }
+
+  ion-app {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+img,
+picture,
+svg,
+video,
+a,
+button,
+ion-card,
+ion-item,
+.km-horizontal-scroll > *,
+.km-vertical-list > * {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+input,
+textarea,
+[contenteditable='true'] {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  ion-content {
+    overscroll-behavior-y: none;
+    overscroll-behavior-x: none;
+  }
+
+  .km-horizontal-scroll,
+  .km-chip-row {
+    overscroll-behavior-x: contain;
+    scroll-snap-type: none;
+  }
 }
 
 ion-page {
@@ -73,6 +143,35 @@ ion-content {
   --background: transparent;
   --padding-start: 0;
   --padding-end: 0;
+  overscroll-behavior: none;
+}
+
+ion-content::part(scroll) {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 209, 102, 0.35) transparent;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 209, 102, 0.35) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(255, 209, 102, 0.35);
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 209, 102, 0.55);
 }
 
 ion-header {

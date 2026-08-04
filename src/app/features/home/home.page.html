@@ -8,13 +8,6 @@
       <app-moon-mascot state="idle"></app-moon-mascot>
       <h1 class="km-title">{{ greeting() }}</h1>
       <p class="hero-sub">{{ 'home.subtitle' | translate }}</p>
-      @if (engagement(); as eng) {
-        <p class="streak-line">
-          {{ 'home.listenStreak' | translate }}: {{ eng.listenStreak }}
-          ·
-          {{ 'home.createStreak' | translate }}: {{ eng.createStreak }}
-        </p>
-      }
     </section>
 
     @if (pageState() === 'loading') {
@@ -41,22 +34,27 @@
         </section>
       }
 
-      @if (continueStory(); as cont) {
-        <section class="continue">
-          <h2 class="km-section-title">{{ 'home.continueTitle' | translate }}</h2>
-          <button type="button" class="continue-card" (click)="openContinue()">
-            <img [src]="cont.coverUrl" [alt]="cont.titleFa" />
-            <span>{{ cont.titleFa }}</span>
-          </button>
-        </section>
-      }
-
       @if (challenge(); as ch) {
         <section class="challenge">
           <h2 class="km-section-title">{{ 'home.challengeTitle' | translate }}</h2>
-          <button type="button" class="challenge-card" (click)="openChallenge()">
-            <strong>{{ ch.titleFa }}</strong>
-            <span>{{ ch.descriptionFa }}</span>
+          <button type="button" class="challenge-panel" (click)="openChallenge()">
+            <span class="challenge-panel__glow" aria-hidden="true"></span>
+            <div class="challenge-panel__body">
+              <strong class="challenge-panel__title">{{ ch.titleFa }}</strong>
+              <p class="challenge-panel__desc">{{ ch.descriptionFa }}</p>
+              <span class="challenge-panel__hint">{{ 'home.challengeHint' | translate }}</span>
+            </div>
+            <span class="challenge-panel__chevron" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M14 6l-6 6 6 6"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
           </button>
         </section>
       }

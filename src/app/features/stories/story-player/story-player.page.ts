@@ -200,7 +200,9 @@ export class StoryPlayerPage implements OnInit, OnDestroy {
 
   private applyStory(story: StoryDetail): void {
     this.story.set(story);
-    this.narrationSource.set(story.uploadedAudioUrl ? 'mine' : 'ai');
+    this.narrationSource.set(
+      story.preferredNarration === 'user' && story.uploadedAudioUrl ? 'mine' : 'ai'
+    );
   }
 
   private async loadAudio(story: StoryDetail): Promise<void> {

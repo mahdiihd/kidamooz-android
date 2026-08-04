@@ -20,7 +20,7 @@ const enableServiceWorker = !isDevMode() && !Capacitor.isNativePlatform();
 bootstrapApplication(AppComponent, {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    provideIonicAngular({ mode: 'md', navAnimation: noTransition }),
+    provideIonicAngular({ mode: 'md', navAnimation: noTransition, swipeBackEnabled: false }),
     provideRouter(routes, withPreloading(PreloadAllModules)),
     provideHttpClient(),
     provideServiceWorker('ngsw-worker.js', {

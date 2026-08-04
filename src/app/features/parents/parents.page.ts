@@ -9,10 +9,8 @@ import {
   chevronForwardOutline,
   cloudDownloadOutline,
   heartOutline,
-  keyOutline,
   lockClosedOutline,
   personOutline,
-  sparklesOutline,
   trashOutline,
 } from 'ionicons/icons';
 
@@ -35,10 +33,8 @@ addIcons({
   chevronForwardOutline,
   cloudDownloadOutline,
   heartOutline,
-  keyOutline,
   lockClosedOutline,
   personOutline,
-  sparklesOutline,
   trashOutline,
 });
 
@@ -82,7 +78,6 @@ export class ParentsPage implements OnInit {
   newPin = '';
   childName = '';
   childAge: number | null = null;
-  plusCode = '';
 
   readonly favoriteStories = computed(() => {
     const ids = this.favorites.ids();
@@ -197,28 +192,6 @@ export class ParentsPage implements OnInit {
     } finally {
       this.downloadingId.set(null);
     }
-  }
-
-  redeemPlus(): void {
-    this.error.set('');
-    void this.auth.ensureHydrated().then(() => {
-      if (!this.auth.isLoggedIn()) {
-        this.goLogin();
-        return;
-      }
-      this.busy.set(true);
-      this.engagementApi.redeemPlus(this.plusCode.trim()).subscribe({
-        next: (eng) => {
-          this.engagement.set(eng);
-          this.plusCode = '';
-          this.busy.set(false);
-        },
-        error: () => {
-          this.error.set('parents.plusInvalid');
-          this.busy.set(false);
-        },
-      });
-    });
   }
 
   private async loadHub(): Promise<void> {

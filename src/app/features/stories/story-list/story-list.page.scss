@@ -45,26 +45,3 @@
   flex-direction: column;
   gap: 8px;
 }
-
-.playlist-row {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 6px;
-  align-items: center;
-}
-
-.fav-toggle {
-  width: 36px;
-  height: 36px;
-  border: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.45);
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-.fav-toggle--on {
-  color: #ff7aa2;
-  background: rgba(255, 122, 162, 0.16);
-}

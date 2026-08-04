@@ -15,6 +15,7 @@ import {
   peopleOutline,
 } from 'ionicons/icons';
 
+import { environment } from '../../../environments/environment';
 import { StarsBackgroundComponent } from '../../shared/components/stars-background/stars-background.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
@@ -34,6 +35,8 @@ addIcons({
 })
 export class TabsPage {
   private readonly router = inject(Router);
+
+  readonly showParents = environment.features.parents;
 
   openStoriesTab(event: Event): void {
     event.preventDefault();

@@ -9,6 +9,7 @@ export interface Story {
   coverUrl: string;
   audioUrl: string;
   uploadedAudioUrl?: string | null;
+  preferredNarration?: 'ai' | 'user' | string;
   durationSeconds: number;
   ageMin: number;
   ageMax: number;

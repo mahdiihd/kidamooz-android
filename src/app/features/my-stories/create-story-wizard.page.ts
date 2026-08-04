@@ -100,9 +100,31 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
   readonly aiBusy = signal(false);
   readonly challengeTag = signal<string | null>(null);
   readonly narrationSource = signal<NarrationSource>('ai');
+  readonly generatingPhase = signal(0);
   titleFa = '';
   descriptionFa = '';
   storyScript = '';
+  private generatingTimer: ReturnType<typeof setInterval> | null = null;
+
+  readonly generatingTitleKey = computed(() => {
+    const phases = [
+      'myStories.generatingTitle1',
+      'myStories.generatingTitle2',
+      'myStories.generatingTitle3',
+      'myStories.generatingTitle4',
+    ] as const;
+    return phases[this.generatingPhase() % phases.length];
+  });
+
+  readonly generatingSubKey = computed(() => {
+    const phases = [
+      'myStories.generatingSub1',
+      'myStories.generatingSub2',
+      'myStories.generatingSub3',
+      'myStories.generatingSub4',
+    ] as const;
+    return phases[this.generatingPhase() % phases.length];
+  });
 
   readonly activePlayerUrl = computed(() => {
     const pending = this.previewUrl();
@@ -163,6 +185,7 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.stopGeneratingAnimation();
     this.recorder.cancel();
     this.clearPendingAudio();
   }
@@ -396,9 +419,11 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
   }
 
   private loadDraft(id: string): void {
+    this.startGeneratingAnimation();
     this.step.set('generating');
     this.api.get(id).subscribe({
       next: (draft) => {
+        this.stopGeneratingAnimation();
         this.applyDraft(draft);
         if (draft.status === 'published' || draft.status === 'pending_review') {
           this.step.set('done');
@@ -413,6 +438,7 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
         }
       },
       error: () => {
+        this.stopGeneratingAnimation();
         this.error.set('loadFailed');
         this.step.set('pick');
       },
@@ -457,6 +483,7 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
         throw new Error('no path');
       }
 
+      this.startGeneratingAnimation();
       this.step.set('generating');
       const response = await fetch(photo.webPath);
       const blob = await response.blob();
@@ -464,10 +491,12 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
 
       this.api.createFromDrawing(blob, fileName).subscribe({
         next: (draft) => {
+          this.stopGeneratingAnimation();
           this.applyDraft(draft);
           this.step.set('review');
         },
         error: (err: { status?: number; error?: { code?: string } }) => {
+          this.stopGeneratingAnimation();
           const code = err?.error?.code;
           if (err?.status === 429 || code === 'daily_limit_reached') {
             this.error.set('dailyLimit');
@@ -478,6 +507,7 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
         },
       });
     } catch (error) {
+      this.stopGeneratingAnimation();
       if (!this.isUserCancel(error)) {
         this.error.set('pickFailed');
       }
@@ -530,6 +560,21 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
     this.storyScript = draft.storyScript;
     this.challengeTag.set(draft.challengeTag);
     this.narrationSource.set(draft.uploadedAudioUrl ? 'mine' : 'ai');
+  }
+
+  private startGeneratingAnimation(): void {
+    this.stopGeneratingAnimation();
+    this.generatingPhase.set(0);
+    this.generatingTimer = setInterval(() => {
+      this.generatingPhase.update((phase) => phase + 1);
+    }, 2400);
+  }
+
+  private stopGeneratingAnimation(): void {
+    if (this.generatingTimer) {
+      clearInterval(this.generatingTimer);
+      this.generatingTimer = null;
+    }
   }
 
   private fileExtension(fileName: string): string {

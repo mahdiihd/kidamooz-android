@@ -18,7 +18,7 @@
     {
       "name": "assets",
       "installMode": "lazy",
-      "updateMode": "prefetch",
+      "updateMode": "lazy",
       "resources": {
         "files": [
           "/assets/**",
@@ -34,23 +34,22 @@
       "urls": ["https://api.kidingo.ir/api/**"],
       "cacheConfig": {
         "strategy": "freshness",
-        "maxSize": 80,
-        "maxAge": "1h",
+        "maxSize": 24,
+        "maxAge": "30m",
         "timeout": "8s"
       }
     },
     {
-      "name": "media-performance",
+      "name": "media-covers",
       "urls": [
         "/covers/**",
-        "/audio/**",
         "/drawings/**",
         "/misc/**"
       ],
       "cacheConfig": {
         "strategy": "performance",
-        "maxSize": 60,
-        "maxAge": "7d"
+        "maxSize": 16,
+        "maxAge": "2d"
       }
     }
   ],

@@ -74,10 +74,19 @@
         </section>
       }
       @case ('generating') {
-        <div class="state">
-          <ion-spinner name="crescent"></ion-spinner>
-          <p>{{ 'myStories.generating' | translate }}</p>
-        </div>
+        <section class="generating" aria-live="polite">
+          <div class="generating__stage" aria-hidden="true">
+            <div class="generating__glow"></div>
+            <div class="generating__orb">
+              <ion-spinner name="crescent"></ion-spinner>
+            </div>
+            <span class="generating__spark generating__spark--a"></span>
+            <span class="generating__spark generating__spark--b"></span>
+            <span class="generating__spark generating__spark--c"></span>
+          </div>
+          <h2 class="generating__title">{{ generatingTitleKey() | translate }}</h2>
+          <p class="generating__sub">{{ generatingSubKey() | translate }}</p>
+        </section>
       }
       @case ('review') {
         @if (draft()?.coverUrl) {
@@ -195,8 +204,8 @@
                 <ion-icon name="paper-plane-outline"></ion-icon>
               </span>
               <span class="hero-cta__copy">
-                <strong>{{ 'myStories.sendWithAi' | translate }}</strong>
-                <small>{{ 'myStories.sendWithAiDesc' | translate }}</small>
+                <strong>{{ 'myStories.sendForReview' | translate }}</strong>
+                <small>{{ 'myStories.sendForReviewDesc' | translate }}</small>
               </span>
               <span class="hero-cta__chevron" aria-hidden="true">
                 <ion-icon name="chevron-forward-outline"></ion-icon>
@@ -222,7 +231,6 @@
               <ion-icon name="cloud-upload-outline"></ion-icon>
               <span>{{ 'myStories.uploadVoice' | translate }}</span>
             </button>
-            <p class="hint">{{ 'myStories.uploadVoiceDesc' | translate }}</p>
           } @else {
             <div class="record-live" aria-live="polite">
               <span class="record-live__pulse"></span>

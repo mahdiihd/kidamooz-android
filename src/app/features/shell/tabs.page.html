@@ -14,10 +14,12 @@
       <ion-label>{{ 'tabs.stories' | translate }}</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="parents" href="/tabs/parents">
-      <ion-icon name="people-outline"></ion-icon>
-      <ion-label>{{ 'tabs.parents' | translate }}</ion-label>
-    </ion-tab-button>
+    @if (showParents) {
+      <ion-tab-button tab="parents" href="/tabs/parents">
+        <ion-icon name="people-outline"></ion-icon>
+        <ion-label>{{ 'tabs.parents' | translate }}</ion-label>
+      </ion-tab-button>
+    }
 
     <ion-tab-button tab="more" href="/tabs/more">
       <ion-icon name="mic-outline"></ion-icon>

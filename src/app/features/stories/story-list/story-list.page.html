@@ -66,22 +66,14 @@
       } @else {
         <div class="playlist-list">
           @for (story of stories(); track story.id) {
-            <div class="playlist-row">
-              <app-story-list-item
-                [story]="story"
-                [active]="isCurrentStory(story.id)"
-                [playing]="isPlayingStory(story.id)"
-                (selected)="onStorySelected($event)"
-              />
-              <button
-                type="button"
-                class="fav-toggle"
-                [class.fav-toggle--on]="isFavorite(story.id)"
-                (click)="toggleFavorite(story, $event)"
-              >
-                ♥
-              </button>
-            </div>
+            <app-story-list-item
+              [story]="story"
+              [active]="isCurrentStory(story.id)"
+              [playing]="isPlayingStory(story.id)"
+              [favorite]="isFavorite(story.id)"
+              (selected)="onStorySelected($event)"
+              (favoriteToggle)="toggleFavorite($event)"
+            />
           }
         </div>
       }

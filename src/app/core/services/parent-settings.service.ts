@@ -17,6 +17,8 @@ export class ParentSettingsService {
   private readonly activeChildIdState = signal<string | null>(null);
   private readonly hasPinState = signal(false);
   private unlockedUntil = 0;
+  private boundUserId: string | null = null;
+  private refreshSeq = 0;
 
   readonly children = this.childrenState.asReadonly();
   readonly activeChildId = this.activeChildIdState.asReadonly();
@@ -39,42 +41,89 @@ export class ParentSettingsService {
     this.unlockedUntil = Date.now() + minutes * 60_000;
   }
 
+  async clearSession(): Promise<void> {
+    this.refreshSeq += 1;
+    this.boundUserId = null;
+    this.childrenState.set([]);
+    this.activeChildIdState.set(null);
+    this.lock();
+    await Preferences.remove({ key: ActiveChildKey });
+  }
+
   async ensureReady(): Promise<void> {
     const pin = await Preferences.get({ key: PinHashKey });
     this.hasPinState.set(!!pin.value);
 
-    const active = await Preferences.get({ key: ActiveChildKey });
-    if (active.value) {
-      this.activeChildIdState.set(active.value);
+    await this.auth.ensureHydrated();
+    const userId = this.auth.profile()?.id ?? null;
+
+    if (userId !== this.boundUserId) {
+      this.childrenState.set([]);
+      this.activeChildIdState.set(null);
+      this.boundUserId = userId;
+      this.lock();
+
+      if (!userId) {
+        await Preferences.remove({ key: ActiveChildKey });
+        return;
+      }
+
+      const active = await Preferences.get({ key: this.activeChildStorageKey(userId) });
+      if (active.value) {
+        this.activeChildIdState.set(active.value);
+      }
     }
 
-    await this.auth.ensureHydrated();
     if (this.auth.isLoggedIn()) {
       await this.refreshChildren();
     }
   }
 
   async refreshChildren(): Promise<void> {
+    const userId = this.auth.profile()?.id ?? null;
+    if (!userId) {
+      this.childrenState.set([]);
+      this.activeChildIdState.set(null);
+      return;
+    }
+
+    const seq = ++this.refreshSeq;
     try {
       const items = await new Promise<ChildProfile[]>((resolve, reject) => {
         this.childrenApi.list().subscribe({ next: resolve, error: reject });
       });
+
+      if (seq !== this.refreshSeq || this.auth.profile()?.id !== userId) {
+        return;
+      }
+
       this.childrenState.set(items);
       const current = this.activeChildIdState();
       if (!current || !items.some((c) => c.id === current)) {
         const nextId = items[0]?.id ?? null;
         this.activeChildIdState.set(nextId);
         if (nextId) {
-          await Preferences.set({ key: ActiveChildKey, value: nextId });
+          await Preferences.set({ key: this.activeChildStorageKey(userId), value: nextId });
+        } else {
+          await Preferences.remove({ key: this.activeChildStorageKey(userId) });
+          await Preferences.remove({ key: ActiveChildKey });
         }
       }
     } catch {
+      if (seq !== this.refreshSeq || this.auth.profile()?.id !== userId) {
+        return;
+      }
       this.childrenState.set([]);
+      this.activeChildIdState.set(null);
     }
   }
 
   async setActiveChild(id: string): Promise<void> {
     this.activeChildIdState.set(id);
+    const userId = this.auth.profile()?.id;
+    if (userId) {
+      await Preferences.set({ key: this.activeChildStorageKey(userId), value: id });
+    }
     await Preferences.set({ key: ActiveChildKey, value: id });
   }
 
@@ -106,6 +155,10 @@ export class ParentSettingsService {
   async clearPin(): Promise<void> {
     await Preferences.remove({ key: PinHashKey });
     this.hasPinState.set(false);
+  }
+
+  private activeChildStorageKey(userId: string): string {
+    return `${ActiveChildKey}.${userId}`;
   }
 
   private async hash(value: string): Promise<string> {

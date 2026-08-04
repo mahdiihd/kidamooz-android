@@ -28,6 +28,7 @@ interface StoryApiDto {
   coverUrl: string;
   audioUrl: string;
   uploadedAudioUrl?: string | null;
+  preferredNarration?: 'ai' | 'user' | string;
   durationSeconds: number;
   ageMin: number;
   ageMax: number;
@@ -98,6 +99,7 @@ export function mapStory(dto: StoryApiDto): Story {
     coverUrl: sanitizeMediaUrl(dto.coverUrl) ?? '',
     audioUrl: sanitizeMediaUrl(dto.audioUrl) ?? '',
     uploadedAudioUrl: sanitizeMediaUrl(dto.uploadedAudioUrl ?? null),
+    preferredNarration: dto.preferredNarration === 'user' ? 'user' : 'ai',
     durationSeconds: dto.durationSeconds,
     ageMin: dto.ageMin,
     ageMax: dto.ageMax,

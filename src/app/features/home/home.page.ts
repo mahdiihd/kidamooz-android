@@ -1,19 +1,12 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonContent, ViewWillEnter } from '@ionic/angular/standalone';
 
 import { Category } from '../../core/models/category.model';
-import {
-  MemberEngagement,
-  StoryOfTheDay,
-  WeeklyChallenge,
-} from '../../core/models/member-feature.model';
 import { Story } from '../../core/models/story.model';
-import { AudioCacheService } from '../../core/services/audio-cache.service';
-import { EngagementApiService } from '../../core/services/engagement-api.service';
+import { EngagementSurfaceStore } from '../../core/services/engagement-surface.store';
 import { MemberAuthService } from '../../core/services/member-auth.service';
 import { ParentSettingsService } from '../../core/services/parent-settings.service';
-import { PushNotificationService } from '../../core/services/push-notification.service';
 import { StoryCatalogStore } from '../../core/services/story-catalog.store';
 import { TranslationService } from '../../core/services/translation.service';
 import { CategoryIslandComponent } from '../../shared/components/category-island/category-island.component';
@@ -46,15 +39,15 @@ type PageState = 'loading' | 'ready' | 'error';
 })
 export class HomePage implements OnInit, ViewWillEnter {
   private readonly catalogStore = inject(StoryCatalogStore);
+  private readonly engagementSurface = inject(EngagementSurfaceStore);
   private readonly router = inject(Router);
   private readonly auth = inject(MemberAuthService);
   private readonly translation = inject(TranslationService);
-  private readonly engagementApi = inject(EngagementApiService);
   private readonly parentSettings = inject(ParentSettingsService);
-  private readonly audioCache = inject(AudioCacheService);
-  private readonly push = inject(PushNotificationService);
 
   readonly categories = this.catalogStore.categories;
+  readonly storyOfDay = this.engagementSurface.storyOfDay;
+  readonly challenge = this.engagementSurface.challenge;
   readonly featuredStories = computed(() => {
     const age = this.parentSettings.activeAge();
     const featured = this.catalogStore.getFeaturedStories(8);
@@ -87,30 +80,17 @@ export class HomePage implements OnInit, ViewWillEnter {
     return this.translation.translate('home.greeting');
   });
 
-  readonly storyOfDay = signal<StoryOfTheDay | null>(null);
-  readonly challenge = signal<WeeklyChallenge | null>(null);
-  readonly engagement = signal<MemberEngagement | null>(null);
-  readonly continueStory = computed(() => {
-    const id = this.engagement()?.lastPlayedStoryId;
-    if (!id) {
-      return null;
-    }
-    return this.catalogStore.getStoryById(id) ?? null;
-  });
-
-  private storyOfDayBannerShown = false;
-
   ngOnInit(): void {
     void this.catalogStore.ensureReady();
     void this.auth.ensureHydrated();
     void this.parentSettings.ensureReady();
-    this.loadEngagementSurface();
+    void this.engagementSurface.ensureReady();
   }
 
   ionViewWillEnter(): void {
     void this.auth.ensureHydrated();
     void this.parentSettings.ensureReady();
-    this.loadEngagementSurface();
+    void this.engagementSurface.ensureReady();
   }
 
   onCategorySelected(category: Category): void {
@@ -135,14 +115,6 @@ export class HomePage implements OnInit, ViewWillEnter {
     });
   }
 
-  openContinue(): void {
-    const story = this.continueStory();
-    if (!story) {
-      return;
-    }
-    this.onStorySelected(story);
-  }
-
   openChallenge(): void {
     const challenge = this.challenge();
     void this.router.navigate(['/my-stories/create'], {
@@ -150,46 +122,8 @@ export class HomePage implements OnInit, ViewWillEnter {
     });
   }
 
-  async downloadForOffline(story: Story): Promise<void> {
-    if (!this.engagement()?.canDownloadOffline) {
-      return;
-    }
-    await this.audioCache.ensureCached(story.id, story.audioUrl);
-  }
-
   loadContent(): void {
     void this.catalogStore.refresh();
-    this.loadEngagementSurface();
-  }
-
-  private loadEngagementSurface(): void {
-    this.engagementApi.storyOfTheDay().subscribe({
-      next: (item) => {
-        this.storyOfDay.set(item);
-        if (!this.storyOfDayBannerShown) {
-          this.storyOfDayBannerShown = true;
-          this.push.showEngagementBanner(
-            this.translation.translate('home.storyOfDay'),
-            item.titleFa,
-            item.storyId
-          );
-        }
-      },
-      error: () => this.storyOfDay.set(null),
-    });
-    this.engagementApi.weeklyChallenge().subscribe({
-      next: (item) => this.challenge.set(item),
-      error: () => this.challenge.set(null),
-    });
-    void this.auth.ensureHydrated().then(() => {
-      if (!this.auth.isLoggedIn()) {
-        this.engagement.set(null);
-        return;
-      }
-      this.engagementApi.me().subscribe({
-        next: (eng) => this.engagement.set(eng),
-        error: () => this.engagement.set(null),
-      });
-    });
+    void this.engagementSurface.ensureReady(true);
   }
 }

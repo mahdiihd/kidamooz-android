@@ -1,4 +1,4 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { Injectable, Injector, computed, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Preferences } from '@capacitor/preferences';
 import { Observable, from, map, switchMap, tap } from 'rxjs';
@@ -6,6 +6,8 @@ import { Observable, from, map, switchMap, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { MemberAuthResponse, MemberProfile } from '../models/story-draft.model';
 import { sanitizePlainText } from '../utils/sanitize.util';
+import { FavoritesService } from './favorites.service';
+import { ParentSettingsService } from './parent-settings.service';
 
 const TokenKey = 'kidamooz.memberToken';
 const ProfileKey = 'kidamooz.memberProfile';
@@ -13,6 +15,7 @@ const ProfileKey = 'kidamooz.memberProfile';
 @Injectable({ providedIn: 'root' })
 export class MemberAuthService {
   private readonly http = inject(HttpClient);
+  private readonly injector = inject(Injector);
   private readonly base = `${environment.apiBaseUrl}/api/v1/auth`;
 
   private readonly token = signal<string | null>(null);
@@ -88,8 +91,10 @@ export class MemberAuthService {
   async logout(): Promise<void> {
     this.token.set(null);
     this.profile.set(null);
+    this.hydratePromise = null;
     await Preferences.remove({ key: TokenKey });
     await Preferences.remove({ key: ProfileKey });
+    await this.clearUserScopedCaches();
   }
 
   private async readFromStorage(): Promise<void> {
@@ -114,11 +119,22 @@ export class MemberAuthService {
     if (!res.accessToken || !res.user?.id) {
       throw new Error('پاسخ ورود نامعتبر بود.');
     }
+    const previousUserId = this.profile()?.id ?? null;
     this.token.set(res.accessToken);
     this.profile.set(res.user);
     this.hydratePromise = Promise.resolve();
     await Preferences.set({ key: TokenKey, value: res.accessToken });
     await Preferences.set({ key: ProfileKey, value: JSON.stringify(res.user) });
+    if (previousUserId !== res.user.id) {
+      await this.clearUserScopedCaches();
+      await this.injector.get(ParentSettingsService).ensureReady();
+      await this.injector.get(FavoritesService).ensureReady();
+    }
+  }
+
+  private async clearUserScopedCaches(): Promise<void> {
+    await this.injector.get(ParentSettingsService).clearSession();
+    await this.injector.get(FavoritesService).clearSession();
   }
 
   private async saveProfile(user: MemberProfile): Promise<void> {

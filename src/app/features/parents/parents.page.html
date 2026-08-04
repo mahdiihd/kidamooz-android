@@ -109,10 +109,6 @@
             <strong>{{ eng.createStreak }}</strong>
             <span>{{ 'parents.createStreak' | translate }}</span>
           </div>
-          <div class="stat" [class.stat--plus]="isPlus()">
-            <strong>{{ isPlus() ? 'Plus' : 'Free' }}</strong>
-            <span>{{ 'parents.plan' | translate }}</span>
-          </div>
         </div>
       }
 
@@ -244,49 +240,6 @@
             }
           </ul>
         }
-      </section>
-
-      <section class="panel">
-        <div class="panel__head">
-          <span class="panel__badge panel__badge--plus" aria-hidden="true">
-            <ion-icon name="sparkles-outline"></ion-icon>
-          </span>
-          <div class="panel__titles">
-            <h2>{{ 'parents.plusTitle' | translate }}</h2>
-            <p>{{ 'parents.plusHint' | translate }}</p>
-          </div>
-        </div>
-
-        <label class="panel__field">
-          <input
-            type="text"
-            [(ngModel)]="plusCode"
-            [placeholder]="'parents.plusCodePlaceholder' | translate"
-            autocomplete="off"
-          />
-        </label>
-
-        <button
-          type="button"
-          class="hero-cta hero-cta--plus"
-          [disabled]="busy()"
-          (click)="redeemPlus()"
-        >
-          <span class="hero-cta__icon">
-            @if (busy()) {
-              <ion-spinner name="crescent"></ion-spinner>
-            } @else {
-              <ion-icon name="key-outline"></ion-icon>
-            }
-          </span>
-          <span class="hero-cta__copy">
-            <strong>{{ 'parents.redeemPlus' | translate }}</strong>
-            <small>{{ 'parents.redeemPlusDesc' | translate }}</small>
-          </span>
-          <span class="hero-cta__chevron" aria-hidden="true">
-            <ion-icon name="chevron-forward-outline"></ion-icon>
-          </span>
-        </button>
       </section>
 
       <section class="account-footer">
