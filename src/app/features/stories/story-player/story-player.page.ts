@@ -27,6 +27,7 @@ import { StoryTitlePipe } from '../../../shared/pipes/story-title.pipe';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 
 type PageState = 'loading' | 'ready' | 'error';
+type NarrationSource = 'ai' | 'mine';
 
 @Component({
   selector: 'app-story-player',
@@ -63,6 +64,7 @@ export class StoryPlayerPage implements OnInit, OnDestroy {
   readonly playerState = signal<PlayerState>('idle');
   readonly currentTime = signal(0);
   readonly duration = signal(0);
+  readonly narrationSource = signal<NarrationSource>('ai');
 
   readonly headerTitle = computed(() => {
     this.translation.language();
@@ -74,6 +76,26 @@ export class StoryPlayerPage implements OnInit, OnDestroy {
     return this.translation.language() === 'en'
       ? story.titleEn || story.titleFa || story.title
       : story.titleFa || story.title;
+  });
+
+  readonly canSwitchNarration = computed(() => {
+    const story = this.story();
+    return Boolean(story?.audioUrl && story.uploadedAudioUrl);
+  });
+
+  readonly narrationBadgeKey = computed(() =>
+    this.narrationSource() === 'mine' ? 'player.myNarration' : 'player.aiNarration'
+  );
+
+  readonly activeAudioUrl = computed(() => {
+    const story = this.story();
+    if (!story) {
+      return '';
+    }
+    if (this.narrationSource() === 'mine' && story.uploadedAudioUrl) {
+      return story.uploadedAudioUrl;
+    }
+    return story.audioUrl || story.uploadedAudioUrl || '';
   });
 
   ngOnInit(): void {
@@ -106,11 +128,12 @@ export class StoryPlayerPage implements OnInit, OnDestroy {
   async onPlayToggle(): Promise<void> {
     await this.triggerHaptic();
     const story = this.story();
+    const audioUrl = this.activeAudioUrl();
     const startingPlayback = this.playerState() !== 'playing';
     await this.audioPlayer.togglePlay();
 
-    if (startingPlayback && story?.audioUrl) {
-      void this.audioCache.ensureCached(story.id, story.audioUrl);
+    if (startingPlayback && story && audioUrl) {
+      void this.audioCache.ensureCached(story.id, audioUrl);
       void this.audioCache.touch(story.id);
     }
   }
@@ -119,6 +142,18 @@ export class StoryPlayerPage implements OnInit, OnDestroy {
     const value = event.detail.value;
     const seconds = Array.isArray(value) ? value[0] : value;
     this.audioPlayer.seekTo(Number(seconds));
+  }
+
+  async switchNarration(): Promise<void> {
+    if (!this.canSwitchNarration()) {
+      return;
+    }
+    await this.triggerHaptic();
+    this.narrationSource.update((current) => (current === 'ai' ? 'mine' : 'ai'));
+    const story = this.story();
+    if (story) {
+      await this.loadAudio(story);
+    }
   }
 
   mascotState(): PlayerState {
@@ -135,7 +170,7 @@ export class StoryPlayerPage implements OnInit, OnDestroy {
       return;
     }
 
-    this.story.set(cached);
+    this.applyStory(cached);
     this.pageState.set('ready');
   }
 
@@ -144,7 +179,7 @@ export class StoryPlayerPage implements OnInit, OnDestroy {
 
     const cached = this.catalogStore.getStoryById(storyId);
     if (cached) {
-      this.story.set(cached);
+      this.applyStory(cached);
       this.pageState.set('ready');
       await this.loadAudio(cached);
       return;
@@ -155,7 +190,7 @@ export class StoryPlayerPage implements OnInit, OnDestroy {
     this.storyApi.getStoryById(storyId).subscribe({
       next: (fetchedStory) => {
         this.catalogStore.upsertStory(fetchedStory);
-        this.story.set(fetchedStory);
+        this.applyStory(fetchedStory);
         this.pageState.set('ready');
         void this.loadAudio(fetchedStory);
       },
@@ -163,9 +198,23 @@ export class StoryPlayerPage implements OnInit, OnDestroy {
     });
   }
 
+  private applyStory(story: StoryDetail): void {
+    this.story.set(story);
+    this.narrationSource.set(story.uploadedAudioUrl ? 'mine' : 'ai');
+  }
+
   private async loadAudio(story: StoryDetail): Promise<void> {
     try {
-      const playUrl = await this.audioCache.resolvePlayUrl(story.id, story.audioUrl);
+      const sourceUrl =
+        this.narrationSource() === 'mine' && story.uploadedAudioUrl
+          ? story.uploadedAudioUrl
+          : story.audioUrl || story.uploadedAudioUrl || '';
+      if (!sourceUrl) {
+        this.pageState.set('error');
+        return;
+      }
+
+      const playUrl = await this.audioCache.resolvePlayUrl(story.id, sourceUrl);
       const title =
         this.translation.language() === 'en'
           ? story.titleEn || story.titleFa || story.title

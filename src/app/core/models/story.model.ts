@@ -8,6 +8,7 @@ export interface Story {
   descriptionEn: string;
   coverUrl: string;
   audioUrl: string;
+  uploadedAudioUrl?: string | null;
   durationSeconds: number;
   ageMin: number;
   ageMax: number;

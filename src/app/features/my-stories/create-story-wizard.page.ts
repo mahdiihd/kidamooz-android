@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -20,12 +20,14 @@ import {
   bookOutline,
   cameraOutline,
   chevronForwardOutline,
+  cloudUploadOutline,
   colorPaletteOutline,
   imagesOutline,
   micOutline,
   paperPlaneOutline,
   refreshOutline,
   stopCircleOutline,
+  swapHorizontalOutline,
 } from 'ionicons/icons';
 
 import { StoryDraft } from '../../core/models/story-draft.model';
@@ -41,21 +43,27 @@ addIcons({
   bookOutline,
   cameraOutline,
   chevronForwardOutline,
+  cloudUploadOutline,
   colorPaletteOutline,
   imagesOutline,
   micOutline,
   paperPlaneOutline,
   refreshOutline,
   stopCircleOutline,
+  swapHorizontalOutline,
 });
 
 type WizardStep = 'pick' | 'generating' | 'review' | 'record' | 'saving' | 'done';
+type NarrationSource = 'ai' | 'mine';
 
 type PendingAudio = {
   blob: Blob;
   fileName: string;
   durationSeconds: number;
 };
+
+const MAX_UPLOAD_BYTES = 52_428_800;
+const ALLOWED_UPLOAD_EXTENSIONS = new Set(['.mp3', '.wav', '.m4a']);
 
 @Component({
   selector: 'app-create-story-wizard',
@@ -74,6 +82,8 @@ type PendingAudio = {
   styleUrl: './create-story-wizard.page.scss',
 })
 export class CreateStoryWizardPage implements OnInit, OnDestroy {
+  @ViewChild('voiceFileInput') private voiceFileInput?: ElementRef<HTMLInputElement>;
+
   private readonly api = inject(StoryDraftApiService);
   private readonly auth = inject(MemberAuthService);
   private readonly recorder = inject(VoiceRecorderService);
@@ -89,9 +99,42 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
   readonly pendingAudio = signal<PendingAudio | null>(null);
   readonly aiBusy = signal(false);
   readonly challengeTag = signal<string | null>(null);
+  readonly narrationSource = signal<NarrationSource>('ai');
   titleFa = '';
   descriptionFa = '';
   storyScript = '';
+
+  readonly activePlayerUrl = computed(() => {
+    const pending = this.previewUrl();
+    if (pending) {
+      return pending;
+    }
+    const draft = this.draft();
+    if (!draft) {
+      return '';
+    }
+    if (this.narrationSource() === 'mine' && draft.uploadedAudioUrl) {
+      return draft.uploadedAudioUrl;
+    }
+    return draft.audioUrl ?? draft.uploadedAudioUrl ?? '';
+  });
+
+  readonly narrationBadgeKey = computed(() => {
+    if (this.pendingAudio() || (this.narrationSource() === 'mine' && this.draft()?.uploadedAudioUrl)) {
+      return 'myStories.myNarration';
+    }
+    return 'myStories.aiNarration';
+  });
+
+  readonly canSwitchNarration = computed(() => {
+    const draft = this.draft();
+    return Boolean(draft?.audioUrl && draft.uploadedAudioUrl);
+  });
+
+  readonly canSubmitWithoutRecording = computed(() => {
+    const draft = this.draft();
+    return Boolean(draft?.audioUrl || draft?.uploadedAudioUrl);
+  });
 
   async ngOnInit(): Promise<void> {
     await this.auth.ensureHydrated();
@@ -163,6 +206,7 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
         fileName: result.fileName,
         durationSeconds: result.durationSeconds,
       });
+      this.narrationSource.set('mine');
     } catch {
       this.recording.set(false);
       this.error.set('recordFailed');
@@ -173,6 +217,49 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
     await this.tapFeedback();
     this.clearPendingAudio();
     this.error.set('');
+  }
+
+  async switchNarration(): Promise<void> {
+    if (!this.canSwitchNarration()) {
+      return;
+    }
+    await this.tapFeedback();
+    this.narrationSource.update((current) => (current === 'ai' ? 'mine' : 'ai'));
+  }
+
+  openVoiceFilePicker(): void {
+    this.voiceFileInput?.nativeElement.click();
+  }
+
+  async onVoiceFileSelected(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = '';
+    if (!file) {
+      return;
+    }
+
+    this.error.set('');
+    if (file.size > MAX_UPLOAD_BYTES) {
+      this.error.set('fileTooLarge');
+      return;
+    }
+
+    const extension = this.fileExtension(file.name);
+    if (!ALLOWED_UPLOAD_EXTENSIONS.has(extension)) {
+      this.error.set('fileTypeInvalid');
+      return;
+    }
+
+    await this.tapFeedback();
+    this.revokePreview();
+    this.previewUrl.set(URL.createObjectURL(file));
+    this.pendingAudio.set({
+      blob: file,
+      fileName: file.name,
+      durationSeconds: 0,
+    });
+    this.narrationSource.set('mine');
   }
 
   async submitRecording(): Promise<void> {
@@ -186,14 +273,14 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
     await this.tapFeedback();
     this.step.set('saving');
     try {
-      await new Promise<StoryDraft>((resolve, reject) => {
+      const uploaded = await new Promise<StoryDraft>((resolve, reject) => {
         this.api
-          .uploadAudio(current.id, audio.blob, audio.fileName, audio.durationSeconds)
+          .uploadAudio(current.id, audio.blob, audio.fileName, audio.durationSeconds || undefined)
           .subscribe({ next: resolve, error: reject });
       });
 
       const published = await new Promise<StoryDraft>((resolve, reject) => {
-        this.api.submit(current.id).subscribe({
+        this.api.submit(uploaded.id).subscribe({
           next: (draft) => resolve(draft),
           error: reject,
         });
@@ -201,6 +288,38 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
 
       this.applyDraft(published);
       this.pendingAudio.set(null);
+      this.step.set('done');
+    } catch {
+      this.step.set('record');
+      this.error.set('uploadFailed');
+    }
+  }
+
+  async submitWithAvailableAudio(): Promise<void> {
+    const current = this.draft();
+    if (!current) {
+      return;
+    }
+    if (this.pendingAudio()) {
+      await this.submitRecording();
+      return;
+    }
+    if (!current.audioUrl && !current.uploadedAudioUrl) {
+      this.error.set('noAudio');
+      return;
+    }
+
+    this.error.set('');
+    await this.tapFeedback();
+    this.step.set('saving');
+    try {
+      const published = await new Promise<StoryDraft>((resolve, reject) => {
+        this.api.submit(current.id).subscribe({
+          next: (draft) => resolve(draft),
+          error: reject,
+        });
+      });
+      this.applyDraft(published);
       this.step.set('done');
     } catch {
       this.step.set('record');
@@ -410,6 +529,12 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
     this.descriptionFa = draft.descriptionFa;
     this.storyScript = draft.storyScript;
     this.challengeTag.set(draft.challengeTag);
+    this.narrationSource.set(draft.uploadedAudioUrl ? 'mine' : 'ai');
+  }
+
+  private fileExtension(fileName: string): string {
+    const index = fileName.lastIndexOf('.');
+    return index >= 0 ? fileName.slice(index).toLowerCase() : '';
   }
 
   private revokePreview(): void {

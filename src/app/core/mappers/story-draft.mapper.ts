@@ -22,6 +22,11 @@ export function sanitizeStoryDraft(raw: StoryDraft | Record<string, unknown>): S
       String(draft.descriptionFa ?? draft['DescriptionFa'] ?? ''),
       2000
     ),
+    titleEn: sanitizePlainText(String(draft.titleEn ?? draft['TitleEn'] ?? ''), 300),
+    descriptionEn: sanitizePlainText(
+      String(draft.descriptionEn ?? draft['DescriptionEn'] ?? ''),
+      2000
+    ),
     storyScript: sanitizePlainText(String(draft.storyScript ?? draft['StoryScript'] ?? ''), 8000),
     challengeTag: (() => {
       const raw =
@@ -33,6 +38,11 @@ export function sanitizeStoryDraft(raw: StoryDraft | Record<string, unknown>): S
     audioUrl: sanitizeMediaUrl(
       (draft.audioUrl as string | null | undefined) ??
         (draft['AudioUrl'] as string | null | undefined) ??
+        null
+    ),
+    uploadedAudioUrl: sanitizeMediaUrl(
+      (draft.uploadedAudioUrl as string | null | undefined) ??
+        (draft['UploadedAudioUrl'] as string | null | undefined) ??
         null
     ),
     durationSeconds:

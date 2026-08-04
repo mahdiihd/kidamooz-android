@@ -540,6 +540,54 @@ html[dir='rtl'] .hero-cta--send .hero-cta__icon ion-icon {
   font-size: 0.78rem;
 }
 
+.narration-box {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0.75rem 0 1rem;
+  padding: 0.9rem 1rem;
+  border-radius: var(--km-radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.12),
+    rgba(255, 255, 255, 0.04)
+  );
+}
+
+.narration-box__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.narration-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.75rem;
+  padding: 0.15rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(255, 209, 102, 0.18);
+  color: var(--km-accent-moon);
+  font-size: 0.78rem;
+}
+
+.narration-switch {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--km-text-secondary);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  padding: 0;
+}
+
+.narration-box audio {
+  width: 100%;
+}
+
 .ghost-cta {
   appearance: none;
   width: 100%;

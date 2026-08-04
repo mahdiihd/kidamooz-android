@@ -264,8 +264,7 @@ export class StoryListPage implements OnInit, OnDestroy, ViewWillEnter, ViewWill
     this.lastSyncedCategoryKey = null;
   }
 
-  async toggleFavorite(story: Story, event: Event): Promise<void> {
-    event.stopPropagation();
+  async toggleFavorite(story: Story): Promise<void> {
     await this.favorites.toggle(story.id);
   }
 
@@ -285,7 +284,7 @@ export class StoryListPage implements OnInit, OnDestroy, ViewWillEnter, ViewWill
         if (!eng.canDownloadOffline) {
           return;
         }
-        await this.audioCache.ensureCached(story.id, story.audioUrl);
+        await this.audioCache.ensureCached(story.id, story.uploadedAudioUrl || story.audioUrl);
       },
     });
   }
@@ -303,8 +302,11 @@ export class StoryListPage implements OnInit, OnDestroy, ViewWillEnter, ViewWill
     const story = this.activeStory();
     const starting = this.playerState() !== 'playing';
     await this.audioPlayer.togglePlay();
-    if (starting && story?.audioUrl) {
-      void this.audioCache.ensureCached(story.id, story.audioUrl);
+    if (starting && story) {
+      const audioUrl = story.uploadedAudioUrl || story.audioUrl;
+      if (audioUrl) {
+        void this.audioCache.ensureCached(story.id, audioUrl);
+      }
     }
   }
 
@@ -377,7 +379,8 @@ export class StoryListPage implements OnInit, OnDestroy, ViewWillEnter, ViewWill
         });
       }
 
-      const playUrl = await this.audioCache.resolvePlayUrl(story.id, story.audioUrl);
+      const sourceUrl = story.uploadedAudioUrl || story.audioUrl;
+      const playUrl = await this.audioCache.resolvePlayUrl(story.id, sourceUrl);
       const title =
         this.translation.language() === 'en'
           ? story.titleEn || story.titleFa || story.title
@@ -391,7 +394,7 @@ export class StoryListPage implements OnInit, OnDestroy, ViewWillEnter, ViewWill
 
       if (autoPlay) {
         await this.audioPlayer.play();
-        void this.audioCache.ensureCached(story.id, story.audioUrl);
+        void this.audioCache.ensureCached(story.id, sourceUrl);
         void this.auth.ensureHydrated().then(() => {
           if (!this.auth.isLoggedIn()) {
             return;

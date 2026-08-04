@@ -1,7 +1,7 @@
 import { Component, DestroyRef, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { IonContent, IonIcon, IonSpinner, ViewWillEnter } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
@@ -13,7 +13,7 @@ import {
   personOutline,
   trashOutline,
 } from 'ionicons/icons';
-import { Subscription } from 'rxjs';
+import { Subscription, filter } from 'rxjs';
 
 import { StoryDraft } from '../../core/models/story-draft.model';
 import { MemberAuthService } from '../../core/services/member-auth.service';
@@ -107,6 +107,20 @@ export class MyStoriesListPage implements OnInit, ViewWillEnter {
         replaceUrl: true,
       });
     });
+
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((event) => {
+        if (!event.urlAfterRedirects.includes('/tabs/more')) {
+          return;
+        }
+        if (this.auth.loggedIn()) {
+          this.reload();
+        }
+      });
   }
 
   async ngOnInit(): Promise<void> {

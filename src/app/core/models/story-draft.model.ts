@@ -17,9 +17,12 @@ export interface StoryDraft {
   usedFallbackCover: boolean;
   titleFa: string;
   descriptionFa: string;
+  titleEn: string;
+  descriptionEn: string;
   storyScript: string;
   challengeTag: string | null;
   audioUrl: string | null;
+  uploadedAudioUrl: string | null;
   durationSeconds: number | null;
   publishedStoryId: string | null;
   errorMessage: string | null;

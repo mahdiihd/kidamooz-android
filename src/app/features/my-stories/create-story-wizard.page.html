@@ -6,6 +6,14 @@
   backHref="/tabs/more"
 ></app-page-header>
 
+<input
+  #voiceFileInput
+  type="file"
+  accept=".mp3,.wav,.m4a,audio/mpeg,audio/wav,audio/mp4,audio/x-m4a"
+  hidden
+  (change)="onVoiceFileSelected($event)"
+/>
+
 <ion-content [fullscreen]="true" class="create-wizard">
   <div class="km-page create-wizard__body">
     @if (error()) {
@@ -109,6 +117,16 @@
           <span>{{ 'myStories.scriptLabel' | translate }}</span>
           <ion-textarea [(ngModel)]="storyScript" autoGrow="true" rows="10"></ion-textarea>
         </label>
+
+        @if (draft()?.audioUrl) {
+          <section class="narration-box">
+            <div class="narration-box__header">
+              <span class="narration-badge">{{ 'myStories.aiNarration' | translate }}</span>
+            </div>
+            <audio controls [src]="draft()!.audioUrl!"></audio>
+          </section>
+        }
+
         <button type="button" class="hero-cta hero-cta--continue" (click)="saveScriptAndContinue()">
           <span class="hero-cta__icon">
             <ion-icon name="book-outline"></ion-icon>
@@ -125,16 +143,30 @@
       @case ('record') {
         <div class="script-box">{{ storyScript }}</div>
 
+        @if (activePlayerUrl()) {
+          <section class="narration-box">
+            <div class="narration-box__header">
+              <span class="narration-badge">{{ narrationBadgeKey() | translate }}</span>
+              @if (canSwitchNarration()) {
+                <button type="button" class="narration-switch" (click)="switchNarration()">
+                  <ion-icon name="swap-horizontal-outline"></ion-icon>
+                  {{ 'myStories.switchNarration' | translate }}
+                </button>
+              }
+            </div>
+            <audio controls [src]="activePlayerUrl()"></audio>
+          </section>
+        }
+
         @if (pendingAudio(); as audio) {
           <section class="audio-preview">
             <p class="audio-preview__title">{{ 'myStories.previewTitle' | translate }}</p>
             <p class="hint audio-preview__hint">{{ 'myStories.previewHint' | translate }}</p>
-            <div class="audio-preview__player">
-              <audio controls [src]="previewUrl()"></audio>
+            @if (audio.durationSeconds > 0) {
               <span class="audio-preview__duration">
                 {{ audio.durationSeconds }} {{ 'myStories.seconds' | translate }}
               </span>
-            </div>
+            }
 
             <button type="button" class="hero-cta hero-cta--send" (click)="submitRecording()">
               <span class="hero-cta__icon">
@@ -156,19 +188,41 @@
           </section>
         } @else {
           <p class="hint">{{ 'myStories.recordHint' | translate }}</p>
+
+          @if (canSubmitWithoutRecording()) {
+            <button type="button" class="hero-cta hero-cta--send" (click)="submitWithAvailableAudio()">
+              <span class="hero-cta__icon">
+                <ion-icon name="paper-plane-outline"></ion-icon>
+              </span>
+              <span class="hero-cta__copy">
+                <strong>{{ 'myStories.sendWithAi' | translate }}</strong>
+                <small>{{ 'myStories.sendWithAiDesc' | translate }}</small>
+              </span>
+              <span class="hero-cta__chevron" aria-hidden="true">
+                <ion-icon name="chevron-forward-outline"></ion-icon>
+              </span>
+            </button>
+          }
+
           @if (!recording()) {
             <button type="button" class="hero-cta hero-cta--record" (click)="startRecording()">
               <span class="hero-cta__icon">
                 <ion-icon name="mic-outline"></ion-icon>
               </span>
               <span class="hero-cta__copy">
-                <strong>{{ 'myStories.startRecord' | translate }}</strong>
-                <small>{{ 'myStories.startRecordDesc' | translate }}</small>
+                <strong>{{ 'myStories.myVoice' | translate }}</strong>
+                <small>{{ 'myStories.myVoiceDesc' | translate }}</small>
               </span>
               <span class="hero-cta__chevron" aria-hidden="true">
                 <ion-icon name="chevron-forward-outline"></ion-icon>
               </span>
             </button>
+
+            <button type="button" class="ghost-cta" (click)="openVoiceFilePicker()">
+              <ion-icon name="cloud-upload-outline"></ion-icon>
+              <span>{{ 'myStories.uploadVoice' | translate }}</span>
+            </button>
+            <p class="hint">{{ 'myStories.uploadVoiceDesc' | translate }}</p>
           } @else {
             <div class="record-live" aria-live="polite">
               <span class="record-live__pulse"></span>
@@ -198,10 +252,13 @@
         }
         <h2 class="done-title">{{ titleFa }}</h2>
         <p class="hint">{{ 'myStories.done' | translate }}</p>
-        @if (previewUrl()) {
-          <audio controls [src]="previewUrl()"></audio>
-        } @else if (draft()?.audioUrl) {
-          <audio controls [src]="draft()!.audioUrl!"></audio>
+        @if (activePlayerUrl()) {
+          <section class="narration-box">
+            <div class="narration-box__header">
+              <span class="narration-badge">{{ narrationBadgeKey() | translate }}</span>
+            </div>
+            <audio controls [src]="activePlayerUrl()"></audio>
+          </section>
         }
         <button type="button" class="hero-cta hero-cta--back" (click)="back()">
           <span class="hero-cta__icon">

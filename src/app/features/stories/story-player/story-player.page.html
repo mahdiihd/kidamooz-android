@@ -29,6 +29,15 @@
 
       <p class="description">{{ currentStory | storyDescription }}</p>
 
+      <div class="narration-meta">
+        <span class="narration-badge">{{ narrationBadgeKey() | translate }}</span>
+        @if (canSwitchNarration()) {
+          <button type="button" class="narration-switch" (click)="switchNarration()">
+            {{ 'player.switchNarration' | translate }}
+          </button>
+        }
+      </div>
+
       <app-big-play-button
         [isPlaying]="playerState() === 'playing'"
         (clicked)="onPlayToggle()"
