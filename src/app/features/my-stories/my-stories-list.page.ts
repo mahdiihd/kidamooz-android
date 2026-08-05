@@ -12,7 +12,6 @@ import {
   logOutOutline,
   personOutline,
   trashOutline,
-  walletOutline,
 } from 'ionicons/icons';
 import { Subscription, filter } from 'rxjs';
 
@@ -30,7 +29,6 @@ addIcons({
   logOutOutline,
   personOutline,
   trashOutline,
-  walletOutline,
 });
 
 @Component({
@@ -185,10 +183,6 @@ export class MyStoriesListPage implements OnInit, ViewWillEnter {
   async goLogin(): Promise<void> {
     await this.tapFeedback();
     void this.router.navigateByUrl('/auth/login');
-  }
-
-  openWallet(): void {
-    void this.router.navigateByUrl('/wallet');
   }
 
   async logout(): Promise<void> {

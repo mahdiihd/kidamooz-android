@@ -43,49 +43,6 @@
   color: var(--km-text-secondary);
 }
 
-.wallet-link {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 0.8rem;
-  align-items: center;
-  width: 100%;
-  margin: 0 0 0.85rem;
-  border: 1px solid rgba(255, 209, 102, 0.22);
-  border-radius: 18px;
-  padding: 0.9rem 0.95rem;
-  background: rgba(255, 209, 102, 0.08);
-  color: inherit;
-  text-align: start;
-  cursor: pointer;
-}
-
-.wallet-link__icon {
-  width: 2.35rem;
-  height: 2.35rem;
-  border-radius: 12px;
-  display: grid;
-  place-items: center;
-  background: rgba(255, 209, 102, 0.16);
-  color: var(--km-accent-moon);
-  font-size: 1.15rem;
-}
-
-.wallet-link__copy {
-  display: grid;
-  gap: 0.15rem;
-  min-width: 0;
-
-  strong {
-    font-size: 0.9rem;
-    color: var(--km-text-primary);
-  }
-
-  small {
-    font-size: 0.76rem;
-    color: var(--km-text-secondary);
-  }
-}
-
 .gate {
   display: grid;
   gap: 0.85rem;

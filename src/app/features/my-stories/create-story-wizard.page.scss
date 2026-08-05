@@ -399,60 +399,6 @@
   display: block;
 }
 
-.cover-upsell {
-  position: relative;
-  overflow: hidden;
-  width: 100%;
-  border: 1px solid rgba(255, 209, 102, 0.28);
-  border-radius: 20px;
-  padding: 1rem 1rem 0.95rem;
-  margin: 0 0 1rem;
-  background: linear-gradient(
-    145deg,
-    rgba(255, 209, 102, 0.16),
-    rgba(255, 255, 255, 0.05)
-  );
-  color: inherit;
-  text-align: start;
-  display: grid;
-  gap: 0.35rem;
-  cursor: pointer;
-
-  strong {
-    position: relative;
-    z-index: 1;
-    font-size: 0.95rem;
-    color: var(--km-accent-moon-soft);
-  }
-
-  small {
-    position: relative;
-    z-index: 1;
-    color: var(--km-text-secondary);
-    font-size: 0.8rem;
-    line-height: 1.55;
-  }
-}
-
-.cover-upsell__glow {
-  position: absolute;
-  inset-inline-end: -20%;
-  top: -40%;
-  width: 55%;
-  height: 120%;
-  background: radial-gradient(circle, rgba(255, 209, 102, 0.22), transparent 70%);
-  pointer-events: none;
-}
-
-.cover-upsell__cta {
-  position: relative;
-  z-index: 1;
-  margin-top: 0.25rem;
-  font-size: 0.78rem;
-  font-weight: 800;
-  color: var(--km-accent-moon);
-}
-
 .ai-actions {
   display: flex;
   flex-wrap: wrap;

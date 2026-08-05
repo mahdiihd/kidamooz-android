@@ -39,7 +39,6 @@
     "@capacitor/status-bar": "8.0.2",
     "@capgo/capacitor-audio-recorder": "^8.2.6",
     "@ionic/angular": "^8.0.0",
-    "@salarizadi/capacitor-cafebazaar-poolakey": "^1.1.0",
     "ionicons": "^7.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
