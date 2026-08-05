@@ -137,9 +137,7 @@
               [class.draft-card--deleted]="item.status === 'deleted'"
               (click)="openDraft(item)"
             >
-              @if (item.coverUrl) {
-                <img [src]="item.coverUrl" [alt]="item.titleFa" />
-              }
+              <img [src]="item.coverUrl | coverUrl" [alt]="item.titleFa" />
               <div class="draft-card__meta">
                 <strong>{{ item.titleFa || ('myStories.untitled' | translate) }}</strong>
                 <span>{{ ('myStories.status.' + statusLabel(item.status)) | translate }}</span>

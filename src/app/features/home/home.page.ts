@@ -16,6 +16,7 @@ import { MoonMascotComponent } from '../../shared/components/moon-mascot/moon-ma
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { StarsBackgroundComponent } from '../../shared/components/stars-background/stars-background.component';
 import { StoryCardComponent } from '../../shared/components/story-card/story-card.component';
+import { CoverUrlPipe } from '../../shared/pipes/cover-url.pipe';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 type PageState = 'loading' | 'ready' | 'error';
@@ -33,6 +34,7 @@ type PageState = 'loading' | 'ready' | 'error';
     LoadingMoonComponent,
     ErrorStateComponent,
     TranslatePipe,
+    CoverUrlPipe,
   ],
   templateUrl: './home.page.html',
   styleUrl: './home.page.scss',

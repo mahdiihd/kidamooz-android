@@ -18,7 +18,7 @@
     <div class="player">
       <div class="cover-frame">
         <img
-          [src]="currentStory.coverUrl"
+          [src]="currentStory.coverUrl | coverUrl"
           [alt]="currentStory | storyTitle"
           class="cover"
           loading="eager"

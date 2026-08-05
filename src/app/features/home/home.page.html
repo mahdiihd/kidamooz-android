@@ -23,9 +23,7 @@
         <section class="daily">
           <h2 class="km-section-title">{{ 'home.storyOfDay' | translate }}</h2>
           <button type="button" class="daily-card" (click)="openStoryOfDay()">
-            @if (daily.coverUrl) {
-              <img [src]="daily.coverUrl" [alt]="daily.titleFa" />
-            }
+            <img [src]="daily.coverUrl | coverUrl" [alt]="daily.titleFa" />
             <div>
               <strong>{{ daily.titleFa }}</strong>
               <span>{{ 'home.tapToListen' | translate }}</span>

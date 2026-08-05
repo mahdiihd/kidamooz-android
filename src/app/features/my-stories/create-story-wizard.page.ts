@@ -36,6 +36,7 @@ import { StoryDraftApiService } from '../../core/services/story-draft-api.servic
 import { VoiceRecorderService } from '../../core/services/voice-recorder.service';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { StarsBackgroundComponent } from '../../shared/components/stars-background/stars-background.component';
+import { CoverUrlPipe } from '../../shared/pipes/cover-url.pipe';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 addIcons({
@@ -77,6 +78,7 @@ const ALLOWED_UPLOAD_EXTENSIONS = new Set(['.mp3', '.wav', '.m4a']);
     PageHeaderComponent,
     StarsBackgroundComponent,
     TranslatePipe,
+    CoverUrlPipe,
   ],
   templateUrl: './create-story-wizard.page.html',
   styleUrl: './create-story-wizard.page.scss',
