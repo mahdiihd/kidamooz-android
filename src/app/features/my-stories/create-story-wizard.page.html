@@ -91,7 +91,14 @@
         @if (draft()?.coverUrl) {
           <img class="cover" [src]="draft()!.coverUrl!" [alt]="titleFa" />
         }
-        @if (draft()?.usedFallbackCover) {
+        @if (draft()?.usedFallbackCover && draft()?.coverUpsellCode) {
+          <button type="button" class="cover-upsell" (click)="openWallet()">
+            <span class="cover-upsell__glow" aria-hidden="true"></span>
+            <strong>{{ coverUpsellTitleKey() | translate }}</strong>
+            <small>{{ coverUpsellBodyKey() | translate }}</small>
+            <span class="cover-upsell__cta">{{ 'myStories.coverUpsellCta' | translate }}</span>
+          </button>
+        } @else if (draft()?.usedFallbackCover) {
           <p class="hint">{{ 'myStories.fallbackCover' | translate }}</p>
         }
         <div class="ai-actions">

@@ -126,6 +126,16 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
     return phases[this.generatingPhase() % phases.length];
   });
 
+  readonly coverUpsellTitleKey = computed(() => {
+    const code = this.draft()?.coverUpsellCode;
+    return code === 'need_plus' ? 'myStories.coverUpsellPlusTitle' : 'myStories.coverUpsellCreditTitle';
+  });
+
+  readonly coverUpsellBodyKey = computed(() => {
+    const code = this.draft()?.coverUpsellCode;
+    return code === 'need_plus' ? 'myStories.coverUpsellPlusBody' : 'myStories.coverUpsellCreditBody';
+  });
+
   readonly activePlayerUrl = computed(() => {
     const pending = this.previewUrl();
     if (pending) {
@@ -157,6 +167,10 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
     const draft = this.draft();
     return Boolean(draft?.audioUrl || draft?.uploadedAudioUrl);
   });
+
+  openWallet(): void {
+    void this.router.navigateByUrl('/wallet');
+  }
 
   async ngOnInit(): Promise<void> {
     await this.auth.ensureHydrated();

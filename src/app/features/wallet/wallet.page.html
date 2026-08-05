@@ -1,0 +1,104 @@
+<app-stars-background></app-stars-background>
+
+<app-page-header
+  [title]="'wallet.title' | translate"
+  [showBack]="true"
+></app-page-header>
+
+<ion-content [fullscreen]="true" class="wallet-page">
+  <div class="km-page wallet">
+    @if (loading()) {
+      <div class="wallet__state">
+        <ion-spinner name="crescent"></ion-spinner>
+      </div>
+    } @else if (error() === 'loadFailed') {
+      <div class="wallet__state">
+        <p>{{ 'wallet.loadFailed' | translate }}</p>
+        <button type="button" class="wallet__retry" (click)="reload()">
+          {{ 'wallet.retry' | translate }}
+        </button>
+      </div>
+    } @else if (wallet(); as w) {
+      <section class="wallet__hero">
+        <span class="wallet__hero-icon" aria-hidden="true">
+          <ion-icon name="wallet-outline"></ion-icon>
+        </span>
+        <p class="wallet__label">{{ 'wallet.balance' | translate }}</p>
+        <h1 class="wallet__balance">
+          {{ balanceLabel() }}
+          <small>{{ 'wallet.toman' | translate }}</small>
+        </h1>
+        <p class="wallet__meta">
+          @if (w.isPlus) {
+            <span class="wallet__chip wallet__chip--plus">
+              <ion-icon name="diamond-outline"></ion-icon>
+              {{ 'wallet.plusActive' | translate }}
+            </span>
+          } @else {
+            <span class="wallet__chip">{{ 'wallet.plusNeeded' | translate }}</span>
+          }
+        </p>
+      </section>
+
+      <section class="wallet__info">
+        <div class="wallet__info-row">
+          <ion-icon name="sparkles-outline"></ion-icon>
+          <div>
+            <strong>{{ 'wallet.coverPrice' | translate }}</strong>
+            <p>
+              {{ coverPriceLabel() }}
+              {{ 'wallet.toman' | translate }}
+            </p>
+          </div>
+        </div>
+        <p class="wallet__hint">
+          @if (!w.freeAiCoverUsed) {
+            {{ 'wallet.freeRemaining' | translate }}
+          } @else {
+            {{ 'wallet.freeUsed' | translate }}
+          }
+        </p>
+      </section>
+
+      @if (notice()) {
+        <p class="wallet__notice">{{ ('wallet.' + notice()) | translate }}</p>
+      }
+      @if (error() === 'purchaseFailed') {
+        <p class="wallet__notice wallet__notice--error">
+          {{ 'wallet.purchaseFailed' | translate }}
+        </p>
+      }
+
+      <section class="wallet__packages">
+        <h2>{{ 'wallet.packagesTitle' | translate }}</h2>
+        @if (!bazaarSupported) {
+          <p class="wallet__web-hint">{{ 'wallet.webHint' | translate }}</p>
+        }
+        @for (pkg of w.packages; track pkg.productId) {
+          <button
+            type="button"
+            class="wallet__package"
+            [disabled]="!!busyProductId()"
+            (click)="buy(pkg)"
+          >
+            <span class="wallet__package-icon" aria-hidden="true">
+              @if (busyProductId() === pkg.productId) {
+                <ion-spinner name="crescent"></ion-spinner>
+              } @else {
+                <ion-icon name="card-outline"></ion-icon>
+              }
+            </span>
+            <span class="wallet__package-copy">
+              <strong>{{ pkg.titleFa }}</strong>
+              <small>
+                {{ pkg.amountTomans.toLocaleString('fa-IR') }}
+                {{ 'wallet.toman' | translate }}
+              </small>
+            </span>
+            <ion-icon name="chevron-forward-outline" aria-hidden="true"></ion-icon>
+          </button>
+        }
+      </section>
+    }
+  </div>
+</ion-content>

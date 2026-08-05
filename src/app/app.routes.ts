@@ -70,6 +70,12 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'wallet',
+    canActivate: [memberAuthGuard],
+    loadComponent: () =>
+      import('./features/wallet/wallet.page').then((m) => m.WalletPage),
+  },
+  {
     path: '',
     redirectTo: 'tabs/home',
     pathMatch: 'full',

@@ -75,5 +75,12 @@ export function sanitizeStoryDraft(raw: StoryDraft | Record<string, unknown>): S
     canRemoveFromProfile: Boolean(
       draft.canRemoveFromProfile ?? draft['CanRemoveFromProfile'] ?? false
     ),
+    coverUpsellCode: (() => {
+      const raw =
+        (draft.coverUpsellCode as string | null | undefined) ??
+        (draft['CoverUpsellCode'] as string | null | undefined) ??
+        null;
+      return raw ? sanitizePlainText(raw, 64) : null;
+    })(),
   };
 }

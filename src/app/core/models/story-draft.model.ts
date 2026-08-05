@@ -33,6 +33,7 @@ export interface StoryDraft {
   createdAt: string;
   updatedAt: string;
   canRemoveFromProfile: boolean;
+  coverUpsellCode: string | null;
 }
 
 export interface StoryDraftQuota {
