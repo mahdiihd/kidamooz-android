@@ -5,7 +5,6 @@ import { play } from 'ionicons/icons';
 
 import { Story } from '../../../core/models/story.model';
 import { DurationPipe } from '../../pipes/duration.pipe';
-import { CoverUrlPipe } from '../../pipes/cover-url.pipe';
 import { StoryTitlePipe } from '../../pipes/story-title.pipe';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 
@@ -14,7 +13,7 @@ addIcons({ play });
 @Component({
   selector: 'app-story-card',
   standalone: true,
-  imports: [CoverUrlPipe, DurationPipe, IonIcon, StoryTitlePipe, TranslatePipe],
+  imports: [DurationPipe, IonIcon, StoryTitlePipe, TranslatePipe],
   template: `
     <button
       type="button"
@@ -24,7 +23,7 @@ addIcons({ play });
     >
       <div class="cover-wrap">
         <img
-          [src]="story().coverUrl | coverUrl"
+          [src]="story().coverUrl"
           [alt]="story() | storyTitle"
           loading="lazy"
           decoding="async"

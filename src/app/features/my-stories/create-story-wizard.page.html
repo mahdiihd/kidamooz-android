@@ -88,7 +88,9 @@
         </section>
       }
       @case ('review') {
-        <img class="cover" [src]="draft()?.coverUrl | coverUrl" [alt]="titleFa" />
+        @if (draft()?.coverUrl) {
+          <img class="cover" [src]="draft()!.coverUrl!" [alt]="titleFa" />
+        }
         @if (draft()?.usedFallbackCover) {
           <p class="hint">{{ 'myStories.fallbackCover' | translate }}</p>
         }
@@ -252,7 +254,9 @@
         </div>
       }
       @case ('done') {
-        <img class="cover" [src]="draft()?.coverUrl | coverUrl" [alt]="titleFa" />
+        @if (draft()?.coverUrl) {
+          <img class="cover" [src]="draft()!.coverUrl!" [alt]="titleFa" />
+        }
         <h2 class="done-title">{{ titleFa }}</h2>
         <p class="hint">{{ 'myStories.done' | translate }}</p>
         @if (activePlayerUrl()) {

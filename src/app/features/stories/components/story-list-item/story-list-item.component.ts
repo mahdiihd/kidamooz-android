@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
 import { Story } from '../../../../core/models/story.model';
-import { CoverUrlPipe } from '../../../../shared/pipes/cover-url.pipe';
 import { DurationPipe } from '../../../../shared/pipes/duration.pipe';
 import { StoryTitlePipe } from '../../../../shared/pipes/story-title.pipe';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
@@ -9,7 +8,7 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 @Component({
   selector: 'app-story-list-item',
   standalone: true,
-  imports: [CoverUrlPipe, StoryTitlePipe, DurationPipe, TranslatePipe],
+  imports: [StoryTitlePipe, DurationPipe, TranslatePipe],
   template: `
     <div
       class="item"
@@ -24,7 +23,7 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
       >
         <img
           class="item__cover"
-          [src]="story().coverUrl | coverUrl"
+          [src]="story().coverUrl"
           [alt]="story() | storyTitle"
           loading="lazy"
         />

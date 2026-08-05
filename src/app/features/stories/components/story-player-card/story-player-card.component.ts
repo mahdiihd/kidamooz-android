@@ -6,14 +6,12 @@ import { Story } from '../../../../core/models/story.model';
 import { StoryControlsComponent } from '../story-controls/story-controls.component';
 import { StoryInfoComponent } from '../story-info/story-info.component';
 import { StoryProgressBarComponent } from '../story-progress-bar/story-progress-bar.component';
-import { CoverUrlPipe } from '../../../../shared/pipes/cover-url.pipe';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-story-player-card',
   standalone: true,
   imports: [
-    CoverUrlPipe,
     StoryInfoComponent,
     StoryControlsComponent,
     StoryProgressBarComponent,
@@ -25,7 +23,7 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
         <div class="hero-card__cover-wrap">
           <img
             class="hero-card__cover"
-            [src]="story().coverUrl | coverUrl"
+            [src]="story().coverUrl"
             [alt]="story().titleFa || story().title"
             loading="eager"
           />

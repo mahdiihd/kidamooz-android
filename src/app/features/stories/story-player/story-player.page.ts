@@ -21,7 +21,6 @@ import { LoadingMoonComponent } from '../../../shared/components/loading-moon/lo
 import { MoonMascotComponent } from '../../../shared/components/moon-mascot/moon-mascot.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { StarsBackgroundComponent } from '../../../shared/components/stars-background/stars-background.component';
-import { CoverUrlPipe } from '../../../shared/pipes/cover-url.pipe';
 import { DurationPipe } from '../../../shared/pipes/duration.pipe';
 import { StoryDescriptionPipe } from '../../../shared/pipes/story-description.pipe';
 import { StoryTitlePipe } from '../../../shared/pipes/story-title.pipe';
@@ -42,7 +41,6 @@ type NarrationSource = 'ai' | 'mine';
     BigPlayButtonComponent,
     LoadingMoonComponent,
     ErrorStateComponent,
-    CoverUrlPipe,
     DurationPipe,
     StoryTitlePipe,
     StoryDescriptionPipe,

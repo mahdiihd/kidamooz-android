@@ -20,7 +20,6 @@ import { MemberAuthService } from '../../core/services/member-auth.service';
 import { StoryDraftApiService } from '../../core/services/story-draft-api.service';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { StarsBackgroundComponent } from '../../shared/components/stars-background/stars-background.component';
-import { CoverUrlPipe } from '../../shared/pipes/cover-url.pipe';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 addIcons({
@@ -43,7 +42,6 @@ addIcons({
     PageHeaderComponent,
     StarsBackgroundComponent,
     TranslatePipe,
-    CoverUrlPipe,
   ],
   templateUrl: './my-stories-list.page.html',
   styleUrl: './my-stories-list.page.scss',
