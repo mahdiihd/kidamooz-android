@@ -1,5 +1,13 @@
 .home-page {
   padding-top: 8px;
+
+  .km-section-title {
+    font-family: var(--km-font-title);
+    font-size: 1.15rem;
+    font-weight: 400;
+    margin: 0 0 12px;
+    color: var(--km-accent-moon);
+  }
 }
 
 .hero {
@@ -53,6 +61,10 @@
 .daily-card strong {
   display: block;
   margin-bottom: 4px;
+  font-family: var(--km-font-title);
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.3;
 }
 
 .daily-card span {
@@ -62,119 +74,99 @@
 }
 
 .challenge-panel {
-  position: relative;
+  --island-color: #ff8a65;
   width: 100%;
-  overflow: hidden;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 0.75rem;
+  min-height: 80px;
+  border: 0;
+  border-radius: var(--km-radius-lg);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: row;
   align-items: center;
-  border: 1px solid rgba(255, 138, 101, 0.35);
-  border-radius: 22px;
-  padding: 1.05rem 1.05rem 1rem;
-  text-align: start;
-  color: var(--km-text-primary);
-  cursor: pointer;
+  gap: 12px;
   background: linear-gradient(
     145deg,
     rgba(255, 138, 101, 0.22) 0%,
     rgba(61, 32, 96, 0.55) 48%,
     rgba(26, 15, 46, 0.72) 100%
   );
-  box-shadow: 0 14px 36px rgba(10, 4, 24, 0.28);
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease,
-    border-color 0.2s ease;
-}
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 138, 101, 0.35),
+    0 14px 36px rgba(10, 4, 24, 0.28);
+  color: var(--km-text-primary);
+  cursor: pointer;
+  text-align: start;
+  -webkit-tap-highlight-color: transparent;
 
-.challenge-panel:active {
-  transform: scale(0.985);
-}
-
-.challenge-panel__glow {
-  position: absolute;
-  inset: auto -18% -55% auto;
-  width: 180px;
-  height: 180px;
-  border-radius: 50%;
-  pointer-events: none;
-  background: radial-gradient(circle, rgba(255, 209, 102, 0.28), transparent 70%);
-  animation: challenge-glow 3.6s ease-in-out infinite;
-}
-
-.challenge-panel__body {
-  position: relative;
-  min-width: 0;
-}
-
-.challenge-panel__chevron {
-  position: relative;
-  flex-shrink: 0;
-  width: 1.85rem;
-  height: 1.85rem;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  color: var(--km-accent-moon-soft);
-  background: rgba(0, 0, 0, 0.18);
-  border: 1px solid rgba(255, 209, 102, 0.22);
-
-  svg {
-    width: 1rem;
-    height: 1rem;
+  &:active {
+    transform: scale(0.98);
   }
 }
 
+.challenge-panel__icon {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  padding: 3px;
+  background: linear-gradient(
+    145deg,
+    var(--km-accent-moon),
+    color-mix(in srgb, var(--km-accent-coral) 60%, #1a0f2e)
+  );
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28);
+}
+
+.challenge-panel__icon-face {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(165deg, #3d2060 0%, #1a0f2e 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 209, 102, 0.22);
+
+  svg {
+    width: 1.85rem;
+    height: 1.85rem;
+    display: block;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35));
+  }
+}
+
+.challenge-panel__text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
 .challenge-panel__title {
-  display: block;
-  margin: 0 0 0.4rem;
   font-family: var(--km-font-title);
-  font-size: 1.28rem;
-  font-weight: 400;
+  font-size: 1rem;
   line-height: 1.3;
   color: var(--km-accent-moon-soft);
 }
 
-.challenge-panel__desc {
-  margin: 0 0 0.55rem;
-  color: var(--km-text-secondary);
-  font-size: 0.84rem;
-  line-height: 1.55;
-}
-
 .challenge-panel__hint {
-  display: block;
-  font-size: 0.76rem;
-  font-weight: 600;
+  font-size: 0.72rem;
   color: rgba(255, 209, 102, 0.85);
 }
 
-@keyframes challenge-glow {
-  0%,
-  100% {
-    opacity: 0.7;
-    transform: translateY(0);
-  }
-  50% {
-    opacity: 1;
-    transform: translateY(-6px);
-  }
+.challenge-panel__arrow {
+  flex-shrink: 0;
+  font-size: 1.25rem;
+  color: var(--km-accent-coral);
+  opacity: 0.9;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .challenge-panel__glow {
-    animation: none;
-  }
+.challenge-panel__arrow.is-rtl {
+  transform: scaleX(-1);
 }
 
 .categories {
   margin-bottom: 32px;
-
-  .km-section-title {
-    font-size: 1.15rem;
-    margin-bottom: 12px;
-  }
 
   .km-vertical-list {
     gap: 10px;
@@ -183,11 +175,6 @@
 
 .featured {
   margin-bottom: 16px;
-
-  .km-section-title {
-    font-size: 1.15rem;
-    margin-bottom: 12px;
-  }
 
   .km-horizontal-scroll {
     padding-inline: 20px;

@@ -1,6 +1,8 @@
 import { Component, OnInit, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { IonContent, ViewWillEnter } from '@ionic/angular/standalone';
+import { IonContent, IonIcon, ViewWillEnter } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { chevronForwardOutline } from 'ionicons/icons';
 
 import { Category } from '../../core/models/category.model';
 import { Story } from '../../core/models/story.model';
@@ -18,6 +20,8 @@ import { StarsBackgroundComponent } from '../../shared/components/stars-backgrou
 import { StoryCardComponent } from '../../shared/components/story-card/story-card.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
+addIcons({ chevronForwardOutline });
+
 type PageState = 'loading' | 'ready' | 'error';
 
 @Component({
@@ -25,6 +29,7 @@ type PageState = 'loading' | 'ready' | 'error';
   standalone: true,
   imports: [
     IonContent,
+    IonIcon,
     PageHeaderComponent,
     StarsBackgroundComponent,
     MoonMascotComponent,
@@ -78,6 +83,11 @@ export class HomePage implements OnInit, ViewWillEnter {
         .replace('{{name}}', name);
     }
     return this.translation.translate('home.greeting');
+  });
+
+  readonly isRtl = computed(() => {
+    this.translation.language();
+    return this.translation.isRtl();
   });
 
   ngOnInit(): void {

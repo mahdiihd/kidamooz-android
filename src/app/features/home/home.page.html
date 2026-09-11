@@ -38,23 +38,37 @@
         <section class="challenge">
           <h2 class="km-section-title">{{ 'home.challengeTitle' | translate }}</h2>
           <button type="button" class="challenge-panel" (click)="openChallenge()">
-            <span class="challenge-panel__glow" aria-hidden="true"></span>
-            <div class="challenge-panel__body">
-              <strong class="challenge-panel__title">{{ ch.titleFa }}</strong>
-              <p class="challenge-panel__desc">{{ ch.descriptionFa }}</p>
+            <div class="challenge-panel__icon" aria-hidden="true">
+              <span class="challenge-panel__icon-face">
+                <svg viewBox="0 0 48 48" fill="none">
+                  <rect x="8" y="22" width="32" height="19" rx="4" fill="#e23d2a" />
+                  <rect x="8" y="15.5" width="32" height="9" rx="3" fill="#ff5a3c" />
+                  <rect x="21" y="15.5" width="6" height="25.5" fill="#ffd166" />
+                  <rect x="8" y="24" width="32" height="6" fill="#ffd166" />
+                  <path
+                    d="M24 15.5c-2.6-5.4-8.4-6-10.6-3-1.7 2.2-.2 5.8 2.8 7.4H24V15.5Z"
+                    fill="#fff3c4"
+                  />
+                  <path
+                    d="M24 15.5c2.6-5.4 8.4-6 10.6-3 1.7 2.2.2 5.8-2.8 7.4H24V15.5Z"
+                    fill="#ffe8a3"
+                  />
+                  <circle cx="24" cy="16" r="2.6" fill="#ffd166" />
+                  <circle cx="24" cy="16" r="1.2" fill="#fff8f0" />
+                </svg>
+              </span>
+            </div>
+            <div class="challenge-panel__text">
+              <span class="challenge-panel__title">{{ ch.titleFa }}</span>
               <span class="challenge-panel__hint">{{ 'home.challengeHint' | translate }}</span>
             </div>
-            <span class="challenge-panel__chevron" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M14 6l-6 6 6 6"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </span>
+            <ion-icon
+              class="challenge-panel__arrow"
+              [class.is-rtl]="isRtl()"
+              [flipRtl]="false"
+              name="chevron-forward-outline"
+              aria-hidden="true"
+            ></ion-icon>
           </button>
         </section>
       }

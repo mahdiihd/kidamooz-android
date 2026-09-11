@@ -1,16 +1,12 @@
 import { Component, DestroyRef, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { IonContent, IonIcon, IonSpinner, ViewWillEnter } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   brushOutline,
-  checkmarkOutline,
   chevronForwardOutline,
-  logOutOutline,
-  personOutline,
   trashOutline,
 } from 'ionicons/icons';
 import { Subscription, filter } from 'rxjs';
@@ -24,10 +20,7 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 addIcons({
   brushOutline,
-  checkmarkOutline,
   chevronForwardOutline,
-  logOutOutline,
-  personOutline,
   trashOutline,
 });
 
@@ -35,7 +28,6 @@ addIcons({
   selector: 'app-my-stories-list',
   standalone: true,
   imports: [
-    FormsModule,
     IonContent,
     IonIcon,
     IonSpinner,
@@ -52,7 +44,6 @@ export class MyStoriesListPage implements OnInit, ViewWillEnter {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
-  private nameSavedTimer: ReturnType<typeof setTimeout> | null = null;
   private limitNoticeTimer: ReturnType<typeof setTimeout> | null = null;
   private listSub?: Subscription;
   private quotaSub?: Subscription;
@@ -62,18 +53,13 @@ export class MyStoriesListPage implements OnInit, ViewWillEnter {
   readonly items = signal<StoryDraft[]>([]);
   readonly loading = signal(true);
   readonly error = signal('');
-  readonly savingName = signal(false);
-  readonly nameSaved = signal(false);
-  readonly nameError = signal('');
   readonly canCreateToday = signal(true);
   readonly dailyLimitNotice = signal(false);
   readonly loggedIn = computed(() => this.auth.loggedIn());
-  displayName = '';
 
   constructor() {
     effect(() => {
       const isLoggedIn = this.auth.loggedIn();
-      this.displayName = this.auth.profile()?.displayName ?? '';
 
       if (this.wasLoggedIn === null) {
         this.wasLoggedIn = isLoggedIn;
@@ -180,45 +166,6 @@ export class MyStoriesListPage implements OnInit, ViewWillEnter {
     });
   }
 
-  async goLogin(): Promise<void> {
-    await this.tapFeedback();
-    void this.router.navigateByUrl('/auth/login');
-  }
-
-  async logout(): Promise<void> {
-    await this.tapFeedback();
-    await this.auth.logout();
-    this.resetGuestState();
-    this.nameSaved.set(false);
-    this.nameError.set('');
-  }
-
-  async saveName(): Promise<void> {
-    const name = this.displayName.trim();
-    this.nameError.set('');
-    this.nameSaved.set(false);
-
-    if (!name) {
-      this.nameError.set('nameEmpty');
-      return;
-    }
-
-    await this.tapFeedback();
-    this.savingName.set(true);
-    this.auth.updateProfile(name).subscribe({
-      next: (user) => {
-        this.displayName = user.displayName;
-        this.savingName.set(false);
-        this.nameSaved.set(true);
-        this.clearNameSavedLater();
-      },
-      error: () => {
-        this.savingName.set(false);
-        this.nameError.set('saveNameFailed');
-      },
-    });
-  }
-
   async create(): Promise<void> {
     await this.tapFeedback();
     if (!this.auth.loggedIn()) {
@@ -292,16 +239,6 @@ export class MyStoriesListPage implements OnInit, ViewWillEnter {
       this.dailyLimitNotice.set(false);
       this.limitNoticeTimer = null;
     }, 4500);
-  }
-
-  private clearNameSavedLater(): void {
-    if (this.nameSavedTimer) {
-      clearTimeout(this.nameSavedTimer);
-    }
-    this.nameSavedTimer = setTimeout(() => {
-      this.nameSaved.set(false);
-      this.nameSavedTimer = null;
-    }, 2200);
   }
 
   private async tapFeedback(): Promise<void> {

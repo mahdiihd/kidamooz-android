@@ -1,6 +1,7 @@
 export interface MemberProfile {
   id: string;
   mobile: string;
+  profileComplete?: boolean;
   displayName: string;
 }
 
@@ -14,6 +15,7 @@ export interface StoryDraft {
   status: string;
   drawingUrl: string | null;
   coverUrl: string | null;
+  coverChoice?: 'drawing' | 'ai_free' | 'ai_paid';
   usedFallbackCover: boolean;
   titleFa: string;
   descriptionFa: string;

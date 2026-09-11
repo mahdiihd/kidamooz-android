@@ -1,0 +1,45 @@
+<section class="cover-choice" aria-labelledby="cover-choice-title">
+  <header class="cover-choice__intro">
+    <span class="cover-choice__eyebrow">{{ 'myStories.coverStep' | translate }}</span>
+    <h2 id="cover-choice-title">{{ 'myStories.coverChoiceTitle' | translate }}</h2>
+    <p>{{ 'myStories.coverChoiceHint' | translate }}</p>
+  </header>
+  <figure class="drawing-preview">
+    <img [src]="preview()" [alt]="'myStories.drawingPreviewAlt' | translate" />
+    <figcaption><strong>{{ 'myStories.drawingPreviewCaption' | translate }}</strong>
+      <button type="button" (click)="changeDrawing.emit()" [disabled]="disabled()">{{ 'myStories.changeDrawing' | translate }}</button>
+    </figcaption>
+  </figure>
+  <fieldset class="cover-options" [disabled]="disabled()">
+    <legend>{{ 'myStories.coverOptionsLabel' | translate }}</legend>
+    <label class="cover-option" [class.cover-option--selected]="coverChoice() === 'drawing'">
+      <input type="radio" name="coverChoice" value="drawing" [checked]="coverChoice() === 'drawing'" (change)="selectionChange.emit('drawing')" />
+      <span class="cover-option__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m14 5 5 5M4 20l5-1L20 8a2.1 2.1 0 0 0-5-5L4 14Z"/><path d="m4 14 5 5"/></svg></span>
+      <span class="cover-option__copy">
+        <span class="cover-option__heading"><strong>{{ 'myStories.originalCoverTitle' | translate }}</strong><small>{{ 'myStories.originalCoverBadge' | translate }}</small></span>
+        <span class="cover-option__meta">{{ 'myStories.originalCoverTiming' | translate }}</span>
+      </span>
+    </label>
+    <label class="cover-option" [class.cover-option--selected]="coverChoice() === 'ai_free'">
+      <input type="radio" name="coverChoice" value="ai_free" [checked]="coverChoice() === 'ai_free'" (change)="selectionChange.emit('ai_free')" />
+      <span class="cover-option__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m12 3 2.6 6.4L21 12l-6.4 2.6L12 21l-2.6-6.4L3 12l6.4-2.6Z"/><path d="M20 2v4m-2-2h4"/></svg></span>
+      <span class="cover-option__copy">
+        <span class="cover-option__heading"><strong>{{ 'myStories.freeCoverTitle' | translate }}</strong><small>{{ 'myStories.freeCoverBadge' | translate }}</small></span>
+        <span class="cover-option__meta">{{ 'myStories.freeCoverTiming' | translate }}</span>
+      </span>
+    </label>
+    <div class="cover-option cover-option--unavailable" aria-disabled="true">
+      <span class="cover-option__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="10" width="14" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2"/></svg></span>
+      <span class="cover-option__copy">
+        <span class="cover-option__heading"><strong>{{ 'myStories.paidCoverTitle' | translate }}</strong><small>{{ 'myStories.paidCoverBadge' | translate }}</small></span>
+        <span class="cover-option__meta">{{ 'myStories.paidCoverTiming' | translate }}</span>
+      </span>
+    </div>
+  </fieldset>
+  <div class="cover-choice__summary" aria-live="polite">
+    {{ (coverChoice() === 'ai_free' ? 'myStories.freeCoverSummary' : 'myStories.originalCoverSummary') | translate }}
+  </div>
+  <button class="cover-choice__start" type="button" (click)="createRequested.emit()" [disabled]="disabled()">
+    {{ 'myStories.coverContinue' | translate }} <span class="cover-choice__chevron" aria-hidden="true"><ion-icon [icon]="continueIcon"></ion-icon></span>
+  </button>
+</section>

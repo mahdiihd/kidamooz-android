@@ -26,11 +26,14 @@ export const storyCreateGuard: CanActivateFn = (route) => {
   );
 };
 
-export const memberAuthGuard: CanActivateFn = async () => {
+export const memberAuthGuard: CanActivateFn = async (_route, state) => {
   const auth = inject(MemberAuthService);
   const router = inject(Router);
-  await auth.ensureHydrated();
+  await auth.getAccessToken();
   if (auth.loggedIn()) {
+    if (auth.profile()?.profileComplete === false && state.url.split('?')[0] !== '/tabs/profile') {
+      return router.createUrlTree(['/tabs/profile']);
+    }
     return true;
   }
   return router.createUrlTree(['/auth/login']);

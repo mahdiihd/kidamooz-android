@@ -1,0 +1,77 @@
+<app-stars-background></app-stars-background>
+<app-page-header [title]="'profile.title' | translate"></app-page-header>
+<ion-content [fullscreen]="true" class="my-stories">
+  <div class="km-page my-stories__body">
+    <p class="profile-mobile" dir="ltr">{{ auth.profile()?.mobile }}</p>
+    @if (auth.profile()?.profileComplete === false) {
+      <p class="state">{{ 'profile.completeHint' | translate }}</p>
+    }
+      <section class="name-card">
+        <div class="name-card__head">
+          <span class="name-card__badge" aria-hidden="true">
+            <ion-icon name="person-outline"></ion-icon>
+          </span>
+          <div class="name-card__titles">
+            <h2>{{ 'myStories.displayName' | translate }}</h2>
+            <p>{{ 'myStories.displayNameHint' | translate }}</p>
+          </div>
+        </div>
+
+        <label class="name-card__field">
+          <input
+            type="text"
+            [(ngModel)]="displayName"
+            [attr.aria-label]="'myStories.displayName' | translate"
+            maxlength="200"
+            autocomplete="nickname"
+          />
+        </label>
+
+        @if (nameError()) {
+          <p class="name-card__feedback name-card__feedback--error">
+            {{ ('myStories.' + nameError()) | translate }}
+          </p>
+        } @else if (nameSaved()) {
+          <p class="name-card__feedback name-card__feedback--ok">
+            {{ 'myStories.nameSaved' | translate }}
+          </p>
+        }
+
+        <button
+          type="button"
+          class="name-card__save"
+          [disabled]="savingName()"
+          (click)="saveName()"
+        >
+          <span class="name-card__save-icon">
+            @if (savingName()) {
+              <ion-spinner name="crescent"></ion-spinner>
+            } @else {
+              <ion-icon name="checkmark-outline"></ion-icon>
+            }
+          </span>
+          <span>
+            {{
+              savingName()
+                ? ('myStories.savingName' | translate)
+                : ('myStories.saveName' | translate)
+            }}
+          </span>
+        </button>
+      </section>
+
+
+      <section class="account-footer">
+        <button type="button" class="logout-cta" (click)="logout()">
+          <span class="logout-cta__icon">
+            <ion-icon name="log-out-outline"></ion-icon>
+          </span>
+          <span class="logout-cta__copy">
+            <strong>{{ 'myStories.logout' | translate }}</strong>
+            <small>{{ 'myStories.logoutDesc' | translate }}</small>
+          </span>
+        </button>
+      </section>
+
+  </div>
+</ion-content>

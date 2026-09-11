@@ -1,80 +1,40 @@
 <app-stars-background></app-stars-background>
-
-<app-page-header
-  [title]="'auth.title' | translate"
-  [showBack]="true"
-  backHref="/tabs/more"
-></app-page-header>
-
+<app-page-header [title]="'auth.title' | translate" [showBack]="false"></app-page-header>
 <ion-content [fullscreen]="true" class="login-page">
-  <div class="km-page login-page__body">
+  <form class="km-page login-page__body" (ngSubmit)="submit()">
     <section class="login-hero" aria-hidden="true">
       <div class="login-hero__glow"></div>
-      <div class="login-hero__badge">
-        <ion-icon name="person-outline"></ion-icon>
-      </div>
+      <div class="login-hero__badge"><ion-icon name="person-outline"></ion-icon></div>
     </section>
-
     <h2 class="login-title">{{ 'auth.heading' | translate }}</h2>
-    <p class="hint">{{ 'myStories.loginHint' | translate }}</p>
-
+    <p class="hint">{{ (codeSent() ? 'auth.sent' : 'auth.otpHint') | translate }}</p>
     <ion-list lines="none" class="form">
       <ion-item>
-        <ion-input
-          [label]="'auth.mobile' | translate"
-          labelPlacement="stacked"
-          type="tel"
-          inputmode="tel"
-          maxlength="11"
-          [(ngModel)]="mobile"
-          [placeholder]="'auth.mobilePlaceholder' | translate"
-        />
+        <ion-input [label]="'auth.mobile' | translate" labelPlacement="stacked" type="tel" inputmode="tel"
+          maxlength="11" autocomplete="tel-national" name="mobile" [(ngModel)]="mobile" [readonly]="codeSent()"
+          [disabled]="loading()" [placeholder]="'auth.mobilePlaceholder' | translate" />
       </ion-item>
-      <ion-item>
-        <ion-input
-          [label]="'auth.password' | translate"
-          labelPlacement="stacked"
-          type="password"
-          [(ngModel)]="password"
-          [placeholder]="'auth.passwordPlaceholder' | translate"
-        />
-      </ion-item>
-      <ion-item>
-        <ion-input
-          [label]="'auth.displayName' | translate"
-          labelPlacement="stacked"
-          [(ngModel)]="displayName"
-          [placeholder]="'auth.displayNamePlaceholder' | translate"
-        />
-      </ion-item>
+      @if (codeSent()) {
+        <ion-item>
+          <ion-input [label]="'auth.code' | translate" labelPlacement="stacked" type="text" inputmode="numeric"
+            maxlength="6" autocomplete="one-time-code" name="code" [(ngModel)]="code" [disabled]="loading()" />
+        </ion-item>
+      }
     </ion-list>
-
-    @if (error()) {
-      <p class="error">{{ error() }}</p>
-    }
-
-    <button
-      type="button"
-      class="hero-cta hero-cta--auth"
-      [disabled]="loading()"
-      (click)="submit()"
-    >
+    @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
+    <button type="submit" class="hero-cta hero-cta--auth" [disabled]="loading() || (!codeSent() && remaining() > 0)">
       <span class="hero-cta__icon">
-        @if (loading()) {
-          <ion-spinner name="crescent"></ion-spinner>
-        } @else {
-          <ion-icon name="log-in-outline"></ion-icon>
-        }
+        @if (loading()) { <ion-spinner name="crescent"></ion-spinner> }
+        @else { <ion-icon name="log-in-outline"></ion-icon> }
       </span>
-      <span class="hero-cta__copy">
-        <strong>
-          {{
-            loading()
-              ? ('myStories.submitAuthBusy' | translate)
-              : ('myStories.submitAuth' | translate)
-          }}
-        </strong>
-      </span>
+      <span class="hero-cta__copy"><strong>{{ (loading() ? 'auth.busy' : codeSent() ? 'auth.verifyCode' : 'auth.sendCode') | translate }}</strong></span>
     </button>
-  </div>
+    @if (remaining() > 0) { <p class="hint">{{ remaining() }} {{ 'auth.wait' | translate }}</p> }
+    @if (codeSent()) {
+      <div class="otp-actions">
+        <button type="button" [disabled]="loading() || remaining() > 0" (click)="sendCode()">{{ 'auth.resend' | translate }}</button>
+        <button type="button" [disabled]="loading()" (click)="changeMobile()">{{ 'auth.changeMobile' | translate }}</button>
+      </div>
+    }
+  </form>
 </ion-content>

@@ -39,9 +39,10 @@ export class StoryDraftApiService {
       .pipe(map(sanitizeStoryDraft));
   }
 
-  createFromDrawing(file: Blob, fileName: string): Observable<StoryDraft> {
+  createFromDrawing(file: Blob, fileName: string, coverChoice: 'drawing' | 'ai_free' = 'drawing'): Observable<StoryDraft> {
     const form = new FormData();
     form.append('drawing', file, fileName);
+    form.append('coverChoice', coverChoice);
     return this.api.postForm<StoryDraft>(this.base, form).pipe(map(sanitizeStoryDraft));
   }
 
@@ -65,18 +66,6 @@ export class StoryDraftApiService {
           body.storyScript == null ? undefined : sanitizePlainText(body.storyScript, 8000),
         challengeTag: body.challengeTag,
       })
-      .pipe(map(sanitizeStoryDraft));
-  }
-
-  rewrite(id: string, mode: 'polish' | 'shorter' = 'polish'): Observable<StoryDraft> {
-    return this.api
-      .post<StoryDraft>(`${this.base}/${id}/rewrite`, { mode })
-      .pipe(map(sanitizeStoryDraft));
-  }
-
-  regenerateCover(id: string): Observable<StoryDraft> {
-    return this.api
-      .post<StoryDraft>(`${this.base}/${id}/cover/regenerate`, {})
       .pipe(map(sanitizeStoryDraft));
   }
 

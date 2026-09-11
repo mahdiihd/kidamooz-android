@@ -1,0 +1,6 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": { "outDir": "../out-tsc/cover-preview", "types": [] },
+  "files": ["cover-choice-preview.ts", "../src/polyfills.ts"],
+  "include": ["../src/**/*.d.ts"]
+}

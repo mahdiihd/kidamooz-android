@@ -78,15 +78,6 @@ export class StoryPlayerPage implements OnInit, OnDestroy {
       : story.titleFa || story.title;
   });
 
-  readonly canSwitchNarration = computed(() => {
-    const story = this.story();
-    return Boolean(story?.audioUrl && story.uploadedAudioUrl);
-  });
-
-  readonly narrationBadgeKey = computed(() =>
-    this.narrationSource() === 'mine' ? 'player.myNarration' : 'player.aiNarration'
-  );
-
   readonly activeAudioUrl = computed(() => {
     const story = this.story();
     if (!story) {
@@ -144,17 +135,6 @@ export class StoryPlayerPage implements OnInit, OnDestroy {
     this.audioPlayer.seekTo(Number(seconds));
   }
 
-  async switchNarration(): Promise<void> {
-    if (!this.canSwitchNarration()) {
-      return;
-    }
-    await this.triggerHaptic();
-    this.narrationSource.update((current) => (current === 'ai' ? 'mine' : 'ai'));
-    const story = this.story();
-    if (story) {
-      await this.loadAudio(story);
-    }
-  }
 
   mascotState(): PlayerState {
     const state = this.playerState();

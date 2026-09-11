@@ -16,6 +16,7 @@ export function sanitizeStoryDraft(raw: StoryDraft | Record<string, unknown>): S
         (draft['CoverUrl'] as string | null | undefined) ??
         null
     ),
+    coverChoice: (draft.coverChoice ?? draft['CoverChoice'] ?? 'drawing') as StoryDraft['coverChoice'],
     usedFallbackCover: Boolean(draft.usedFallbackCover ?? draft['UsedFallbackCover']),
     titleFa: sanitizePlainText(String(draft.titleFa ?? draft['TitleFa'] ?? ''), 300),
     descriptionFa: sanitizePlainText(

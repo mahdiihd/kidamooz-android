@@ -7,7 +7,7 @@ import {
   IonToolbar,
 } from '@ionic/angular/standalone';
 
-import { LanguageToggleComponent } from '../language-toggle/language-toggle.component';
+// import { LanguageToggleComponent } from '../language-toggle/language-toggle.component';
 import { StarsBackgroundComponent } from '../stars-background/stars-background.component';
 
 @Component({
@@ -19,7 +19,7 @@ import { StarsBackgroundComponent } from '../stars-background/stars-background.c
     IonTitle,
     IonButtons,
     IonBackButton,
-    LanguageToggleComponent,
+    // LanguageToggleComponent,
     StarsBackgroundComponent,
   ],
   template: `
@@ -32,9 +32,9 @@ import { StarsBackgroundComponent } from '../stars-background/stars-background.c
           </ion-buttons>
         }
         <ion-title class="km-page-toolbar__title">{{ title() }}</ion-title>
-        <ion-buttons class="km-page-toolbar__actions">
+        <!-- <ion-buttons class="km-page-toolbar__actions">
           <app-language-toggle></app-language-toggle>
-        </ion-buttons>
+        </ion-buttons> -->
       </ion-toolbar>
     </ion-header>
   `,

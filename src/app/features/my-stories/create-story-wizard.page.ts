@@ -36,6 +36,7 @@ import { StoryDraftApiService } from '../../core/services/story-draft-api.servic
 import { VoiceRecorderService } from '../../core/services/voice-recorder.service';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { StarsBackgroundComponent } from '../../shared/components/stars-background/stars-background.component';
+import { StoryCoverChoiceComponent } from './story-cover-choice.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 addIcons({
@@ -53,8 +54,7 @@ addIcons({
   swapHorizontalOutline,
 });
 
-type WizardStep = 'pick' | 'generating' | 'review' | 'record' | 'saving' | 'done';
-type NarrationSource = 'ai' | 'mine';
+type WizardStep = 'pick' | 'cover' | 'generating' | 'review' | 'record' | 'saving' | 'done';
 
 type PendingAudio = {
   blob: Blob;
@@ -69,6 +69,7 @@ const ALLOWED_UPLOAD_EXTENSIONS = new Set(['.mp3', '.wav', '.m4a']);
   selector: 'app-create-story-wizard',
   standalone: true,
   imports: [
+    StoryCoverChoiceComponent,
     FormsModule,
     IonContent,
     IonIcon,
@@ -91,15 +92,16 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
 
   readonly step = signal<WizardStep>('pick');
+  readonly coverChoice = signal<'drawing' | 'ai_free'>('drawing');
+  readonly drawingPreview = signal('');
+  private pendingDrawing: { blob: Blob; fileName: string } | null = null;
   readonly draft = signal<StoryDraft | null>(null);
   readonly error = signal('');
   readonly recording = signal(false);
   readonly picking = signal(false);
   readonly previewUrl = signal('');
   readonly pendingAudio = signal<PendingAudio | null>(null);
-  readonly aiBusy = signal(false);
   readonly challengeTag = signal<string | null>(null);
-  readonly narrationSource = signal<NarrationSource>('ai');
   readonly generatingPhase = signal(0);
   titleFa = '';
   descriptionFa = '';
@@ -110,7 +112,7 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
     const phases = [
       'myStories.generatingTitle1',
       'myStories.generatingTitle2',
-      'myStories.generatingTitle3',
+      'myStories.drawingPreparingTitle',
       'myStories.generatingTitle4',
     ] as const;
     return phases[this.generatingPhase() % phases.length];
@@ -120,7 +122,7 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
     const phases = [
       'myStories.generatingSub1',
       'myStories.generatingSub2',
-      'myStories.generatingSub3',
+      'myStories.drawingPreparingHint',
       'myStories.generatingSub4',
     ] as const;
     return phases[this.generatingPhase() % phases.length];
@@ -135,27 +137,14 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
     if (!draft) {
       return '';
     }
-    if (this.narrationSource() === 'mine' && draft.uploadedAudioUrl) {
-      return draft.uploadedAudioUrl;
-    }
-    return draft.audioUrl ?? draft.uploadedAudioUrl ?? '';
+    return draft.uploadedAudioUrl ?? '';
   });
 
-  readonly narrationBadgeKey = computed(() => {
-    if (this.pendingAudio() || (this.narrationSource() === 'mine' && this.draft()?.uploadedAudioUrl)) {
-      return 'myStories.myNarration';
-    }
-    return 'myStories.aiNarration';
-  });
-
-  readonly canSwitchNarration = computed(() => {
-    const draft = this.draft();
-    return Boolean(draft?.audioUrl && draft.uploadedAudioUrl);
-  });
+  readonly narrationBadgeKey = () => 'myStories.myNarration';
 
   readonly canSubmitWithoutRecording = computed(() => {
     const draft = this.draft();
-    return Boolean(draft?.audioUrl || draft?.uploadedAudioUrl);
+    return Boolean(draft?.uploadedAudioUrl);
   });
 
   async ngOnInit(): Promise<void> {
@@ -188,6 +177,7 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
     this.stopGeneratingAnimation();
     this.recorder.cancel();
     this.clearPendingAudio();
+    if (this.drawingPreview()) URL.revokeObjectURL(this.drawingPreview());
   }
 
   async back(): Promise<void> {
@@ -229,7 +219,6 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
         fileName: result.fileName,
         durationSeconds: result.durationSeconds,
       });
-      this.narrationSource.set('mine');
     } catch {
       this.recording.set(false);
       this.error.set('recordFailed');
@@ -242,13 +231,6 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
     this.error.set('');
   }
 
-  async switchNarration(): Promise<void> {
-    if (!this.canSwitchNarration()) {
-      return;
-    }
-    await this.tapFeedback();
-    this.narrationSource.update((current) => (current === 'ai' ? 'mine' : 'ai'));
-  }
 
   openVoiceFilePicker(): void {
     this.voiceFileInput?.nativeElement.click();
@@ -282,7 +264,6 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
       fileName: file.name,
       durationSeconds: 0,
     });
-    this.narrationSource.set('mine');
   }
 
   async submitRecording(): Promise<void> {
@@ -327,7 +308,7 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
       await this.submitRecording();
       return;
     }
-    if (!current.audioUrl && !current.uploadedAudioUrl) {
+    if (!current.uploadedAudioUrl) {
       this.error.set('noAudio');
       return;
     }
@@ -372,46 +353,6 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
         },
         error: () => this.error.set('saveFailed'),
       });
-  }
-
-  async rewrite(mode: 'polish' | 'shorter'): Promise<void> {
-    const current = this.draft();
-    if (!current || this.aiBusy()) {
-      return;
-    }
-    this.error.set('');
-    this.aiBusy.set(true);
-    await this.tapFeedback();
-    this.api.rewrite(current.id, mode).subscribe({
-      next: (draft) => {
-        this.applyDraft(draft);
-        this.aiBusy.set(false);
-      },
-      error: () => {
-        this.error.set('rewriteFailed');
-        this.aiBusy.set(false);
-      },
-    });
-  }
-
-  async regenerateCover(): Promise<void> {
-    const current = this.draft();
-    if (!current || this.aiBusy()) {
-      return;
-    }
-    this.error.set('');
-    this.aiBusy.set(true);
-    await this.tapFeedback();
-    this.api.regenerateCover(current.id).subscribe({
-      next: (draft) => {
-        this.applyDraft(draft);
-        this.aiBusy.set(false);
-      },
-      error: () => {
-        this.error.set('coverFailed');
-        this.aiBusy.set(false);
-      },
-    });
   }
 
   joinChallenge(tag: string): void {
@@ -483,29 +424,14 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
         throw new Error('no path');
       }
 
-      this.startGeneratingAnimation();
-      this.step.set('generating');
       const response = await fetch(photo.webPath);
       const blob = await response.blob();
       const fileName = `drawing.${photo.format || 'jpeg'}`;
-
-      this.api.createFromDrawing(blob, fileName).subscribe({
-        next: (draft) => {
-          this.stopGeneratingAnimation();
-          this.applyDraft(draft);
-          this.step.set('review');
-        },
-        error: (err: { status?: number; error?: { code?: string } }) => {
-          this.stopGeneratingAnimation();
-          const code = err?.error?.code;
-          if (err?.status === 429 || code === 'daily_limit_reached') {
-            this.error.set('dailyLimit');
-          } else {
-            this.error.set('generateFailed');
-          }
-          this.step.set('pick');
-        },
-      });
+      if (this.drawingPreview()) URL.revokeObjectURL(this.drawingPreview());
+      this.pendingDrawing = { blob, fileName };
+      this.drawingPreview.set(URL.createObjectURL(blob));
+      this.coverChoice.set('drawing');
+      this.step.set('cover');
     } catch (error) {
       this.stopGeneratingAnimation();
       if (!this.isUserCancel(error)) {
@@ -517,6 +443,33 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
     }
   }
 
+  changeDrawing(): void {
+    this.error.set('');
+    this.coverChoice.set('drawing');
+    this.step.set('pick');
+  }
+
+  startStory(): void {
+    if (this.step() !== 'cover' || !this.pendingDrawing || this.error() === 'dailyLimit') return;
+    this.error.set('');
+    this.startGeneratingAnimation();
+    this.step.set('generating');
+    this.api.createFromDrawing(
+      this.pendingDrawing.blob, this.pendingDrawing.fileName, this.coverChoice()
+    ).subscribe({
+      next: (draft) => {
+        this.stopGeneratingAnimation();
+        this.applyDraft(draft);
+        this.step.set('review');
+      },
+      error: (err: { status?: number; error?: { code?: string } }) => {
+        this.stopGeneratingAnimation();
+        this.error.set(err?.status === 429 || err?.error?.code === 'daily_limit_reached'
+          ? 'dailyLimit' : 'generateFailed');
+        this.step.set('cover');
+      },
+    });
+  }
   private async ensureMediaPermission(source: CameraSource): Promise<boolean> {
     try {
       const current = await Camera.checkPermissions();
@@ -559,7 +512,6 @@ export class CreateStoryWizardPage implements OnInit, OnDestroy {
     this.descriptionFa = draft.descriptionFa;
     this.storyScript = draft.storyScript;
     this.challengeTag.set(draft.challengeTag);
-    this.narrationSource.set(draft.uploadedAudioUrl ? 'mine' : 'ai');
   }
 
   private startGeneratingAnimation(): void {

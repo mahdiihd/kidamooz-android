@@ -22,6 +22,37 @@
     "more": "Storytime"
   },
   "myStories": {
+    "freeCoverPending": "The new cover will replace the drawing when the story is approved. Until then, we’ll show your child’s drawing.",
+    "coverContinue": "Continue and create story",
+    "paidCoverTiming": "Created with AI",
+    "paidCoverHint": "This option is not available yet. Choose either of the two no-cost options for now.",
+    "paidCoverBadge": "Coming soon",
+    "paidCoverTitle": "Paid cover",
+    "freeCoverSummary": "The free cover takes a little time. Your child’s drawing stays until the story is approved, then the new cover replaces it.",
+    "freeCoverTiming": "Ready when the story is approved",
+    "freeCoverHint": "We’ll prepare a new cover inspired by the story. This takes a little time.",
+    "freeCoverBadge": "Free",
+    "freeCoverTitle": "AI cover",
+    "originalCoverTiming": "Your drawing, ready now",
+    "coverStep": "One step away from your story",
+    "coverChoiceTitle": "Choose your story cover",
+    "coverChoiceHint": "Keep your child’s drawing or create a new image inspired by the story?",
+    "drawingPreviewAlt": "Selected drawing preview",
+    "drawingPreviewCaption": "The drawing that starts this story",
+    "coverOptionsLabel": "Choose a cover",
+    "originalCoverTitle": "Child’s drawing",
+    "originalCoverBadge": "No cost",
+    "originalCoverHint": "Their own colours and imagination become the story cover.",
+    "aiCoverTitle": "AI illustrated cover",
+    "aiCoverBadge": "Optional",
+    "aiCoverHint": "Create a new illustration inspired by the story. This takes a little longer.",
+    "originalCoverSummary": "Your child’s drawing, with all its colours and imagination, stays on the cover.",
+    "aiCoverSummary": "Starting also requests a separate image. If it cannot be created, we will keep the drawing.",
+    "startWithDrawing": "Create story with this drawing",
+    "startWithAiCover": "Create story and new cover",
+    "changeDrawing": "Change drawing",
+    "drawingPreparingTitle": "Your drawing becomes the cover",
+    "drawingPreparingHint": "Your colors and imagination stay with the story.",
     "title": "Storytime",
     "introTitle": "Turn a child's drawing into a lasting story",
     "intro": "Upload a child's drawing and AI will create a custom story and a beautiful cover. Edit the text if you like, then record the story in your own voice. After review, it will be published in the app under your name.",
@@ -55,7 +86,7 @@
     "nameSaved": "Name saved",
     "nameEmpty": "Enter a name",
     "pickTitle": "Bring the little one's drawing",
-    "pickHint": "Choose from gallery or take a photo so we can create the story and cover.",
+    "pickHint": "Choose a drawing, then choose the cover before your story begins.",
     "gallery": "Gallery",
     "galleryDesc": "Pick from saved photos",
     "camera": "Camera",
@@ -66,18 +97,12 @@
     "generatingTitle1": "Reading the little drawing",
     "generatingTitle2": "Shaping the story",
     "generatingTitle3": "Painting a magical cover",
-    "generatingTitle4": "Warming up the narrator",
+    "generatingTitle4": "Getting your story ready to read",
     "generatingSub1": "Hang tight while we notice the details.",
     "generatingSub2": "A gentle script for listening is on the way.",
     "generatingSub3": "The cover is created with AI only.",
-    "generatingSub4": "Narration is prepared at the same time.",
-    "fallbackCover": "Used the drawing as a simple cover",
-    "rewrite": "Smart rewrite",
-    "shorten": "Make shorter",
-    "newCover": "New cover",
-    "aiBusy": "AI is working...",
-    "rewriteFailed": "Rewrite failed",
-    "coverFailed": "Could not generate a new cover",
+    "generatingSub4": "Your storytelling moment is almost here.",
+    "fallbackCover": "The new cover was not ready. We kept your child's drawing.",
     "titleLabel": "Title",
     "descriptionLabel": "Short description",
     "scriptLabel": "Story script to read aloud",
@@ -90,8 +115,8 @@
     "uploadVoice": "Upload audio file",
     "uploadVoiceDesc": "mp3, wav, or m4a up to 50 MB",
     "readyToRead": "Continue storytelling",
-    "readyToReadDesc": "Go hear the story and tell it",
-    "recordHint": "Submit the ready narration, or record your own voice.",
+    "readyToReadDesc": "Read the story in your own voice",
+    "recordHint": "Record the story in your own voice or upload your audio file.",
     "startRecord": "Start recording",
     "startRecordDesc": "Turn on the mic and read the story",
     "recording": "Recording...",
@@ -140,7 +165,19 @@
     "password": "Password",
     "passwordPlaceholder": "At least 4 characters",
     "displayName": "Display name (optional)",
-    "displayNamePlaceholder": "e.g. Sara's mom"
+    "displayNamePlaceholder": "e.g. Sara's mom",
+    "otpHint": "Sign in with your mobile number. New accounts are created automatically.",
+    "sendCode": "Send code",
+    "code": "Verification code",
+    "verifyCode": "Verify and sign in",
+    "changeMobile": "Change number",
+    "resend": "Resend code",
+    "sent": "A verification code was sent to this number",
+    "wait": "seconds until resend",
+    "invalidMobile": "Enter an Iranian mobile number, like 09121234567.",
+    "invalidCode": "Enter the 6-digit code.",
+    "failed": "Request failed. Please try again.",
+    "busy": "Please wait…"
   },
   "home": {
     "greeting": "Hello little one!",
@@ -152,7 +189,8 @@
     "tapToListen": "Tap to listen",
     "continueTitle": "Continue listening",
     "challengeTitle": "This week's challenge",
-    "challengeHint": "Tap to create a story"
+    "challengePrize": "Prize for the best story",
+    "challengeHint": "Tap to make a story and win a prize"
   },
   "categories": {
     "tapHint": "Tap to hear a story"
@@ -201,10 +239,18 @@
   },
   "content": {
     "categories": {
-      "forest": { "title": "Magic Forest" },
-      "space": { "title": "Space Journey" },
-      "ocean": { "title": "Deep Ocean" },
-      "animals": { "title": "Animal Friends" }
+      "forest": {
+        "title": "Magic Forest"
+      },
+      "space": {
+        "title": "Space Journey"
+      },
+      "ocean": {
+        "title": "Deep Ocean"
+      },
+      "animals": {
+        "title": "Animal Friends"
+      }
     },
     "stories": {
       "1": {
@@ -232,5 +278,9 @@
         "description": "A child finds a missing star."
       }
     }
+  },
+  "profile": {
+    "title": "Profile",
+    "completeHint": "Welcome! Enter your name to get started."
   }
 }

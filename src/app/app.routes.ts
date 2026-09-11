@@ -6,9 +6,15 @@ import { environment } from '../environments/environment';
 export const routes: Routes = [
   {
     path: 'tabs',
+    canActivate: [memberAuthGuard],
+    canActivateChild: [memberAuthGuard],
     loadComponent: () =>
       import('./features/shell/tabs.page').then((m) => m.TabsPage),
     children: [
+      {
+        path: 'profile',
+        loadComponent: () => import('./features/auth/member-profile.page').then(m => m.MemberProfilePage),
+      },
       {
         path: 'home',
         loadComponent: () =>
@@ -51,6 +57,7 @@ export const routes: Routes = [
   },
   {
     path: 'story/:id',
+    canActivate: [memberAuthGuard],
     loadComponent: () =>
       import('./features/stories/story-player/story-player.page').then(
         (m) => m.StoryPlayerPage

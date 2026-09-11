@@ -12,6 +12,7 @@ import {
   bookOutline,
   homeOutline,
   micOutline,
+  personOutline,
   peopleOutline,
 } from 'ionicons/icons';
 
@@ -20,6 +21,7 @@ import { StarsBackgroundComponent } from '../../shared/components/stars-backgrou
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 addIcons({
+  personOutline,
   homeOutline,
   bookOutline,
   peopleOutline,

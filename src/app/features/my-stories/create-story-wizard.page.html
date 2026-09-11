@@ -17,7 +17,7 @@
 <ion-content [fullscreen]="true" class="create-wizard">
   <div class="km-page create-wizard__body">
     @if (error()) {
-      <p class="error">{{ ('myStories.' + error()) | translate }}</p>
+      <p class="error" role="alert">{{ ('myStories.' + error()) | translate }}</p>
     }
 
     @switch (step()) {
@@ -73,6 +73,12 @@
           }
         </section>
       }
+      @case ('cover') {
+        <app-story-cover-choice
+          [preview]="drawingPreview()" [coverChoice]="coverChoice()" [disabled]="error() === 'dailyLimit'"
+          (selectionChange)="coverChoice.set($event)" (createRequested)="startStory()" (changeDrawing)="changeDrawing()"
+        />
+      }
       @case ('generating') {
         <section class="generating" aria-live="polite">
           <div class="generating__stage" aria-hidden="true">
@@ -91,22 +97,11 @@
         @if (draft()?.coverUrl) {
           <img class="cover" [src]="draft()!.coverUrl!" [alt]="titleFa" />
         }
+        @if (draft()?.coverChoice === 'ai_free' && draft()?.coverUrl === draft()?.drawingUrl) {
+          <p class="hint">{{ 'myStories.freeCoverPending' | translate }}</p>
+        }
         @if (draft()?.usedFallbackCover) {
           <p class="hint">{{ 'myStories.fallbackCover' | translate }}</p>
-        }
-        <div class="ai-actions">
-          <button type="button" class="ai-btn" [disabled]="aiBusy()" (click)="rewrite('polish')">
-            {{ 'myStories.rewrite' | translate }}
-          </button>
-          <button type="button" class="ai-btn" [disabled]="aiBusy()" (click)="rewrite('shorter')">
-            {{ 'myStories.shorten' | translate }}
-          </button>
-          <button type="button" class="ai-btn" [disabled]="aiBusy()" (click)="regenerateCover()">
-            {{ 'myStories.newCover' | translate }}
-          </button>
-        </div>
-        @if (aiBusy()) {
-          <p class="hint">{{ 'myStories.aiBusy' | translate }}</p>
         }
         <label class="field">
           <span>{{ 'myStories.titleLabel' | translate }}</span>
@@ -126,14 +121,6 @@
           <ion-textarea [(ngModel)]="storyScript" autoGrow="true" rows="10"></ion-textarea>
         </label>
 
-        @if (draft()?.audioUrl) {
-          <section class="narration-box">
-            <div class="narration-box__header">
-              <span class="narration-badge">{{ 'myStories.aiNarration' | translate }}</span>
-            </div>
-            <audio controls [src]="draft()!.audioUrl!"></audio>
-          </section>
-        }
 
         <button type="button" class="hero-cta hero-cta--continue" (click)="saveScriptAndContinue()">
           <span class="hero-cta__icon">
@@ -155,12 +142,6 @@
           <section class="narration-box">
             <div class="narration-box__header">
               <span class="narration-badge">{{ narrationBadgeKey() | translate }}</span>
-              @if (canSwitchNarration()) {
-                <button type="button" class="narration-switch" (click)="switchNarration()">
-                  <ion-icon name="swap-horizontal-outline"></ion-icon>
-                  {{ 'myStories.switchNarration' | translate }}
-                </button>
-              }
             </div>
             <audio controls [src]="activePlayerUrl()"></audio>
           </section>

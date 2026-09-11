@@ -157,3 +157,7 @@
   font-weight: 400;
   line-height: 1.2;
 }
+
+.otp-actions { display: flex; justify-content: space-between; gap: 12px; margin-top: 20px; }
+.otp-actions button { background: transparent; color: var(--km-accent-lavender); padding: 12px; border-radius: 12px; font: inherit; }
+.otp-actions button:disabled { opacity: 0.45; }

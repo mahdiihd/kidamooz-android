@@ -33,30 +33,31 @@ export class MemberAuthService {
 
   async getAccessToken(): Promise<string | null> {
     await this.ensureHydrated();
-    return this.token();
+    const token = this.token();
+    if (token) {
+      try {
+        const payload = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+        if (JSON.parse(atob(payload)).exp * 1000 > Date.now()) return token;
+      } catch { /* Invalid stored sessions must sign in again. */ }
+      await this.logout();
+    }
+    return null;
   }
 
   isLoggedIn(): boolean {
     return this.loggedIn();
   }
 
-  loginOrRegister(
-    mobile: string,
-    password: string,
-    displayName?: string
-  ): Observable<MemberProfile> {
-    return this.http
-      .post<MemberAuthResponse & Record<string, unknown>>(
-        `${this.base}/login-or-register`,
-        {
-          mobile,
-          password,
-          displayName: displayName || undefined,
-        }
-      )
-      .pipe(
-        map((raw) => this.normalizeAuthResponse(raw)),
-        switchMap((res) => from(this.persist(res)).pipe(map(() => res.user)))
+  requestOtp(mobile: string): Observable<{ retryAfterSeconds: number; expiresInSeconds: number }> {
+    return this.http.post<{ retryAfterSeconds: number; expiresInSeconds: number }>(
+      this.base + '/otp/request', { mobile });
+  }
+
+  verifyOtp(mobile: string, code: string): Observable<MemberProfile> {
+    return this.http.post<MemberAuthResponse & Record<string, unknown>>(
+      this.base + '/otp/verify', { mobile, code }).pipe(
+        map(raw => this.normalizeAuthResponse(raw)),
+        switchMap(res => from(this.persist(res)).pipe(map(() => res.user)))
       );
   }
 
@@ -160,6 +161,7 @@ export class MemberAuthService {
     return {
       id: String(raw.id ?? raw['Id'] ?? ''),
       mobile: String(raw.mobile ?? raw['Mobile'] ?? ''),
+      profileComplete: Boolean(raw.profileComplete ?? raw['ProfileComplete'] ?? true),
       displayName: sanitizePlainText(String(raw.displayName ?? raw['DisplayName'] ?? ''), 200),
     };
   }
