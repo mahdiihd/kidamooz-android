@@ -1,24 +1,34 @@
-# راهنمای کار روی اپ و وب
+# App and Web Development Guide
 
-این راهنما برای تمام فایل‌های این پروژه، شامل پروژه بومی داخل `android/`، است.
+This guide applies to every file in this project, including the native project under `android/`.
 
-- معرفی: [spec.md](spec.md). گردش کار: [مهارت توسعه اپ](.agents/skills/kidamooz-app/SKILL.md).
-- همین کدبیس خروجی Android و وب/PWA دارد. [WEB.md](WEB.md) را برای تغییرات وابسته به پلتفرم بخوانید.
-- منطق مشترک را در `src/` نگه دارید. APIهای بومی را با `Capacitor.isNativePlatform()` یا الگوی موجود محافظت کنید و مسیر وب را پشتیبانی کنید، مگر درخواست صریح بومی‌بودن قابلیت.
-- این پروژه Angular 20، Ionic 8 و Capacitor 8 دارد؛ نسخه‌ها را از پنل مدیریت کپی نکنید.
-- صفحات در `src/app/features` و سرویس‌ها، مدل‌ها و مبدل‌ها در `src/app/core` قرار دارند.
-- محافظ‌های ورود و ساخت قصه، تنظیمات قابلیت‌ها و مسیرهای `src/app/app.routes.ts` را هنگام تغییر مسیر حفظ کنید.
-- ترجمه‌ها را با `translation.service.ts` هماهنگ کنید؛ رابط فارسی و راست‌به‌چپ و اندازه موبایل را بررسی کنید.
-- خروجی وب `www/` تولیدی است؛ کد منبع را ویرایش کنید. تغییر دستی کد بومی واقعی را با فایل‌های تولیدشده اشتباه نگیرید.
-- دستورات از ریشه همین پروژه: `npm run lint`، `npm run build:pwa` و آزمون مرتبط با `npm test -- --watch=false --browsers=ChromeHeadless`.
-- برای بررسی بومی پس از ساخت، `npm run cap:sync` اجرا می‌شود؛ این فرمان فایل‌های بومی تولیدشده را تغییر می‌دهد. آزمون مرورگر معادل آزمون دستگاه نیست.
-- راهنمای انتشار، مجوز انتشار خودکار برای هر تغییر نیست؛ انتشار را در محدوده درخواست کاربر انجام دهید.
+- Overview: [spec.md](spec.md). Workflow: [Kidamooz app skill](.agents/skills/kidamooz-app/SKILL.md).
+- This codebase produces both Android and web/PWA builds. Read [WEB.md](WEB.md) for platform-specific changes.
+- Keep shared logic in `src/`. Guard native APIs with `Capacitor.isNativePlatform()` or the established pattern and preserve a safe web path unless the feature is explicitly native-only.
+- The project uses Angular 20, Ionic 8, and Capacitor 8. Do not copy versions or assumptions from the admin panel.
+- Pages belong in `src/app/features`; services, models, and mappers belong in `src/app/core`.
+- Preserve authentication and story-creation guards, feature settings, and `src/app/app.routes.ts` behavior when changing navigation.
+- Keep translations aligned with `translation.service.ts`; verify Persian RTL layout and mobile sizing.
+- `www/` is generated output. Edit source files instead. Do not confuse maintained native code with generated native files.
+- Run from this project root: `npm run lint`, `npm run build:pwa`, and relevant tests with `npm test -- --watch=false --browsers=ChromeHeadless`.
+- Native verification after a build uses `npm run cap:sync`, which changes generated native files. Browser tests do not replace device testing.
+- Release documentation does not authorize automatic publication. Publish only within the user's explicit scope.
 
-## امنیت و جلوگیری از انتشار اطلاعات محرمانه
+## Mandatory Spec Kit Workflow
 
-- گذرواژه دیتابیس، رشته اتصال دارای اعتبارنامه، کلید API، توکن، کلید خصوصی، حساب سرویس Firebase و کلید امضای اپ نباید وارد commit یا push شوند؛ آن‌ها را در گزارش، لاگ، مستندات و پیام PR نیز نمایش ندهید.
-- اسرار سمت سرور را از متغیر محیطی یا مخزن امن اسرار دریافت کنید. در فایل‌های قابل انتشار فقط مقدار نمونه غیرواقعی قرار دهید. کد مرورگر و خروجی اپ محل نگهداری اسرار سرور نیستند.
-- پیش از هر commit، فایل‌های staged و محتوای تغییرات را برای اسرار بررسی کنید. پیش از push، همه commitهای ارسالی را نیز بررسی کنید؛ فقط بررسی آخرین diff کافی نیست. گزارش بررسی باید مقدارها را پنهان و فقط مسیر و نوع مورد مشکوک را نشان دهد.
-- فایل‌های محیطی واقعی، تنظیمات محلی دارای اسرار، کلیدها و خروجی‌های شامل اطلاعات حساس را stage نکنید؛ از افزودن اجباری فایل‌های نادیده‌گرفته‌شده و stage کردن بی‌بررسی همه فایل‌ها پرهیز کنید.
-- قواعد .gitignore فایل‌های از قبل tracked یا تاریخچه را پاک نمی‌کنند. اگر اطلاعات محرمانه در فایل tracked یا commit قبلی پیدا شد، push مربوط را متوقف و بدون نمایش مقدار گزارش کنید؛ حذف خط از نسخه فعلی رفع نشت تاریخی نیست. تعویض اعتبارنامه و پاک‌سازی تاریخچه باید با هماهنگی انجام شوند.
-- فایل تنظیمات عمومی و فایل نمونه نیز باید بررسی شوند؛ نام example یا نبود فایل در الگوی ignore تضمین نبود اطلاعات محرمانه نیست. محتوای فایل‌های حساس را برای بررسی در خروجی ابزار چاپ نکنید.
+- Spec Kit infrastructure lives in `.specify/` and its skills live in `.agents/skills/speckit-*`. The project constitution is `.specify/memory/constitution.md` and MUST govern planning and implementation.
+- Every new feature, behavior change, architectural change, or non-trivial refactor MUST complete the Spec-Driven Development workflow before implementation: `$speckit-specify`, `$speckit-clarify`, `$speckit-plan`, `$speckit-tasks`, `$speckit-analyze`, `$speckit-implement`, and `$speckit-converge`, in that order.
+- Implementation MUST NOT begin until `spec.md`, `plan.md`, and `tasks.md` exist and analysis reports no unresolved blocking inconsistency. Work is not complete until convergence reports `Converged`.
+- Keep feature artifacts in `specs/<feature>/`. Feed discoveries that affect requirements or design back into the same artifacts before continuing implementation.
+- Every product idea, proposed capability, or materially uncertain solution MUST complete Idea Assessment before entering SDD: `$speckit-assess-intake`, `$speckit-assess-research`, `$speckit-assess-define`, `$speckit-assess-shape`, and `$speckit-assess-decide`, in that order.
+- Keep assessment artifacts in `.specify/assessments/<slug>/`. Only a `go` decision with explicit scope MAY move to `$speckit-specify`. A `needs-clarification` or `kill` decision MUST stop implementation until the decision artifact is updated to `go`.
+- Documentation-only edits that do not change product behavior may skip SDD. All other exceptions require an explicit user instruction recorded in the task conversation.
+
+## Secret Safety
+
+- Never commit or push database passwords, credential-bearing connection strings, API keys, tokens, private keys, Firebase service accounts, or app-signing keys. Do not expose them in reports, logs, documentation, or PR messages.
+- Load server secrets from environment variables or approved secret storage. Use fake placeholders in publishable files. Browser and app code are not secret stores.
+- Before every commit, inspect staged files and changes for secrets. Before push, inspect every outgoing commit, not only the latest diff. Reports must redact values and identify only the suspicious path and secret type.
+- Do not stage real environment files, local secret settings, keys, or sensitive outputs. Avoid force-adding ignored files or staging everything without review.
+- `.gitignore` does not remove tracked files or history. If a secret exists in a tracked file or earlier commit, stop the push and report it without showing the value. Removing the current line does not repair historical exposure; credential rotation and history cleanup require coordination.
+- Inspect public configuration and example files too. An `example` name or absence from ignore patterns does not guarantee safety. Do not print sensitive file contents into tool output.
