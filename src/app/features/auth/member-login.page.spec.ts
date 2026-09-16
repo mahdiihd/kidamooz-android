@@ -25,6 +25,20 @@ describe('OTP login', () => {
     TestBed.overrideComponent(MemberLoginPage, { set: { template: '', imports: [] } });
   });
   const create = () => TestBed.createComponent(MemberLoginPage).componentInstance;
+  it('allows verification after sending is rate limited', () => {
+    auth.requestOtp.and.returnValue(throwError(() => ({ status: 429 })));
+    const page = create(); page.mobile = '09121234567'; page.sendCode();
+    expect(page.codeSent()).toBeTrue();
+    page.code = '123456'; page.submit();
+    expect(auth.verifyOtp).toHaveBeenCalledOnceWith('09121234567', '123456');
+    page.sendCode(); expect(auth.requestOtp).toHaveBeenCalledTimes(1);
+  });
+  it('can enter an existing code without requesting a new SMS', () => {
+    const page = create(); page.mobile = '09121234567'; page.enterExistingCode();
+    page.code = '123456'; page.submit();
+    expect(auth.requestOtp).not.toHaveBeenCalled();
+    expect(auth.verifyOtp).toHaveBeenCalledOnceWith('09121234567', '123456');
+  });
   it('accepts Persian and Arabic numerals', () => {
     expect(normalizeAuthDigits('۰۹۱۲۱۲۳۴۵۶۷')).toBe('09121234567');
     expect(normalizeAuthDigits('١٢٣٤٥٦')).toBe('123456');
@@ -51,5 +65,11 @@ describe('OTP login', () => {
     const page = create(); page.mobile = '09121234567'; page.submit(); page.code = '123456'; page.submit();
     expect(page.codeSent()).toBeTrue(); expect(page.loading()).toBeFalse();
     expect(page.error()).toBe('invalid code'); expect(router.navigateByUrl).not.toHaveBeenCalled();
+  });
+  it('submits automatically after an OTP is autofilled', () => {
+    const page = create(); page.mobile = '09121234567'; page.sendCode();
+    (page as unknown as { applyAutofilledCode(code: string): void }).applyAutofilledCode('123456');
+    expect(page.code).toBe('123456');
+    expect(auth.verifyOtp).toHaveBeenCalledOnceWith('09121234567', '123456');
   });
 });

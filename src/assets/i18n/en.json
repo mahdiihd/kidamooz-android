@@ -166,6 +166,8 @@
     "passwordPlaceholder": "At least 4 characters",
     "displayName": "Display name (optional)",
     "displayNamePlaceholder": "e.g. Sara's mom",
+    "haveCode": "I already have a code",
+    "enterExistingHint": "Enter your SMS code. Codes expire after 2 minutes.",
     "otpHint": "Sign in with your mobile number. New accounts are created automatically.",
     "sendCode": "Send code",
     "code": "Verification code",

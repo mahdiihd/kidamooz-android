@@ -1,38 +1,115 @@
+@property --active-x {
+  syntax: '<percentage>';
+  inherits: true;
+  initial-value: 50%;
+}
 :host {
   display: block;
   height: 100%;
+  --km-tab-bar-height: 110px;
+  --km-tab-bar-bottom: calc(8px + var(--km-safe-bottom, 0px));
 }
-
-.km-tab-bar-stars {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: calc(var(--km-tab-bar-height) + var(--km-safe-bottom));
-  z-index: 10;
-  pointer-events: none;
-  overflow: hidden;
-}
-
+.km-tab-bar-stars { display: none; }
 ion-tab-bar.km-tab-bar {
-  --background: rgba(26, 15, 46, 0.35);
+  --background: transparent;
   --border: 0;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-rows: 110px;
+  width: calc(100% - 24px);
+  max-width: 540px;
+  height: 110px;
+  margin: 0;
+  bottom: var(--km-tab-bar-bottom);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0;
+  transition: --active-x .32s cubic-bezier(.22, .8, .25, 1);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  position: absolute;
   z-index: 11;
+  overflow: visible;
+  &::after {
+    content: '';
+    position: absolute;
+    top: 9px;
+    left: var(--active-x);
+    transform: translateX(-50%);
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: var(--km-accent-moon);
+    pointer-events: none;
+    z-index: 0;
+  }
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 36px 0 0;
+    border-radius: 28px;
+    background: var(--km-bg-night-mid);
+    -webkit-mask: radial-gradient(circle 33px at var(--active-x) 0, transparent 98%, #000 100%);
+    mask: radial-gradient(circle 33px at var(--active-x) 0, transparent 98%, #000 100%);
+    pointer-events: none;
+  }
 }
-
 ion-tab-button {
+  --background: transparent;
+  --color: var(--km-text-secondary);
   --color-selected: var(--km-accent-moon);
-
-  &::part(native) {
-    transition: transform 0.15s ease;
+  --ripple-color: transparent;
+  --background-focused: transparent;
+  --background-focused-opacity: 0;
+  --background-hover: transparent;
+  --background-hover-opacity: 0;
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  width: 100%;
+  height: 110px;
+  --padding-top: 44px;
+  align-self: end;
+  border-radius: 20px;
+  font-size: 10px;
+  ion-icon { font-size: 24px; margin: 0 0 7px; transition: transform .2s ease; }
+  ion-label { margin: 0; font-weight: 500; }
+  &.tab-selected { ion-label { font-weight: 700; } }
+  &:focus-visible { outline: 2px solid var(--km-accent-moon); outline-offset: -3px; }
+}
+ion-tab-button.active-tab {
+  height: 110px;
+  transform: none;
+  --padding-top: 0;
+  --padding-bottom: 6px;
+  overflow: visible;
+  &::part(native) { position: relative; overflow: visible; }
+  ion-label { position: absolute; bottom: 12px; left: 0; width: 100%; }
+  ion-icon {
+    position: absolute;
+    top: 9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 28px;
+    height: 28px;
+    box-sizing: content-box;
+    flex-shrink: 0;
+    color: var(--km-bg-night);
+    background: transparent;
+    padding: 13px;
+    border-radius: 50%;
+    font-size: 27px;
+    margin: 0;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.2);
   }
 
-  &.tab-selected {
-    ion-icon {
-      filter: drop-shadow(0 0 6px rgba(255, 209, 102, 0.5));
-    }
-  }
+  &.tab-selected ion-label { color: var(--km-accent-moon); }
+}
+@media (prefers-reduced-motion: reduce) {
+  ion-tab-button ion-icon { transition: none; }
+  ion-tab-bar.km-tab-bar { transition: none; }
 }

@@ -7,44 +7,11 @@
 }
 
 .login-hero {
-  position: relative;
   width: 100%;
   display: grid;
   place-items: center;
   margin: 0.25rem 0 1rem;
   min-height: 7.5rem;
-}
-
-.login-hero__glow {
-  position: absolute;
-  width: 9rem;
-  height: 9rem;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(212, 165, 249, 0.35) 0%,
-    rgba(255, 209, 102, 0.12) 45%,
-    transparent 72%
-  );
-  filter: blur(4px);
-  animation: km-float 3.6s ease-in-out infinite;
-}
-
-.login-hero__badge {
-  position: relative;
-  width: 4.5rem;
-  height: 4.5rem;
-  border-radius: 1.4rem;
-  display: grid;
-  place-items: center;
-  color: #2a1545;
-  background: linear-gradient(145deg, #e8d0ff, #d4a5f9);
-  box-shadow: 0 14px 28px rgba(212, 165, 249, 0.28);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-}
-
-.login-hero__badge ion-icon {
-  font-size: 2rem;
 }
 
 .login-title {
@@ -124,7 +91,9 @@
 }
 
 .hero-cta--auth {
-  grid-template-columns: auto 1fr;
+  display: flex;
+  justify-content: center;
+  text-align: center;
 }
 
 .hero-cta__icon {
@@ -158,6 +127,55 @@
   line-height: 1.2;
 }
 
-.otp-actions { display: flex; justify-content: space-between; gap: 12px; margin-top: 20px; }
-.otp-actions button { background: transparent; color: var(--km-accent-lavender); padding: 12px; border-radius: 12px; font: inherit; }
-.otp-actions button:disabled { opacity: 0.45; }
+.otp-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 22px;
+  button {
+    appearance: none;
+    display: inline-flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 48px;
+    padding: 12px 16px;
+    border: 1px solid rgba(212, 165, 249, .16);
+    border-radius: 16px;
+    background: rgba(212, 165, 249, .07);
+    color: var(--km-text-primary);
+    font-family: var(--km-font-body);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background .18s ease, border-color .18s ease;
+    ion-icon { font-size: 19px; color: var(--km-accent-moon); flex-shrink: 0; }
+    &:only-child { flex: 0 1 auto; min-width: 190px; }
+    &:hover:not(:disabled) { background: rgba(212, 165, 249, .14); border-color: rgba(212, 165, 249, .35); }
+    &:focus-visible { outline: 2px solid var(--km-accent-moon); outline-offset: 3px; }
+    &:disabled { opacity: .4; cursor: default; }
+  }
+}
+@media (prefers-reduced-motion: reduce) { .otp-actions button { transition: none; } }
+
+/* Match the primary action height to the numeric fields. */
+.form ion-input { min-height: 56px; }
+.hero-cta--auth {
+  min-height: 56px;
+  height: 56px;
+  padding: 8px 16px;
+  gap: 10px;
+}
+.hero-cta--auth .hero-cta__icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+}
+.hero-cta--auth .hero-cta__icon ion-icon,
+.hero-cta--auth .hero-cta__icon ion-spinner {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+}
+.hero-cta--auth .hero-cta__copy strong { font-size: 1.1rem; }

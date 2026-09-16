@@ -146,6 +146,16 @@ ion-content {
   overscroll-behavior: none;
 }
 
+/* Keep the final content visible while the scrollbar still spans the full page. */
+ion-content.tab-page-content {
+  height: 100%;
+  min-height: 0;
+}
+
+ion-content.tab-page-content .km-page {
+  padding-bottom: calc(24px + var(--km-tab-bar-height) + var(--km-tab-bar-bottom, 0px));
+}
+
 ion-content::part(scroll) {
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 209, 102, 0.35) transparent;
@@ -366,4 +376,11 @@ ion-button {
   display: flex;
   flex-direction: column;
   gap: 14px;
+}
+
+/* Numeric authentication values read left-to-right; Persian labels retain RTL. */
+ion-input.auth-numeric-input input.native-input {
+  direction: ltr;
+  text-align: left;
+  unicode-bidi: isolate;
 }

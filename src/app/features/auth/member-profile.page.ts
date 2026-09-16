@@ -21,7 +21,7 @@ addIcons({ checkmarkOutline, logOutOutline, personOutline });
 export class MemberProfilePage implements ViewWillEnter {
   readonly auth = inject(MemberAuthService);
   private readonly router = inject(Router);
-  displayName = '';
+  displayName = this.auth.profile()?.displayName ?? '';
   readonly savingName = signal(false);
   readonly nameSaved = signal(false);
   readonly nameError = signal('');

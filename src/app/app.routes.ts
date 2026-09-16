@@ -65,8 +65,7 @@ export const routes: Routes = [
   },
   {
     path: 'auth/login',
-    loadComponent: () =>
-      import('./features/auth/member-login.page').then((m) => m.MemberLoginPage),
+    loadComponent: () => import('./features/auth/member-login.page').then(m => m.MemberLoginPage),
   },
   {
     path: 'my-stories/create',

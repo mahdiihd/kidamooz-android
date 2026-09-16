@@ -3,37 +3,33 @@
 <ion-content [fullscreen]="true" class="login-page">
   <form class="km-page login-page__body" (ngSubmit)="submit()">
     <section class="login-hero" aria-hidden="true">
-      <div class="login-hero__glow"></div>
-      <div class="login-hero__badge"><ion-icon name="person-outline"></ion-icon></div>
+      <app-moon-mascot state="idle"></app-moon-mascot>
     </section>
     <h2 class="login-title">{{ 'auth.heading' | translate }}</h2>
-    <p class="hint">{{ (codeSent() ? 'auth.sent' : 'auth.otpHint') | translate }}</p>
+    @if (codeSent()) { <p class="hint">{{ 'auth.enterExistingHint' | translate }}</p> }
     <ion-list lines="none" class="form">
       <ion-item>
-        <ion-input [label]="'auth.mobile' | translate" labelPlacement="stacked" type="tel" inputmode="tel"
+        <ion-input class="auth-numeric-input" [label]="'auth.mobile' | translate" labelPlacement="stacked" type="tel" inputmode="tel"
           maxlength="11" autocomplete="tel-national" name="mobile" [(ngModel)]="mobile" [readonly]="codeSent()"
           [disabled]="loading()" [placeholder]="'auth.mobilePlaceholder' | translate" />
       </ion-item>
       @if (codeSent()) {
         <ion-item>
-          <ion-input [label]="'auth.code' | translate" labelPlacement="stacked" type="text" inputmode="numeric"
+          <ion-input class="auth-numeric-input" [label]="'auth.code' | translate" labelPlacement="stacked" type="text" inputmode="numeric"
             maxlength="6" autocomplete="one-time-code" name="code" [(ngModel)]="code" [disabled]="loading()" />
         </ion-item>
       }
     </ion-list>
     @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
     <button type="submit" class="hero-cta hero-cta--auth" [disabled]="loading() || (!codeSent() && remaining() > 0)">
-      <span class="hero-cta__icon">
-        @if (loading()) { <ion-spinner name="crescent"></ion-spinner> }
-        @else { <ion-icon name="log-in-outline"></ion-icon> }
-      </span>
+      @if (loading()) { <ion-spinner name="crescent" aria-hidden="true"></ion-spinner> }
       <span class="hero-cta__copy"><strong>{{ (loading() ? 'auth.busy' : codeSent() ? 'auth.verifyCode' : 'auth.sendCode') | translate }}</strong></span>
     </button>
     @if (remaining() > 0) { <p class="hint">{{ remaining() }} {{ 'auth.wait' | translate }}</p> }
     @if (codeSent()) {
       <div class="otp-actions">
-        <button type="button" [disabled]="loading() || remaining() > 0" (click)="sendCode()">{{ 'auth.resend' | translate }}</button>
-        <button type="button" [disabled]="loading()" (click)="changeMobile()">{{ 'auth.changeMobile' | translate }}</button>
+        <button type="button" [disabled]="loading() || remaining() > 0" (click)="sendCode()"><ion-icon name="refresh-outline" aria-hidden="true"></ion-icon>{{ 'auth.resend' | translate }}</button>
+        <button type="button" [disabled]="loading()" (click)="changeMobile()"><ion-icon name="create-outline" aria-hidden="true"></ion-icon>{{ 'auth.changeMobile' | translate }}</button>
       </div>
     }
   </form>

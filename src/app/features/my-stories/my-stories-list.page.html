@@ -2,8 +2,24 @@
 
 <app-page-header [title]="'myStories.title' | translate"></app-page-header>
 
-<ion-content [fullscreen]="true" class="my-stories">
+<ion-content [fullscreen]="true" class="my-stories tab-page-content">
   <div class="km-page my-stories__body">
+    <details class="intro intro--collapsible" open>
+        <summary class="intro__toggle">
+          <span class="intro__title">{{ 'myStories.introTitle' | translate }}</span>
+          <span class="intro__arrow" aria-hidden="true"></span>
+        </summary>
+        <div class="intro__body">
+        <p class="intro__text">{{ 'myStories.intro' | translate }}</p>
+        <h3 class="intro__steps-title">{{ 'myStories.stepsTitle' | translate }}</h3>
+        <ol class="intro__steps">
+          <li>{{ 'myStories.step1' | translate }}</li>
+          <li>{{ 'myStories.step2' | translate }}</li>
+          <li>{{ 'myStories.step3' | translate }}</li>
+          <li>{{ 'myStories.step4' | translate }}</li>
+        </ol>
+        </div>
+      </details>
     @if (loggedIn()) {
       <button
         type="button"
@@ -37,6 +53,7 @@
           </span>
         }
       </button>
+
 
       @if (dailyLimitNotice()) {
         <p class="quota-notice">{{ 'myStories.dailyLimit' | translate }}</p>
@@ -79,7 +96,6 @@
           }
         </ul>
       }
-
 
     }
   </div>

@@ -475,3 +475,37 @@ html[dir='rtl'] .hero-cta__chevron ion-icon {
   opacity: 0.7;
   line-height: 1.35;
 }
+
+
+:host { --story-action-height: calc(3.35rem + 2rem + 2px); }
+.hero-cta--start { height: var(--story-action-height); box-sizing: border-box; }
+.intro--collapsible {
+  position: relative;
+  padding: 0;
+}
+.intro__toggle {
+  box-sizing: border-box;
+  height: var(--story-action-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.05rem 1.45rem;
+  cursor: pointer;
+  list-style: none;
+  border-radius: var(--km-radius-lg);
+  &::-webkit-details-marker { display: none; }
+  &:focus-visible { outline: 2px solid var(--km-accent-moon); outline-offset: 3px; }
+  .intro__title { margin: 0; }
+}
+.intro__arrow {
+  position: absolute;
+  bottom: 0.65rem;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--km-accent-moon);
+  border-bottom: 2px solid var(--km-accent-moon);
+  transform: translateX(-50%) rotate(45deg);
+}
+.intro--collapsible[open] .intro__arrow { transform: translateX(-50%) rotate(225deg); }
+.intro__body { padding: 0 1.1rem 2.15rem; }
