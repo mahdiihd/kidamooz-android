@@ -2,7 +2,7 @@
 
 This guide applies to every file in this project, including the native project under `android/`.
 
-- Overview: [spec.md](spec.md). Workflow: [Kidamooz app skill](.agents/skills/kidamooz-app/SKILL.md).
+- Overview: [spec.md](spec.md).
 - This codebase produces both Android and web/PWA builds. Read [WEB.md](WEB.md) for platform-specific changes.
 - Keep shared logic in `src/`. Guard native APIs with `Capacitor.isNativePlatform()` or the established pattern and preserve a safe web path unless the feature is explicitly native-only.
 - The project uses Angular 20, Ionic 8, and Capacitor 8. Do not copy versions or assumptions from the admin panel.
